@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dmall.product.mapper.ProductMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.dmall.product.entity.Product">
+        <id column="id" property="id" />
+        <result column="product_code" property="productCode" />
+        <result column="name" property="name" />
+        <result column="sub_name" property="subName" />
+        <result column="product_type" property="productType" />
+        <result column="state" property="state" />
+        <result column="on_sale_time" property="onSaleTime" />
+        <result column="off_sale_time" property="offSaleTime" />
+        <result column="max_price" property="maxPrice" />
+        <result column="min_price" property="minPrice" />
+        <result column="sale_count" property="saleCount" />
+        <result column="view_count" property="viewCount" />
+        <result column="comment_count" property="commentCount" />
+        <result column="comment_score" property="commentScore" />
+        <result column="good_rate" property="goodRate" />
+        <result column="good_comment_count" property="goodCommentCount" />
+        <result column="middle_comment_count" property="middleCommentCount" />
+        <result column="bad_comment_count" property="badCommentCount" />
+        <result column="brand_id" property="brandId" />
+        <result column="main_image" property="mainImage" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, product_code, name, sub_name, product_type, state, on_sale_time, off_sale_time, max_price, min_price, sale_count, view_count, comment_count, comment_score, good_rate, good_comment_count, middle_comment_count, bad_comment_count, brand_id, main_image, create_time, update_time
+    </sql>
+
+</mapper>
