@@ -1,60 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8">
-    <meta name="author" content="order by dede58.com"/>
-	<title>LarryCMS后台登录</title>
-	<meta name="renderer" content="webkit">	
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">	
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="apple-mobile-web-app-status-bar-style" content="black">	
-	<meta name="apple-mobile-web-app-capable" content="yes">	
-	<meta name="format-detection" content="telephone=no">	
-	<!-- load css -->
-	<link rel="stylesheet" type="text/css" href="common/layui/css/layui.css" media="all">
-	<link rel="stylesheet" type="text/css" href="css/login.css" media="all">
+	<title>后台登录-X-admin2.0</title>
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link th:href="@{/X-admin/css/font.css}" rel="stylesheet" href="./css/font.css">
+	<link th:href="@{/X-admin/css/xadmin.css}" rel="stylesheet" href="./css/xadmin.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script th:src="@{/X-admin/js/xadmin.js}" type="text/javascript" src="./js/xadmin.js"></script>
+
 </head>
-<body>
-<div class="layui-canvs"></div>
-<div class="layui-layout layui-layout-login">
-	<h1>
-		 <strong>LarryCMS管理系统后台</strong>
-		 <em>Management System</em>
-	</h1>
-	<div class="layui-user-icon larry-login">
-		 <input type="text" placeholder="账号" class="login_txtbx"/>
-	</div>
-	<div class="layui-pwd-icon larry-login">
-		 <input type="password" placeholder="密码" class="login_txtbx"/>
-	</div>
-    <div class="layui-val-icon larry-login">
-    	<div class="layui-code-box">
-    		<input type="text" id="code" name="code" placeholder="验证码" maxlength="4" class="login_txtbx">
-            <img src="images/verifyimg.png" alt="" class="verifyImg" id="verifyImg" onClick="javascript:this.src='xxx'+Math.random();">
-    	</div>
+<body class="login-bg">
+    
+    <div class="login layui-anim layui-anim-up">
+        <div class="message">x-admin2.0-管理登录</div>
+        <div id="darkbannerwrap"></div>
+        
+        <form method="post" class="layui-form" >
+            <input name="username" placeholder="用户名"  type="text" lay-verify="required" class="layui-input" >
+            <hr class="hr15">
+            <input name="password" lay-verify="required" placeholder="密码"  type="password" class="layui-input">
+            <hr class="hr15">
+            <input value="登录" lay-submit lay-filter="login" style="width:100%;" type="submit">
+            <hr class="hr20" >
+        </form>
     </div>
-    <div class="layui-submit larry-login">
-    	<input type="button" value="立即登陆" class="submit_btn"/>
-    </div>
-    <div class="layui-login-text">
-    	<p>© 2016-2017 Larry 版权所有</p>
-        <p>鄂xxxxxx</p>
-    </div>
-</div>
-<script type="text/javascript" src="common/layui/lay/dest/layui.all.js"></script>
-<script type="text/javascript" src="js/login.js"></script>
-<script type="text/javascript" src="jsplug/jparticle.jquery.js"></script>
-<script type="text/javascript">
-$(function(){
-	$(".layui-canvs").jParticle({
-		background: "#141414",
-		color: "#E6E6E6"
-	});
-	//登录链接测试，使用时可删除
-	$(".submit_btn").click(function(){
-	  location.href="index.html";
-	});
-});
-</script>
+
+    <script>
+        $(function  () {
+            layui.use('form', function(){
+              var form = layui.form;
+              // layer.msg('玩命卖萌中', function(){
+              //   //关闭后的操作
+              //   });
+              //监听提交
+              form.on('submit(login)', function(data){
+                // alert(888)
+                layer.msg(JSON.stringify(data.field),function(){
+                    location.href='index.html'
+                });
+                return false;
+              });
+            });
+        })
+
+        
+    </script>
+
+
+    <!-- 底部结束 -->
+    <script>
+    //百度统计可去掉
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
 </body>
 </html>

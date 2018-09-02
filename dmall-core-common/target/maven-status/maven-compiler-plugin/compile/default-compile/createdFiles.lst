@@ -1,1 +1,3 @@
-com\dmall\common\DmallCoreCommonApplication.class
+com\dmall\common\utils\StringUtil.class
+com\dmall\common\annotation\TransBean.class
+com\dmall\common\annotation\ChangeColumn.class

@@ -66,7 +66,7 @@ public class MpGenerator {
             // strategy.setCapitalMode(true);// 全局大写命名 ORACLE 注意
             strategy.setTablePrefix(new String[] { "p_"});// 此处可以修改为您的表前缀
             strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-//        strategy.setInclude(new String[] { "t_gps_order" }); // 需要生成的表
+            strategy.setInclude(new String[] { "p_brand" }); // 需要生成的表
             // strategy.setExclude(new String[]{"test"}); // 排除生成的表
 
             // 【实体】是否生成字段常量（默认 false）
