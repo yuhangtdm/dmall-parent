@@ -36,6 +36,9 @@
                 <div class="layui-input-inline">
                     <!-- 后期修改 -->
                     <input type="text" name="productType"  th:value="${brand!=null}?${brand.productType}"  autocomplete="off" class="layui-input">
+                    <select id="productType" loadData="productType" dict="" bean="" name="productType" lay-verify="" lay-search>
+                        <option value="">请选择</option>
+                    </select>
                 </div>
             </div>
 

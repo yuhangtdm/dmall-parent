@@ -19,9 +19,11 @@ public class PlatErrorAttributes extends DefaultErrorAttributes {
     public Map<String, Object> getErrorAttributes(RequestAttributes requestAttributes, boolean includeStackTrace) {
 //        Map<String, Object> errorAttributes = super.getErrorAttributes(requestAttributes, includeStackTrace);
         Map<String,Object> errorAttributes=new LinkedHashMap<>();
-        errorAttributes.putAll((Map<? extends String, ?>) requestAttributes.getAttribute("data",RequestAttributes.SCOPE_REQUEST));
-        errorAttributes.put("count",0);
-        errorAttributes.put("data",null);
+        if(requestAttributes.getAttribute("data",RequestAttributes.SCOPE_REQUEST)!=null){
+            errorAttributes.putAll((Map<? extends String, ?>) requestAttributes.getAttribute("data",RequestAttributes.SCOPE_REQUEST));
+        }else{
+            errorAttributes=super.getErrorAttributes(requestAttributes,includeStackTrace);
+        }
         return errorAttributes;
     }
 }

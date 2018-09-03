@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.dmall.product.entity.Brand;
 import com.baomidou.mybatisplus.service.IService;
 
+import java.io.Serializable;
+import java.util.List;
+
 /**
  * <p>
  * 品牌表 服务类
@@ -23,5 +26,18 @@ public interface BrandService extends IService<Brand> {
      * 新增或更新品牌
      * @param brand
      */
-    void saveOrUpdate(Brand brand);
+    List<Brand> saveOrUpdate(Brand brand);
+
+    /**
+     * 获取所有品牌 加入redis缓存
+     * @return
+     */
+    List<Brand> list();
+
+    /**
+     * 删除品牌
+     * @param id
+     * @return
+     */
+    List<Brand> deleteById(Long id);
 }

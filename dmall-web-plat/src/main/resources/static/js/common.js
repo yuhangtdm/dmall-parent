@@ -93,3 +93,26 @@ function pageList(table,id,url,cols) {
         }
     });
 }
+
+function loadSelect(){
+    $.each($("select[loadData]"),function(name,value){
+        var sel = $(value);
+        var defaultValue = sel.attr("defaultValue");//默认值
+        var dict=sel.attr("dict");
+        var bean=sel.attr("bean");
+        $.ajax({
+            url : "/common/select",
+            type : "post",
+            data : {"dict" : dict,"bean":bean},
+            success : function(result){
+                for (var i=0; i<result.length; i++){
+                    if(defaultValue && defaultValue == result[i].code){
+                        sel.append("<option value="+result[i].code+" selected>"+result[i].value);
+                    }else{
+                        sel.append("<option value="+result[i].code+">"+result[i].value);
+                    }
+                }
+            }
+        });
+    });
+}
