@@ -4,6 +4,7 @@ import com.dmall.product.entity.ProductType;
 import com.dmall.product.mapper.ProductTypeMapper;
 import com.dmall.product.service.ProductTypeService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +16,11 @@ import org.springframework.stereotype.Service;
  * @since 2018-08-29
  */
 @Service
+@CacheConfig(cacheNames = "product")
 public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, ProductType> implements ProductTypeService {
 
+    @Override
+    public ProductType selectById(Long id) {
+        return super.selectById(id);
+    }
 }

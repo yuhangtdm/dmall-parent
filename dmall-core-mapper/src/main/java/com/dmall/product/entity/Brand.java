@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
 
-import com.baomidou.mybatisplus.annotations.Version;
 
 import com.dmall.common.annotation.ChangeColumn;
 import lombok.Data;
@@ -53,6 +52,7 @@ public class Brand implements Serializable {
     /**
      * 品牌简介
      */
+    @ChangeColumn("productTypeCn")
     private String description;
     /**
      * 商品分类ID

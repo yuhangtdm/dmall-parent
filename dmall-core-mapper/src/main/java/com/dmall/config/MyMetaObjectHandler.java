@@ -1,8 +1,14 @@
 package com.dmall.config;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.mapper.MetaObjectHandler;
+import com.dmall.common.annotation.ChangeColumn;
+import com.dmall.product.entity.Brand;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 
 @Component
 public class MyMetaObjectHandler extends MetaObjectHandler {
@@ -22,4 +28,5 @@ public class MyMetaObjectHandler extends MetaObjectHandler {
     public void updateFill(MetaObject metaObject) {
         setFieldValByName("updateTime", System.currentTimeMillis(), metaObject);//mybatis-plus版本2.0.9+
     }
+
 }

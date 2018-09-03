@@ -1,6 +1,7 @@
 package com.dmall.web.common.aop;
 
 import com.dmall.common.annotation.ChangeColumn;
+import com.dmall.common.utils.SpringContextUtil;
 import com.dmall.web.common.result.ReturnResult;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -8,6 +9,8 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +20,7 @@ import java.util.List;
 @Aspect
 @Component
 public class ChangeAspect {
+
     /*
      * 定义一个切入点
      */
@@ -31,23 +35,45 @@ public class ChangeAspect {
         ReturnResult result= (ReturnResult) ret;
         if(result.getData()!=null){
             List data = result.getData();
+            doHandle(data);
+
+        }
+        System.out.println("方法处理后: " + ret);
+    }
+
+    private void doHandle(List data) {
+        try {
+            /**
+             * 遍历数据
+             */
             for (Object datum : data) {
                 Field[] declaredFields = datum.getClass().getDeclaredFields();
                 for (Field declaredField : declaredFields) {
+                    declaredField.setAccessible(true);
                     ChangeColumn annotation = declaredField.getAnnotation(ChangeColumn.class);
                     if(annotation!=null){
                         String value = annotation.value();
                         Field changeField = datum.getClass().getDeclaredField(value);
                         if(changeField!=null){
                             changeField.setAccessible(true);
-                            changeField.set(datum,"测试产品类型");
-                            changeField.setAccessible(false);
+                            Object invoke =null;
+                            if(!annotation.dictType().equals("")){
+                                //数据字典
+                            }else{
+                                Object bean = SpringContextUtil.getBean(annotation.beanName());
+                                Method method = bean.getClass().getDeclaredMethod(annotation.methodName());
+                                invoke=method.invoke(datum,declaredField.get(datum));
+                            }
+                            changeField.set(datum,invoke);
                         }
                     }
                 }
             }
+        }catch (Exception e){
+
         }
-        System.out.println("方法处理后: " + ret);
+
     }
+
 
 }
