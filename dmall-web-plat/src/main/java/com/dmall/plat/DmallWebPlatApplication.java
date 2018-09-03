@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 
 @SpringBootApplication
-@MapperScan(basePackages = {"com.dmall.product.mapper"})
+@MapperScan(basePackages = {"com.dmall.product.mapper","com.dmall.sys.mapper"})
 @EnableTransactionManagement
 @ComponentScan(basePackages = {"com.dmall"})
 @EnableCaching

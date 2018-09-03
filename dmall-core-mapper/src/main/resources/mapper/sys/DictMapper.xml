@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dmall.sys.mapper.DictMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.dmall.sys.entity.Dict">
+        <id column="id" property="id" />
+        <result column="dict_type" property="dictType" />
+        <result column="dict_name" property="dictName" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, dict_type, dict_name, create_time, update_time
+    </sql>
+    <select id="dictPage" resultType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>,
+        <include refid="com.dmall.sys.mapper.DictValueMapper.Base_Column_List"/>
+        from sys_dict
+        left join  sys_dict_value on sys_dict.id=sys_dict_value.dict_id
+        <where>
+            <if test="dictType!=null and dictType!=''">
+                sys_dict.dict_type like '%${dict.dictType}%'
+            </if>
+            <if test="dictName!=null and dictName!=''">
+                sys_dict.dict_name like '%${dict.dictName}%'
+            </if>
+            <if test="code!=null and code!=''">
+                sys_dict_value.code like '%${dictValue.code}%'
+            </if>
+            <if test="value!=null and value!=''">
+                sys_dict_value.value like '%${dictValue.value}%'
+            </if>
+        </where>
+
+    </select>
+
+</mapper>

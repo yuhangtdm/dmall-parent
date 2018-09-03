@@ -17,6 +17,11 @@ public class ReflectUtil {
 
     public static Logger logger= LoggerFactory.getLogger(ReflectUtil.class);
 
+    /**
+     * 对象转map
+     * @param obj
+     * @return
+     */
     public static Map<String,Object> beanToMap(Object obj){
         Map<String,Object> map=new LinkedHashMap<>();
         Field[] declaredFields = obj.getClass().getDeclaredFields();
@@ -46,6 +51,21 @@ public class ReflectUtil {
         }
 
 
+        return null;
+    }
+
+    /**
+     * 根据属性名获取对象的值
+     */
+    public static Object getValue(Object object,String propertyName){
+        try {
+            Field declaredField = object.getClass().getDeclaredField(propertyName);
+            declaredField.setAccessible(true);
+            Object o = declaredField.get(object);
+            return o;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }

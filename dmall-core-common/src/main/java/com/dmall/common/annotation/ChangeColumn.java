@@ -25,7 +25,13 @@ public @interface ChangeColumn {
     /**
      * 查询数据源的方法名称
      */
-    String methodName()default "list";
+    String methodName()default "selectById";
+
+    /**
+     * 要缓存的class 即实体
+     * @return
+     */
+    Class cacheClass() default Object.class;
 
     /**
      * 数据源的id字段

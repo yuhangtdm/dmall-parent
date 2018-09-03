@@ -15,7 +15,10 @@
 
     <dependencies>
 
-
+        <dependency>
+            <groupId>com.dmall</groupId>
+            <artifactId>dmall-core-mapper</artifactId>
+        </dependency>
 
     </dependencies>
 

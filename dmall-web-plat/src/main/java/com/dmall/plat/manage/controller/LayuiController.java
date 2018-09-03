@@ -13,7 +13,7 @@ public class LayuiController {
 
     @RequestMapping("/brand")
     public String brand(){
-        return "brand/list";
+        return "product/brand/list";
     }
 
     @RequestMapping("/welcome")
@@ -21,8 +21,9 @@ public class LayuiController {
         return "welcome";
     }
 
-    @RequestMapping("/test")
-    public String test(){
-        return "brand/test";
+
+    @RequestMapping("/dict")
+    public String dict(){
+        return "sys/dict/list";
     }
 }

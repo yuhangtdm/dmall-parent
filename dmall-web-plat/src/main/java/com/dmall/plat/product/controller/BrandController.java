@@ -30,7 +30,7 @@ import javax.validation.constraints.NotNull;
  * @since 2018-08-31
  */
 @Controller
-@RequestMapping("/brand")
+@RequestMapping("product/brand")
 @Validated
 public class BrandController {
 
