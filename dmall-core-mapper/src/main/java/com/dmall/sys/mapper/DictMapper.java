@@ -20,4 +20,6 @@ import java.util.Map;
 public interface DictMapper extends BaseMapper<Dict> {
 
     List<Map> dictPage(Page page, @Param("dict") Dict dict,@Param("dictValue") DictValue dictValue);
+
+    List<Dict> selectDict();
 }

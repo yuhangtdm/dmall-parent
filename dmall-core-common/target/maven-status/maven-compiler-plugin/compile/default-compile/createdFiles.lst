@@ -5,6 +5,7 @@ com\dmall\common\annotation\TransBean.class
 com\dmall\common\utils\SpringContextUtil.class
 com\dmall\common\annotation\SelectValue.class
 com\dmall\common\annotation\SelectKey.class
+com\dmall\common\utils\JsonUtil.class
 com\dmall\common\exception\BusinessException.class
 com\dmall\common\annotation\ChangeColumn.class
 com\dmall\common\enums\ResultEnum.class

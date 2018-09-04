@@ -17,25 +17,33 @@
     </sql>
     <select id="dictPage" resultType="java.util.Map">
         select
-        <include refid="Base_Column_List"/>,
-        <include refid="com.dmall.sys.mapper.DictValueMapper.Base_Column_List"/>
+        sys_dict.id as id,sys_dict.dict_type as dictType,
+        sys_dict_value.code as code,sys_dict_value.value as value
         from sys_dict
         left join  sys_dict_value on sys_dict.id=sys_dict_value.dict_id
         <where>
-            <if test="dictType!=null and dictType!=''">
-                sys_dict.dict_type like '%${dict.dictType}%'
+            <if test="dict!=null">
+                <if test="dict.dictType!=null">
+                    sys_dict.dict_type like '%${dict.dictType}%'
+                </if>
+                <if test="dict.dictName!=null and dict.dictName!=''">
+                    sys_dict.dict_name like '%${dict.dictName}%'
+                </if>
             </if>
-            <if test="dictName!=null and dictName!=''">
-                sys_dict.dict_name like '%${dict.dictName}%'
+            <if test="dictValue!=null">
+                <if test="dictValue.code!=null and dictValue.code!=''">
+                    sys_dict_value.code like '%${dictValue.code}%'
+                </if>
+                <if test="dictValue.value!=null and dictValue.value!=''">
+                    sys_dict_value.value like '%${dictValue.value}%'
+                </if>
             </if>
-            <if test="code!=null and code!=''">
-                sys_dict_value.code like '%${dictValue.code}%'
-            </if>
-            <if test="value!=null and value!=''">
-                sys_dict_value.value like '%${dictValue.value}%'
-            </if>
+
         </where>
 
     </select>
 
+    <select id="selectDict" resultType="com.dmall.sys.entity.Dict">
+        SELECT * from sys_dict
+    </select>
 </mapper>
