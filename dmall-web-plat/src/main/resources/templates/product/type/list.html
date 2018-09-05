@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <title>
+            品牌管理
+        </title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" th:href="@{/layui/css/layui.css}" href="./css/admin.css" media="all">
+        <link rel="stylesheet" th:href="@{/admin/css/admin.css}" href="./css/admin.css" media="all">
+
+        <link rel="stylesheet" th:href="@{/zTree/css/zTreeStyle/zTreeStyle.css}" href="zTreeStyle/zTreeStyle.css" type="text/css">
+        <script type="text/javascript" th:src="@{/zTree/js/jquery-1.4.4.min.js}" src="jquery-1.4.2.js"></script>
+        <script type="text/javascript" th:src="@{/zTree/js/jquery.ztree.core.js}" src="jquery.ztree.core-3.x.js"></script>
+    </head>
+    <body>
+        <div class="x-nav">
+            <span class="layui-breadcrumb">
+              <a><cite>首页</cite></a>
+              <a><cite>商品信息管理</cite></a>
+              <a><cite>商品类型管理</cite></a>
+            </span>
+            <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon" style="line-height:30px">ဂ</i></a>
+        </div>
+
+        <div class="x-body">
+            <div class="layui-row">
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+                    <ul id="treeDemo" class="ztree"></ul>
+                </div>
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                    <form class="layui-form layui-form-pane" action="">
+
+                        <div class="layui-form-item" style="padding-top: 5px">
+                            <label class="layui-form-label">类型名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="name"  lay-verify="required" autocomplete="off" placeholder="请输入类型名称" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">上级类型</label>
+                            <div class="layui-input-block">
+                                <select loadData="productType"  bean="brandServiceImpl" name="productType" lay-verify="" lay-search>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">logo</label>
+                                <div class="layui-inline">
+                                    <input type="text" name="logo" autocomplete="off" placeholder="请输入logo" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">描述</label>
+                            <div class="layui-input-block">
+                                <textarea name="description"  placeholder="请输入描述" class="layui-textarea"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">分类标题（SEO）</label>
+                                <div class="layui-inline">
+                                    <input type="text" name="seoTitle" autocomplete="off" placeholder="请输入分类标题" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">分类关键字（SEO）</label>
+                                <div class="layui-inline">
+                                    <input type="text" name="seoKeywords" autocomplete="off" placeholder="请输入分类关键字（SEO）" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button type="submit" class="layui-btn" lay-submit="" id="submit"  lay-filter="submit">立即提交</button>
+                                <button type="reset" class="layui-btn layui-btn-primary">清空</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md2">
+                </div>
+            </div>
+
+
+        </div>
+        <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
+        <script th:src="@{/js/common.js}"  charset="utf-8"></script>
+
+        <SCRIPT LANGUAGE="JavaScript">
+            var zTreeObj;
+            // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+            var setting = {
+
+            };
+            // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
+            var zNodes = [
+                {name:"test1", open:true, children:[
+                        {name:"test1_1"}, {name:"test1_2"}]},
+                {name:"test2", open:true, children:[
+                        {name:"test2_1"}, {name:"test2_2"}]}
+            ];
+            $(document).ready(function(){
+                $.ajax({
+                    type: 'POST',
+                    url: contextPath + "/department/deptTree",
+                    success: function(data){
+                        $.fn.zTree.init($("#ztree"), setting, eval(data.data));
+                        zTreeObj = $.fn.zTree.getZTreeObj("ztree");
+                    },
+                    dataType: 'json'
+                });
+            });
+        </SCRIPT>
+
+        <script>
+            layui.use(['element','form','table','layer'], function() {
+                $ = layui.jquery;//jquery
+                table=layui.table;//表格
+                form=layui.form;
+
+            });
+        </script>
+    </body>
+</html>

@@ -60,11 +60,6 @@
 
             </form>
             <table id="brand"  class="layui-hide"  lay-filter="brand">
-                <th lay-data="{field:'id', title: 'ID', sort: true}">ID</th>
-                <th lay-data="{field:'brandName',title: '品牌名称'}">品牌名称</th>
-                <th lay-data="{field:'firstLetter',title: '品牌名称' }">性别</th>
-                <th lay-data="{field:'productType',title: '品牌名称'}">城市</th>
-                <th lay-data="{field:'updateTime',title: '品牌名称'}">签名</th>
             </table>
             <script type="text/html" id="toolbarDemo">
                 <div class="layui-btn-container">
@@ -87,14 +82,14 @@
                 form=layui.form;
                 var cols=buildColumn();
 
-                pageList(table,'brand','/product/brand/list',cols);
+                pageList(table,'brand','/brand/list',cols);
 
                 //头工具栏事件
                 table.on('toolbar(brand)', function(obj){
                     var checkStatus = table.checkStatus(obj.config.id);
                     switch(obj.event){
                         case 'add':
-                             open('product/brand/edit','添加品牌','600px', '500px');
+                             open('/brand/edit','添加品牌','600px', '500px');
                             break;
                     };
                 });
@@ -104,7 +99,7 @@
                     var data = obj.data;
                     if(obj.event === 'del'){
                         layer.confirm('确定删除该品牌?', {icon: 3, title:'提示'}, function(index){
-                            deleteById('product/brand/delete?id='+data.id,"#formSearch");
+                            deleteById('/brand/delete?id='+data.id,"#formSearch");
                         });
 
                     } else if(obj.event === 'edit'){

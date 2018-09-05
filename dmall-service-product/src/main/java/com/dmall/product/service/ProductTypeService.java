@@ -1,9 +1,11 @@
 package com.dmall.product.service;
 
+import com.dmall.common.entity.Tree;
 import com.dmall.product.entity.ProductType;
 import com.baomidou.mybatisplus.service.IService;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -16,4 +18,10 @@ import java.io.Serializable;
 public interface ProductTypeService extends IService<ProductType> {
 
     ProductType selectById(Long id);
+
+    /**
+     * 加载树
+     * @return
+     */
+    List<Tree> tree();
 }

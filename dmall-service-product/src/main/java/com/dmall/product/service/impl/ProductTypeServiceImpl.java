@@ -1,11 +1,14 @@
 package com.dmall.product.service.impl;
 
+import com.dmall.common.entity.Tree;
 import com.dmall.product.entity.ProductType;
 import com.dmall.product.mapper.ProductTypeMapper;
 import com.dmall.product.service.ProductTypeService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -22,5 +25,10 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
     @Override
     public ProductType selectById(Long id) {
         return super.selectById(id);
+    }
+
+    @Override
+    public List<Tree> tree() {
+        return null;
     }
 }

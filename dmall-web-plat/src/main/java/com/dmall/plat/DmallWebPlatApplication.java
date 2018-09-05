@@ -22,16 +22,7 @@ import javax.sql.DataSource;
 public class DmallWebPlatApplication {
 
     public static void main(String[] args) {
-        ApplicationContext ctx =  SpringApplication.run(DmallWebPlatApplication.class, args);
-        String[] beanNames =  ctx.getBeanDefinitionNames();
-
-        System.out.println("所以beanNames个数："+beanNames.length);
-
-        for(String bn :beanNames){
-
-            System.out.println(bn);
-
-        }
+       SpringApplication.run(DmallWebPlatApplication.class, args);
     }
 
 
