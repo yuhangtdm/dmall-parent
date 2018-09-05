@@ -4,18 +4,23 @@ package com.dmall.plat.sys.controller;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.dmall.common.annotation.TransBean;
 import com.dmall.common.enums.ResultEnum;
-import com.dmall.plat.service.DictService;
+import com.dmall.common.exception.BusinessException;
+import com.dmall.common.utils.JsonUtil;
+import com.dmall.plat.product.dto.BrandDTO;
 import com.dmall.plat.sys.dto.DictDTO;
-import com.dmall.product.entity.Brand;
+import com.dmall.plat.sys.service.DictService;
 import com.dmall.sys.entity.Dict;
-import com.dmall.sys.entity.DictValue;
 import com.dmall.web.common.result.ReturnResult;
 import com.dmall.web.common.utils.ResultUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 
 /**
  * <p>
@@ -33,10 +38,48 @@ public class DictController {
 
     @RequestMapping("list")
     @ResponseBody
-    @TransBean
-    public ReturnResult list(Dict dict, DictValue dictValue, Page page){
-        page=dictService.pageList(dict,dictValue,page);
+    public ReturnResult list(Dict dict, Page page){
+        page=dictService.pageList(dict,page);
         return ResultUtil.buildResult(ResultEnum.SUCC,page.getTotal(),page.getRecords());
     }
+
+
+    /**
+     * 跳转到字典编辑页面
+     */
+    @RequestMapping("edit")
+    public String edit(Long id, HttpServletRequest request){
+        if(id!=null){
+            Dict dict = dictService.selectById(id);
+            if(dict==null){
+                throw new BusinessException(ResultEnum.BAD_REQUEST,"该数据字典不存在,请刷新列表");
+            }
+            request.setAttribute("bean", JsonUtil.toJson(dict));
+        }
+        return "/sys/dict/edit";
+    }
+
+    /**
+     * 保存或更新字典
+     */
+    @RequestMapping("save")
+    @ResponseBody
+    public ReturnResult save(@Validated DictDTO dictDTO){
+        Dict dict=new Dict();
+        BeanUtils.copyProperties(dictDTO,dict);
+        dictService.saveOrUpdate(dict);
+        return ResultUtil.buildResult(ResultEnum.SUCC);
+    }
+
+    /**
+     * 删除字典
+     */
+    @RequestMapping("delete")
+    @ResponseBody
+    public ReturnResult delete(@NotNull(message = "id不能为空") Long id){
+        dictService.deleteById(id);
+        return ResultUtil.buildResult(ResultEnum.SUCC);
+    }
+
 }
 

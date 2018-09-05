@@ -19,14 +19,14 @@
         <div class="layui-form-item" style="padding-top: 5px">
             <label class="layui-form-label">品牌名称</label>
             <div class="layui-input-block">
-                <input type="hidden" th:value="${brand!=null}?${brand.id}" name="id" />
-                <input type="text" name="brandName" th:value="${brand!=null}?${brand.brandName}" lay-verify="required" autocomplete="off" placeholder="请输入品牌名称" class="layui-input">
+                <input type="hidden" name="id" />
+                <input type="text" name="brandName"  lay-verify="required" autocomplete="off" placeholder="请输入品牌名称" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">英文名称</label>
             <div class="layui-input-block">
-                <input type="text" name="englishName" th:value="${brand!=null}?${brand.englishName}"  placeholder="请输入英文名称" autocomplete="off" class="layui-input">
+                <input type="text" name="englishName"  placeholder="请输入英文名称" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -34,10 +34,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">商品分类</label>
                 <div class="layui-input-inline">
-                    <!-- 后期修改 -->
-                    <input type="text" name="productType"  th:value="${brand!=null}?${brand.productType}"  autocomplete="off" class="layui-input">
-                    <select id="productType" loadData="productType" dict="" bean="" name="productType" lay-verify="" lay-search>
-                        <option value="">请选择</option>
+                    <select loadData="productType"  bean="brandServiceImpl" name="productType" lay-verify="" lay-search>
                     </select>
                 </div>
             </div>
@@ -50,8 +47,7 @@
                 <div class="layui-upload">
                     <button type="button" class="layui-btn" id="test1"><i class="layui-icon"></i>上传图片</button>
                     <div class="layui-upload-list">
-                        <img class="layui-upload-img" id="demo1">
-                        <p id="demoText"></p>
+                        <img class="layui-upload-img" name="logo">
                     </div>
                 </div>
                 </div>
@@ -61,7 +57,7 @@
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">品牌简介</label>
             <div class="layui-input-block">
-                <textarea name="description" th:text="${brand!=null}?${brand.description}" placeholder="请输入内容" class="layui-textarea"></textarea>
+                <textarea name="description"  placeholder="请输入内容" class="layui-textarea"></textarea>
             </div>
         </div>
 
@@ -76,13 +72,14 @@
     <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
     <script th:src="@{/js/common.js}"  charset="utf-8"></script>
 
-    <script>
+    <script th:inline="javascript">
         layui.use(['form'], function(){
             var form = layui.form,
                 layer = layui.layer,
                 $=layui.jquery;
+            loadSelect($,form);
+            initFormData($,form,JSON.parse([[${bean}]]));
 
-            //监听提交
             form.on('submit(submit)', function(data){
                 $("#submit").attr("disabled",true);
                 saveOrUpdate($,'/brand/save',data.field);

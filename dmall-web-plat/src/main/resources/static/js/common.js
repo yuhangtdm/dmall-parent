@@ -5,15 +5,15 @@
  * @param width 弹框宽度
  * @param height 弹框高度
  */
-function add(url,title,width,height) {
+function open(url,title,width,height) {
     layer.open({
         type:2,
         area: [width, height],
-        title :'添加品牌',
+        title :title,
         content:url,
         maxmin:true,
         shadeClose:true
-    })
+    });
 }
 
 /**
@@ -87,6 +87,7 @@ function pageList(table,id,url,cols) {
         },
         cols: cols,
         page:true,
+        loading:true,
         request: {
             pageName: 'current',
             limitName: 'size'
@@ -94,25 +95,68 @@ function pageList(table,id,url,cols) {
     });
 }
 
-function loadSelect(){
-    $.each($("select[loadData]"),function(name,value){
-        var sel = $(value);
+/**
+ * 加载下拉框
+ */
+function loadSelect($,form){
+    $.each($("select[loadData]"),function(){
+        var sel = $(this);
+        sel.append("<option value=''>请选择</option>");
         var defaultValue = sel.attr("defaultValue");//默认值
-        var dict=sel.attr("dict");
-        var bean=sel.attr("bean");
+        var dict=sel.attr("dict")||'';
+        var bean=sel.attr("bean")||'';
+        var method=sel.attr("method")||'';
         $.ajax({
             url : "/common/select",
             type : "post",
-            data : {"dict" : dict,"bean":bean},
+            data : {"dict" : dict,"bean":bean,"methodName":method},
             success : function(result){
                 for (var i=0; i<result.length; i++){
                     if(defaultValue && defaultValue == result[i].code){
-                        sel.append("<option value="+result[i].code+" selected>"+result[i].value);
+                        sel.append("<option value="+result[i].code+" selected>"+result[i].value+"</option>");
                     }else{
-                        sel.append("<option value="+result[i].code+">"+result[i].value);
+                        sel.append("<option value="+result[i].code+">"+result[i].value+"</option>");
                     }
                 }
+                form.render();
             }
         });
     });
+}
+
+/**
+ * 初始化表单数据
+ * @param $ jquery对象
+ * @param form layui的表单对象
+ * @param bean 实体bean(简单对象)
+ */
+function initFormData($,form,bean) {
+    for(var prop in bean){
+        var value=bean[prop];
+        $("[name='"+prop+"'],[name='"+prop+"[]']").each(function () {
+            var tagName=$(this)[0].tagName;
+            var type=$(this).attr('type');
+            if(tagName=='INPUT'){
+                if(type=='radio'){
+                    $(this).attr('checked',value==$(this).val());
+                }else if(type=='checkbox'){
+                    var vals=value.split(",");
+                    for(var i=0;i<vals.length;i++){
+                        if($(this).val()==vals[i]){
+                            $(this).attr('checked',true);
+                            break;
+                        }
+                    }
+                }else{
+                    $(this).val(bean[prop]);
+                }
+            }else if(tagName=='img'){
+                $(this).attr('src',value);
+            }else if(tagName=='SELECT' || tagName=='TEXTARERA'){
+                $(this).val(value);
+            }
+
+        });
+    }
+    form.render();//更新全部
 }

@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -21,8 +22,16 @@ import javax.sql.DataSource;
 public class DmallWebPlatApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DmallWebPlatApplication.class, args);
+        ApplicationContext ctx =  SpringApplication.run(DmallWebPlatApplication.class, args);
+        String[] beanNames =  ctx.getBeanDefinitionNames();
 
+        System.out.println("所以beanNames个数："+beanNames.length);
+
+        for(String bn :beanNames){
+
+            System.out.println(bn);
+
+        }
     }
 
 

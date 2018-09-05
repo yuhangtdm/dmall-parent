@@ -9,13 +9,15 @@ import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotations.Version;
 
+import com.dmall.common.annotation.SelectKey;
+import com.dmall.common.annotation.SelectValue;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 字典目录
+ * 数据字典表
  * </p>
  *
  * @author yuhang
@@ -42,50 +44,36 @@ public class Dict implements Serializable {
     @TableField("dict_name")
     private String dictName;
     /**
+     * 字典code
+     */
+    @TableField("dict_code")
+    @SelectKey
+    private String dictCode;
+
+    /**
+     * 字典值
+     */
+    @TableField("dict_value")
+    @SelectValue
+    private String dictValue;
+
+    /**
+     * 是否可用
+     */
+    @TableField("status")
+    private String status;
+
+    /**
      * 创建时间
      */
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private Long createTime;
+    /**
+     * 更新时间
+     */
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Long updateTime;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getDictType() {
-        return dictType;
-    }
-
-    public void setDictType(String dictType) {
-        this.dictType = dictType;
-    }
-
-    public String getDictName() {
-        return dictName;
-    }
-
-    public void setDictName(String dictName) {
-        this.dictName = dictName;
-    }
-
-    public Long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Long createTime) {
-        this.createTime = createTime;
-    }
-
-    public Long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Long updateTime) {
-        this.updateTime = updateTime;
-    }
 }

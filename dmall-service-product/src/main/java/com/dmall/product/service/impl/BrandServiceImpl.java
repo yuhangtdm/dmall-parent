@@ -31,7 +31,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     @Override
     public Page pageList(Brand brand, Page page) {
         EntityWrapper<Brand> wrapper=new EntityWrapper<>();
-        wrapper.orderBy("create_time");
+        wrapper.orderBy("update_time",false);
         QueryUtil.queryForm(wrapper,brand);
         page = this.selectPage(page,wrapper);
         return page;

@@ -7,43 +7,15 @@
         <id column="id" property="id" />
         <result column="dict_type" property="dictType" />
         <result column="dict_name" property="dictName" />
+        <result column="dict_code" property="dictCode" />
+        <result column="dict_value" property="dictValue" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, dict_type, dict_name, create_time, update_time
+        id, dict_type, dict_name,dict_code,dict_value,create_time, update_time
     </sql>
-    <select id="dictPage" resultType="java.util.Map">
-        select
-        sys_dict.id as id,sys_dict.dict_type as dictType,
-        sys_dict_value.code as code,sys_dict_value.value as value
-        from sys_dict
-        left join  sys_dict_value on sys_dict.id=sys_dict_value.dict_id
-        <where>
-            <if test="dict!=null">
-                <if test="dict.dictType!=null">
-                    sys_dict.dict_type like '%${dict.dictType}%'
-                </if>
-                <if test="dict.dictName!=null and dict.dictName!=''">
-                    sys_dict.dict_name like '%${dict.dictName}%'
-                </if>
-            </if>
-            <if test="dictValue!=null">
-                <if test="dictValue.code!=null and dictValue.code!=''">
-                    sys_dict_value.code like '%${dictValue.code}%'
-                </if>
-                <if test="dictValue.value!=null and dictValue.value!=''">
-                    sys_dict_value.value like '%${dictValue.value}%'
-                </if>
-            </if>
 
-        </where>
-
-    </select>
-
-    <select id="selectDict" resultType="com.dmall.sys.entity.Dict">
-        SELECT * from sys_dict
-    </select>
 </mapper>

@@ -20,13 +20,5 @@ import java.util.Map;
 @SpringBootTest
 public class DmallPlatApplicationTest {
 
-    @Autowired
-    private DictMapper dictMapper;
 
-    @Test
-    public void testDict(){
-        Page page=new Page(1,10);
-        List<Map> maps = dictMapper.dictPage(page, null, null);
-        System.out.println(maps);
-    }
 }

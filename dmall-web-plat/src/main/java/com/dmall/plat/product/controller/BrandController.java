@@ -30,7 +30,7 @@ import javax.validation.constraints.NotNull;
  * @since 2018-08-31
  */
 @Controller
-@RequestMapping("product/brand")
+@RequestMapping("brand")
 @Validated
 public class BrandController {
 
@@ -51,8 +51,8 @@ public class BrandController {
     /**
      * 跳转到品牌编辑页面
      */
-    @RequestMapping("add")
-    public String add(Long id, HttpServletRequest request){
+    @RequestMapping("edit")
+    public String edit(Long id, HttpServletRequest request){
         if(id!=null){
             Brand brand = brandService.selectById(id);
             if(brand==null){
@@ -60,7 +60,7 @@ public class BrandController {
             }
             request.setAttribute("brand",brand);
         }
-        return "/brand/add";
+        return "product/brand/edit";
     }
 
     /**
