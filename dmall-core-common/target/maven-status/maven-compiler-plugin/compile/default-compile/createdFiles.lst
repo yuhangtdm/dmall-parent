@@ -4,6 +4,7 @@ com\dmall\common\utils\ReflectUtil.class
 com\dmall\common\annotation\TransBean.class
 com\dmall\common\utils\SpringContextUtil.class
 com\dmall\common\annotation\SelectValue.class
+com\dmall\common\entity\Tree.class
 com\dmall\common\annotation\SelectKey.class
 com\dmall\common\utils\JsonUtil.class
 com\dmall\common\exception\BusinessException.class

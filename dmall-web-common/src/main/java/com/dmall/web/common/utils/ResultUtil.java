@@ -18,14 +18,22 @@ public class ResultUtil {
         if(StringUtil.isBlank(message)){
             message=resultEnum.getMsg();
         }
+        if(count==null){
+            count=Long.valueOf(data.size());
+        }
         returnResult.setMsg(message);
         returnResult.setCount(count);
         returnResult.setData(data);
         return returnResult;
     }
 
-    public static <T> ReturnResult buildResult(ResultEnum resultEnum, Long count, List<T> data){
-       return buildResult(resultEnum,null,count,data);
+
+    public static <T> ReturnResult buildResult(ResultEnum resultEnum,Long count,List<T> data){
+        return buildResult(resultEnum,null,count,data);
+    }
+
+    public static <T> ReturnResult buildResult(ResultEnum resultEnum, List<T> data){
+       return buildResult(resultEnum,null,null,data);
     }
 
     public static ReturnResult buildResult(ResultEnum resultEnum){

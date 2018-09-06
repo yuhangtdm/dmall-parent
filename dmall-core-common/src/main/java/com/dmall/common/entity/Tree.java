@@ -1,15 +1,18 @@
 package com.dmall.common.entity;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
+ * 树的基类
  * @author: yuhang
  * @date: 2018/9/5
  */
 @Data
+@Accessors(chain = true)
 public class Tree implements Serializable {
 
     private static final long serialVersionUID = 2134282994409164562L;
@@ -18,9 +21,12 @@ public class Tree implements Serializable {
 
     private String name;
 
-    private Boolean open;
+    private Long pid;
 
-    private List<Tree>  children;
+
+    private Boolean open=false;
+
+    private Boolean isParent=false;
 
 
 }

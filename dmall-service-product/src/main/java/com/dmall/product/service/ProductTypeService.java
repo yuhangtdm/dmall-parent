@@ -23,5 +23,10 @@ public interface ProductTypeService extends IService<ProductType> {
      * 加载树
      * @return
      */
-    List<Tree> tree();
+    List<ProductType> tree(Long pid);
+
+    /**
+     * 获取后代元素
+     */
+    List<ProductType> getLater(Long pid);
 }

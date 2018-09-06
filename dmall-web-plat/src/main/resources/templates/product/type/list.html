@@ -15,8 +15,17 @@
         <link rel="stylesheet" th:href="@{/admin/css/admin.css}" href="./css/admin.css" media="all">
 
         <link rel="stylesheet" th:href="@{/zTree/css/zTreeStyle/zTreeStyle.css}" href="zTreeStyle/zTreeStyle.css" type="text/css">
+        <link rel="stylesheet" th:href="@{/zTree/css/metroStyle/metroStyle.css}" href="zTreeStyle/zTreeStyle.css" type="text/css">
         <script type="text/javascript" th:src="@{/zTree/js/jquery-1.4.4.min.js}" src="jquery-1.4.2.js"></script>
         <script type="text/javascript" th:src="@{/zTree/js/jquery.ztree.core.js}" src="jquery.ztree.core-3.x.js"></script>
+        <style type="text/css">
+            div#rMenu {position:absolute; visibility:hidden; top:0; text-align: left;padding:4px;}
+            div#rMenu a{
+                padding: 3px 15px 3px 15px;
+                background-color:#cad4e6;
+                vertical-align:middle;
+            }
+        </style>
     </head>
     <body>
         <div class="x-nav">
@@ -31,10 +40,10 @@
         <div class="x-body">
             <div class="layui-row">
                 <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
-                    <ul id="treeDemo" class="ztree"></ul>
+                    <ul id="typeTree" class="ztree"></ul>
                 </div>
                 <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                    <form class="layui-form layui-form-pane" action="">
+                    <form id="typeForm" class="layui-form layui-form-pane" action="">
 
                         <div class="layui-form-item" style="padding-top: 5px">
                             <label class="layui-form-label">类型名称</label>
@@ -45,8 +54,9 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">上级类型</label>
                             <div class="layui-input-block">
-                                <select loadData="productType"  bean="brandServiceImpl" name="productType" lay-verify="" lay-search>
-                                </select>
+                                <!--<select loadData="productType"  bean="brandServiceImpl" name="pid" lay-verify="" lay-search>
+                                </select>-->
+                                <input type="text" name="pid">
                             </div>
                         </div>
 
@@ -95,45 +105,91 @@
                 <div class="layui-col-xs6 layui-col-sm6 layui-col-md2">
                 </div>
             </div>
-
-
         </div>
+
+        <div id="rMenu">
+            <a href="#"  onclick="add();">新增</a><br/>
+            <a href="#"  onclick="edit();">编辑</a>
+        </div>
+
         <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
         <script th:src="@{/js/common.js}"  charset="utf-8"></script>
 
         <SCRIPT LANGUAGE="JavaScript">
-            var zTreeObj;
-            // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
-            var setting = {
-
-            };
-            // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
-            var zNodes = [
-                {name:"test1", open:true, children:[
-                        {name:"test1_1"}, {name:"test1_2"}]},
-                {name:"test2", open:true, children:[
-                        {name:"test2_1"}, {name:"test2_2"}]}
-            ];
-            $(document).ready(function(){
-                $.ajax({
-                    type: 'POST',
-                    url: contextPath + "/department/deptTree",
-                    success: function(data){
-                        $.fn.zTree.init($("#ztree"), setting, eval(data.data));
-                        zTreeObj = $.fn.zTree.getZTreeObj("ztree");
-                    },
-                    dataType: 'json'
-                });
-            });
-        </SCRIPT>
-
-        <script>
             layui.use(['element','form','table','layer'], function() {
                 $ = layui.jquery;//jquery
                 table=layui.table;//表格
                 form=layui.form;
 
+
             });
-        </script>
+
+            var zTreeObj;
+            var setting = {
+                callback : {
+                    // 右击事件
+                    onRightClick: OnRightClick
+                }
+            };
+            $(document).ready(function(){
+                rMenu = $("#rMenu");
+                $.ajax({
+                    type: 'POST',
+                    url: "/type/tree",
+                    success: function(data){
+                        $.fn.zTree.init($("#typeTree"), setting, eval(data.data));
+                        zTreeObj = $.fn.zTree.getZTreeObj("typeTree");
+                    }
+                });
+            });
+
+
+            function OnRightClick(event, treeId, treeNode) {
+                if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
+                    zTreeObj.cancelSelectedNode();
+                } else if (treeNode && !treeNode.noR) {
+                    zTreeObj.selectNode(treeNode,false,false);
+                    showRMenu("node", event.clientX, event.clientY,treeNode);
+                }
+            }
+
+            function showRMenu(type, x, y,treeNode) {
+                $("#rMenu").show();
+                rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
+                $("body").bind("mousedown", onBodyMouseDown);
+            }
+
+            function onBodyMouseDown(event){
+                if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length>0)) {
+                    rMenu.css({"visibility" : "hidden"});
+                }
+            }
+            function hideRMenu() {
+                if (rMenu) rMenu.css({"visibility": "hidden"});
+                $("body").unbind("mousedown", onBodyMouseDown);
+            }
+
+            function add(){
+                hideRMenu();
+                var treeNode = zTreeObj.getSelectedNodes()[0];
+                if (treeNode) {
+                    var typeObj={};
+                    typeObj.pid=treeNode.id;
+                    initFormData($,form,typeObj);
+                }
+            }
+
+            function edit(){
+                hideRMenu();
+                var treeNode = zTreeObj.getSelectedNodes()[0];
+                if (treeNode) {
+                    initFormData($,form,treeNode);
+                }
+            }
+
+
+
+        </SCRIPT>
+
     </body>
 </html>

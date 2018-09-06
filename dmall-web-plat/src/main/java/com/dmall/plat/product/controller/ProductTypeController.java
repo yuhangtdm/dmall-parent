@@ -2,8 +2,11 @@ package com.dmall.plat.product.controller;
 
 
 import com.dmall.common.entity.Tree;
+import com.dmall.common.enums.ResultEnum;
+import com.dmall.product.entity.ProductType;
 import com.dmall.product.service.ProductTypeService;
 import com.dmall.web.common.result.ReturnResult;
+import com.dmall.web.common.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -21,16 +24,17 @@ import java.util.List;
  * @since 2018-08-25
  */
 @Controller
-@RequestMapping("/productType")
+@RequestMapping("/type")
 public class ProductTypeController {
 
     @Autowired
     private ProductTypeService productTypeService;
 
     @RequestMapping("tree")
+    @ResponseBody
     public ReturnResult tree(){
-        List<Tree> result=productTypeService.tree();
-        return null;
+        List<ProductType> result=productTypeService.tree(0L);
+        return ResultUtil.buildResult(ResultEnum.SUCC,result);
     }
 }
 

@@ -6,9 +6,12 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotations.Version;
 
+import com.dmall.common.entity.Tree;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -25,7 +28,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("p_product_type")
-public class ProductType implements Serializable {
+public class ProductType  implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -89,5 +92,12 @@ public class ProductType implements Serializable {
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Long updateTime;
 
+    @TableField(exist = false)
+    private List<ProductType> children=new ArrayList<>();
 
+    @TableField(exist = false)
+    private Boolean open=false;
+
+    @TableField(exist = false)
+    private Boolean isParent=false;
 }

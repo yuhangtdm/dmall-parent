@@ -158,5 +158,8 @@ function initFormData($,form,bean) {
 
         });
     }
-    form.render();//更新全部
+    if(form){
+        form.render();//更新全部
+    }
+
 }

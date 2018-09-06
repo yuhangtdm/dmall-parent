@@ -40,11 +40,10 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     @Override
     @CachePut(value = "brandCache",key = "'select:com.dmall.product.service.impl.BrandServiceImpl.list()'")
     public List<Brand> saveOrUpdate(Brand brand) {
+        brand.setFirstLetter(ChineseCharToEnUtil.getFirstLetter(brand.getBrandName()));
         if (brand.getId()!=null){
-            brand.setFirstLetter(ChineseCharToEnUtil.getFirstLetter(brand.getBrandName()));
             this.updateById(brand);
         }else {
-            brand.setFirstLetter(ChineseCharToEnUtil.getFirstLetter(brand.getBrandName()));
             this.insert(brand);
         }
         return list();
