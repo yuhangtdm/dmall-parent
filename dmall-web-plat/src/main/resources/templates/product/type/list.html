@@ -123,15 +123,16 @@
 
 
             });
-
-            var zTreeObj;
+            var rMenu = $("#rMenu");
+            var zTreeObj=ztree('type/tree',$("#typeTree"),"typeTree");
+          /*  var zTreeObj;
             var setting = {
                 callback : {
                     // 右击事件
                     onRightClick: OnRightClick
                 }
-            };
-            $(document).ready(function(){
+            };*/
+            /*$(document).ready(function(){
                 rMenu = $("#rMenu");
                 $.ajax({
                     type: 'POST',
@@ -141,7 +142,7 @@
                         zTreeObj = $.fn.zTree.getZTreeObj("typeTree");
                     }
                 });
-            });
+            });*/
 
 
             function OnRightClick(event, treeId, treeNode) {

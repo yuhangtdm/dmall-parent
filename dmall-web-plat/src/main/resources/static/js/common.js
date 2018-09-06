@@ -22,12 +22,14 @@ function open(url,title,width,height) {
  * @param requestData
  */
 function saveOrUpdate($,url,requestData) {
+    var index = layer.load();
     $.ajax({
         url:url,
         type:'POST',
         data:requestData,
         success:function (data) {
             if(data.code==0){
+                layer.close(index);
                 layer.msg(data.msg,{
                     icon:1,
                     time:1000
@@ -37,6 +39,7 @@ function saveOrUpdate($,url,requestData) {
                     parent.layer.close(index);//关闭父窗口
                 });
             }else{
+                layer.close(index);
                 layer.msg(data.msg,{icon:2})
             }
         },
@@ -162,4 +165,23 @@ function initFormData($,form,bean) {
         form.render();//更新全部
     }
 
+}
+
+function ztree(url,domObj,treeId) {
+    var zTreeObj;
+    var setting = {
+        callback : {
+            // 右击事件
+            onRightClick: OnRightClick
+        }
+    };
+    $.ajax({
+        type: 'POST',
+        url: url,
+        success: function(data){
+            $.fn.zTree.init(domObj, setting, eval(data.data));
+            zTreeObj = $.fn.zTree.getZTreeObj(treeId);
+        }
+    });
+    return zTreeObj;
 }
