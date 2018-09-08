@@ -24,4 +24,10 @@
         id, name, pid, logo, level, description, sort_index, path, total_count, seo_title, seo_keywords, create_time, update_time
     </sql>
 
+    <update id="updateBatch">
+        <foreach collection="list" item="type" separator=";"  >
+            update p_product_type set path=#{type.path} where id=#{type.id}
+        </foreach>
+    </update>
+
 </mapper>

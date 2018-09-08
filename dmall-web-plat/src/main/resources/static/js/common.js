@@ -16,39 +16,56 @@ function open(url,title,width,height) {
     });
 }
 
+function saveAfter() {
+    window.parent.location.reload();//刷新父页面
+    var index=parent.layer.getFrameIndex(window.name);
+    parent.layer.close(index);//关闭父窗口
+}
 /**
  * 保存或更新的公共方法
+ * 弹窗式保存
  * @param url
  * @param requestData
  */
 function saveOrUpdate($,url,requestData) {
-    var index = layer.load();
+    save($,url,requestData,saveAfter);
+}
+
+/**
+ * 正常保存
+ * @param $
+ * @param url
+ * @param requestData
+ */
+function save($,url,requestData,callback) {
+    var load = layer.load(1);
     $.ajax({
         url:url,
         type:'POST',
         data:requestData,
         success:function (data) {
             if(data.code==0){
-                layer.close(index);
+                layer.close(load);
                 layer.msg(data.msg,{
                     icon:1,
                     time:1000
                 },function () {
-                    window.parent.location.reload();//刷新父页面
-                    var index=parent.layer.getFrameIndex(window.name);
-                    parent.layer.close(index);//关闭父窗口
+                    callback();
                 });
             }else{
-                layer.close(index);
+                layer.close(load);
                 layer.msg(data.msg,{icon:2})
             }
         },
-        error:function () {
-            layer.msg('服务异常',{icon:2})
+        error:function (data) {
+            layer.close(load);
+            var msg=data.responseJSON.msg || '服务异常';
+            layer.msg(msg,{icon:2})
         }
 
     })
 }
+
 
 /**
  * 删除的公共方法
@@ -133,7 +150,7 @@ function loadSelect($,form){
  * @param form layui的表单对象
  * @param bean 实体bean(简单对象)
  */
-function initFormData($,form,bean) {
+function initFormData($,form,bean,treeSelect) {
     for(var prop in bean){
         var value=bean[prop];
         $("[name='"+prop+"'],[name='"+prop+"[]']").each(function () {
@@ -155,7 +172,7 @@ function initFormData($,form,bean) {
                 }
             }else if(tagName=='img'){
                 $(this).attr('src',value);
-            }else if(tagName=='SELECT' || tagName=='TEXTARERA'){
+            }else if(tagName=='SELECT' || tagName=='TEXTAREA'){
                 $(this).val(value);
             }
 
@@ -169,19 +186,41 @@ function initFormData($,form,bean) {
 
 function ztree(url,domObj,treeId) {
     var zTreeObj;
+    //var =$(treeId);
     var setting = {
         callback : {
-            // 右击事件
             onRightClick: OnRightClick
+        },
+        view:{
+            fontCss:{"size":"30px;"}
         }
     };
     $.ajax({
         type: 'POST',
         url: url,
+        async:false,
         success: function(data){
-            $.fn.zTree.init(domObj, setting, eval(data.data));
+            $.fn.zTree.init(domObj, setting, eval(data));
             zTreeObj = $.fn.zTree.getZTreeObj(treeId);
         }
     });
     return zTreeObj;
+    ;
+}
+
+function ztreeAsync(url,treeId) {
+    var setting = {
+        async: {
+            enable: true,
+            url: url
+        },
+        callback : {
+            onRightClick: OnRightClick
+        },
+        view:{
+            fontCss:{"size":"30px;"}
+        }
+    };
+    return $.fn.zTree.init($(treeId), setting,null);
+
 }

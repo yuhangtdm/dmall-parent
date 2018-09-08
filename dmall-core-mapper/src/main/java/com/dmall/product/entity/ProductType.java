@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.annotations.Version;
 import com.dmall.common.entity.Tree;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 /**
@@ -28,6 +29,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("p_product_type")
+@ToString
 public class ProductType  implements Serializable {
 
     private static final long serialVersionUID = 1L;

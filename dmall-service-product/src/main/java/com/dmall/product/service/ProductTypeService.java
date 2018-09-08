@@ -29,4 +29,10 @@ public interface ProductTypeService extends IService<ProductType> {
      * 获取后代元素
      */
     List<ProductType> getLater(Long pid);
+
+    /**
+     * 更新或保存
+     */
+    void saveOrUpdate(ProductType type);
+
 }

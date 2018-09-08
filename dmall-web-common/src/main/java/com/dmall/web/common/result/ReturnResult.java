@@ -12,7 +12,7 @@ import java.util.List;
  * @date: 2018/8/31
  */
 @Data
-public class ReturnResult<T> implements Serializable {
+public class ReturnResult implements Serializable {
 
     private static final long serialVersionUID = -5061242067855702147L;
 
@@ -36,7 +36,7 @@ public class ReturnResult<T> implements Serializable {
     /**
      * 返回数据
      */
-    private List<T> data;
+    private Object data;
 
 
 }

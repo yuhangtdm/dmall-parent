@@ -9,6 +9,8 @@ import java.io.Serializable;
 
 
 import com.dmall.common.annotation.ChangeColumn;
+import com.dmall.common.annotation.SelectKey;
+import com.dmall.common.annotation.SelectValue;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -33,11 +35,13 @@ public class Brand implements Serializable {
      * 主键
      */
     @TableId(value = "id", type = IdType.AUTO)
+    @SelectKey
     private Long id;
     /**
      * 品牌名
      */
     @TableField("brand_name")
+    @SelectValue
     private String brandName;
     /**
      * 英文名

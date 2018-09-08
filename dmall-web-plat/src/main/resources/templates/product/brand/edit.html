@@ -81,7 +81,6 @@
             initFormData($,form,JSON.parse([[${bean}]]));
 
             form.on('submit(submit)', function(data){
-                $("#submit").attr("disabled",true);
                 saveOrUpdate($,'/brand/save',data.field);
                 return false;
             });

@@ -13,6 +13,7 @@
         <meta name="format-detection" content="telephone=no">
         <link rel="stylesheet" th:href="@{/layui/css/layui.css}" href="./css/admin.css" media="all">
         <link rel="stylesheet" th:href="@{/admin/css/admin.css}" href="./css/admin.css" media="all">
+        <link rel="stylesheet" th:href="@{/layui/css/treeSelect.css}" href="./css/admin.css" media="all">
 
         <link rel="stylesheet" th:href="@{/zTree/css/zTreeStyle/zTreeStyle.css}" href="zTreeStyle/zTreeStyle.css" type="text/css">
         <link rel="stylesheet" th:href="@{/zTree/css/metroStyle/metroStyle.css}" href="zTreeStyle/zTreeStyle.css" type="text/css">
@@ -54,9 +55,7 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">上级类型</label>
                             <div class="layui-input-block">
-                                <!--<select loadData="productType"  bean="brandServiceImpl" name="pid" lay-verify="" lay-search>
-                                </select>-->
-                                <input type="text" name="pid">
+                                <input type="text" id="pid" name="pid"  lay-filter="pid" placeholder="上级类型" autocomplete="off" class="layui-input">
                             </div>
                         </div>
 
@@ -97,7 +96,7 @@
                         <div class="layui-form-item">
                             <div class="layui-input-block">
                                 <button type="submit" class="layui-btn" lay-submit="" id="submit"  lay-filter="submit">立即提交</button>
-                                <button type="reset" class="layui-btn layui-btn-primary">清空</button>
+                                <button type="reset"  id="reset" class="layui-btn layui-btn-primary">清空</button>
                             </div>
                         </div>
                     </form>
@@ -108,43 +107,67 @@
         </div>
 
         <div id="rMenu">
-            <a href="#"  onclick="add();">新增</a><br/>
-            <a href="#"  onclick="edit();">编辑</a>
+            <a href="#" id="add" >新增</a><br/>
+            <a href="#" id="edit">编辑</a>
         </div>
 
         <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
+
         <script th:src="@{/js/common.js}"  charset="utf-8"></script>
 
         <SCRIPT LANGUAGE="JavaScript">
-            layui.use(['element','form','table','layer'], function() {
-                $ = layui.jquery;//jquery
-                table=layui.table;//表格
-                form=layui.form;
-
-
-            });
             var rMenu = $("#rMenu");
             var zTreeObj=ztree('type/tree',$("#typeTree"),"typeTree");
-          /*  var zTreeObj;
-            var setting = {
-                callback : {
-                    // 右击事件
-                    onRightClick: OnRightClick
-                }
-            };*/
-            /*$(document).ready(function(){
-                rMenu = $("#rMenu");
-                $.ajax({
-                    type: 'POST',
-                    url: "/type/tree",
-                    success: function(data){
-                        $.fn.zTree.init($("#typeTree"), setting, eval(data.data));
-                        zTreeObj = $.fn.zTree.getZTreeObj("typeTree");
+            $("#reset").hide();
+
+            layui.config({
+                base: '../layui/extend/' //假设这是你存放拓展模块的根目录
+            }).use(['element','form','table','layer','treeselect'], function() {
+                $ = layui.jquery;//jquery
+                form=layui.form;
+                treeselect = layui.treeselect;
+                treeselect.render(
+                    {
+                        elem: "#pid",
+                        data: '/type/tree',
+                        method: "GET"
+                    }
+                );
+                // treeselect.render();
+                $("#add").click(function () {
+                    hideRMenu();
+                    $("#reset").click();
+                    var treeNode = zTreeObj.getSelectedNodes()[0];
+                    if (treeNode) {
+                        var typeObj={};
+                        typeObj.pid=treeNode.id;
+                        initFormData($,form,typeObj);
+                        treeselect.render();
                     }
                 });
-            });*/
 
+                $("#edit").click(function () {
+                    hideRMenu();
+                    $("#reset").click();
+                    var treeNode = zTreeObj.getSelectedNodes()[0];
+                    if (treeNode) {
+                        initFormData($,form,treeNode);
+                        treeselect.render();
+                    }
+                });
 
+                form.on('submit(submit)',function (data) {
+                    save($,'/type/save',data.field,callbak);
+                    return false;
+                })
+
+            });
+
+            function callbak() {
+                $("#reset").click();
+                zTreeObj=ztree('type/tree',$("#typeTree"),"typeTree");
+
+            }
             function OnRightClick(event, treeId, treeNode) {
                 if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
                     zTreeObj.cancelSelectedNode();
@@ -168,24 +191,6 @@
             function hideRMenu() {
                 if (rMenu) rMenu.css({"visibility": "hidden"});
                 $("body").unbind("mousedown", onBodyMouseDown);
-            }
-
-            function add(){
-                hideRMenu();
-                var treeNode = zTreeObj.getSelectedNodes()[0];
-                if (treeNode) {
-                    var typeObj={};
-                    typeObj.pid=treeNode.id;
-                    initFormData($,form,typeObj);
-                }
-            }
-
-            function edit(){
-                hideRMenu();
-                var treeNode = zTreeObj.getSelectedNodes()[0];
-                if (treeNode) {
-                    initFormData($,form,treeNode);
-                }
             }
 
 

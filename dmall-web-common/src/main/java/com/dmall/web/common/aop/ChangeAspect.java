@@ -38,14 +38,12 @@ public class ChangeAspect {
     @AfterReturning(returning = "ret", pointcut = "ip()")
     public void doAfterReturning(Object ret) throws Throwable {
         // 处理完请求，返回内容
-        System.out.println("方法处理前: " + ret);
         ReturnResult result= (ReturnResult) ret;
         if(result.getData()!=null){
             List data = result.getData();
             doHandle(data);
 
         }
-        System.out.println("方法处理后: " + ret);
     }
 
     private void doHandle(List data) {
@@ -64,10 +62,10 @@ public class ChangeAspect {
                         Field changeField = datum.getClass().getDeclaredField(value);
                         if(changeField!=null){
                             changeField.setAccessible(true);
-                            Object hValue=null;
+                            Object hValue="";
                             if(!annotation.dictType().equals("")){
                                 //数据字典
-                            }else{
+                            }else if(!annotation.beanName().equals("")){
                                 Class cacheClass=annotation.cacheClass();
                                 String display=annotation.display();
                                 String className=cacheClass.getName();

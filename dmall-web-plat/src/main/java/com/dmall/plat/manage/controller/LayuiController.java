@@ -45,4 +45,5 @@ public class LayuiController {
     public String productType(){
         return "product/type/list";
     }
+
 }

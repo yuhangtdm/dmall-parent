@@ -6,8 +6,10 @@ import com.dmall.product.entity.ProductType;
 import com.dmall.product.mapper.ProductTypeMapper;
 import com.dmall.product.service.ProductTypeService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +27,9 @@ import java.util.Map;
 @Service
 @CacheConfig(cacheNames = "product")
 public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, ProductType> implements ProductTypeService {
+
+    @Autowired
+    private ProductTypeMapper mapper;
 
     @Override
     public ProductType selectById(Long id) {
@@ -82,6 +87,38 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
         wrapper.like("path",productType.getPath());
         List<ProductType> productTypes = this.selectList(wrapper);
         return productTypes;
+    }
+
+    @Override
+    @Transactional
+    public void saveOrUpdate(ProductType type) {
+        savePath(type);
+        //编辑时需要修改所有后代元素的path
+        if(type.getId()!=null){
+            List<ProductType> later = getLater(type.getPid());
+            for (ProductType productType : later) {
+                if(!productType.getId().equals(type.getId())){
+                    productType.setPath(type.getPath().substring(1,type.getPath().length()-1)+productType.getPath());
+                }
+            }
+            mapper.updateBatch(later);
+            this.updateById(type);
+        }else {
+            this.insert(type);
+        }
+    }
+
+    /**
+     * 保存路径
+     * @param type
+     */
+    private void savePath(ProductType type) {
+        if(type.getPid()==0L){
+            type.setPath("."+type.getId()+".");
+        }else {
+            ProductType parent = this.selectById(type.getPid());
+            type.setPath(parent.getPath()+type.getId()+".");
+        }
     }
 
     /**
