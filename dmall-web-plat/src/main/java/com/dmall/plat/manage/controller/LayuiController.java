@@ -46,4 +46,11 @@ public class LayuiController {
         return "product/type/list";
     }
 
+    /**
+     * 属性
+     */
+    @RequestMapping("/props")
+    public String props(){
+        return "product/props/list";
+    }
 }

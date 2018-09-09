@@ -61,7 +61,7 @@ public class ProductTypeController {
     @RequestMapping("delete")
     @ResponseBody
     public ReturnResult save(@NotNull(message = "id不能为空") Long id){
-        productTypeService.deleteById(id);
+        productTypeService.batchDelete(id);
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
 }

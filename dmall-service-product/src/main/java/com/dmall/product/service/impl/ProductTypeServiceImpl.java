@@ -133,6 +133,17 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
 
     }
 
+    @Override
+    @Transactional
+    public void batchDelete(Long id) {
+        List<ProductType> later = getLater(id);
+        for (ProductType productType : later) {
+            this.deleteById(productType.getId());
+        }
+
+
+    }
+
     private void update(List<ProductType> tree) {
         for (int i=0;i<tree.size();i++) {
             ProductType productType = tree.get(i);

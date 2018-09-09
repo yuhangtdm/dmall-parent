@@ -161,7 +161,8 @@ function loadSelect($,form){
  * @param form layui的表单对象
  * @param bean 实体bean(简单对象)
  */
-function initFormData($,form,bean,treeSelect) {
+function initFormData($,form,bean) {
+    debugger
     for(var prop in bean){
         var value=bean[prop];
         $("[name='"+prop+"'],[name='"+prop+"[]']").each(function () {
@@ -234,4 +235,22 @@ function ztreeAsync(url) {
     };
     return setting;
 
+}
+
+function showSelectTree(treeselect,url,id) {
+    treeselect.render(
+        {
+            elem: "#"+id,
+            data: url,
+            method: "GET"
+        }
+    );
+}
+
+function dateFormat(time) {
+    if(time){
+        return layui.util.toDateString(time);
+    }else {
+        return '';
+    }
 }

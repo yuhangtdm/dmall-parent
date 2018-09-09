@@ -19,16 +19,10 @@
         <form class="layui-form" action="">
 
         <div class="layui-form-item" style="padding-top: 5px">
-            <label class="layui-form-label">品牌名称</label>
+            <label class="layui-form-label">属性名称</label>
             <div class="layui-input-block">
                 <input type="hidden" name="id" />
                 <input type="text" name="brandName"  lay-verify="required" autocomplete="off" placeholder="请输入品牌名称" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">英文名称</label>
-            <div class="layui-input-block">
-                <input type="text" name="englishName"  placeholder="请输入英文名称" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -39,26 +33,11 @@
                     <input type="text" id="productType" name="productType"  lay-filter="productType" placeholder="商品分类" autocomplete="off" class="layui-input">
                 </div>
             </div>
-
         </div>
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">品牌LOGO</label>
-                <div class="layui-inline">
-                <div class="layui-upload">
-                    <button type="button" class="layui-btn" id="test1"><i class="layui-icon"></i>上传图片</button>
-                    <div class="layui-upload-list">
-                        <img class="layui-upload-img" name="logo">
-                    </div>
-                </div>
-                </div>
-            </div>
-        </div>
-
         <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">品牌简介</label>
+            <label class="layui-form-label">备注</label>
             <div class="layui-input-block">
-                <textarea name="description"  placeholder="请输入内容" class="layui-textarea"></textarea>
+                <textarea name="remark"  placeholder="请输入内容" class="layui-textarea"></textarea>
             </div>
         </div>
 
@@ -81,13 +60,11 @@
                 layer = layui.layer,
                 $=layui.jquery,
                 treeselect = layui.treeselect;
-            //showSelectTree(treeselect,'/type/tree','productType');
-            var bean=JSON.parse([[${bean}]]);
-            console.log(bean)
-            initFormData($,form,bean);
+            showSelectTree(treeselect,'/type/tree','productType');
+            initFormData($,form,JSON.parse([[${bean}]]));
 
             form.on('submit(submit)', function(data){
-                saveOrUpdate($,'/brand/save',data.field);
+                saveOrUpdate($,'/props/save',data.field);
                 return false;
             });
 

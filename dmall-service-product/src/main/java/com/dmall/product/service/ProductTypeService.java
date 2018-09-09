@@ -44,4 +44,10 @@ public interface ProductTypeService extends IService<ProductType> {
      * @param pid
      */
     void updateSort(Long pid);
+
+    /**
+     * 删除节点以及后代节点
+     * @param id
+     */
+    void batchDelete(Long id);
 }

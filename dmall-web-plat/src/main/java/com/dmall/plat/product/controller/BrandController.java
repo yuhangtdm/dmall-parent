@@ -58,7 +58,7 @@ public class BrandController {
             if(brand==null){
                  throw new BusinessException(ResultEnum.BAD_REQUEST,"该品牌不存在,请刷新列表");
             }
-            request.setAttribute("brand",brand);
+            request.setAttribute("bean",brand);
         }
         return "product/brand/edit";
     }
