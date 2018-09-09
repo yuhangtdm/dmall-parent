@@ -25,7 +25,7 @@
     </sql>
 
     <update id="updateBatch">
-        <foreach collection="list" item="type" separator=";"  >
+        <foreach collection="list" item="type" separator=";" open="" close=""  >
             update p_product_type set path=#{type.path} where id=#{type.id}
         </foreach>
     </update>

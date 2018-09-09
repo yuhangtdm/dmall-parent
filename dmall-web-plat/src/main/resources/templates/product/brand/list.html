@@ -99,7 +99,9 @@
                     var data = obj.data;
                     if(obj.event === 'del'){
                         layer.confirm('确定删除该品牌?', {icon: 3, title:'提示'}, function(index){
-                            deleteById('/brand/delete?id='+data.id,"#formSearch");
+                            deleteById('/brand/delete?id='+data.id,function(){
+                                $("#formSearch").click();
+                            });
                         });
 
                     } else if(obj.event === 'edit'){
@@ -138,6 +140,7 @@
                     ];
                     return cols;
                 }
+
 
             });
         </script>

@@ -103,7 +103,9 @@
                     var data = obj.data;
                     if(obj.event === 'del'){
                         layer.confirm('确定删除该字典?', {icon: 3, title:'提示'}, function(index){
-                            deleteById('/dict/delete?id='+data.id,"#formSearch");
+                            deleteById('/dict/delete?id='+data.id,function () {
+                                $("#formSearch").click();
+                            });
                         });
 
                     } else if(obj.event === 'edit'){

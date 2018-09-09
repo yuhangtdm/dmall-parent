@@ -17,13 +17,12 @@ import java.util.List;
  */
 public interface ProductTypeService extends IService<ProductType> {
 
-    ProductType selectById(Long id);
 
     /**
      * 加载树
      * @return
      */
-    List<ProductType> tree(Long pid);
+    List<ProductType> tree(Long pid,Integer level,String flag);
 
     /**
      * 获取后代元素
@@ -35,4 +34,14 @@ public interface ProductTypeService extends IService<ProductType> {
      */
     void saveOrUpdate(ProductType type);
 
+    /**
+     * 获取子代元素
+     */
+    List<ProductType> getSun(Long pid);
+
+    /**
+     * 修改数据
+     * @param pid
+     */
+    void updateSort(Long pid);
 }

@@ -72,18 +72,29 @@ function save($,url,requestData,callback) {
  * @param url 删除的后台路径
  * @param searchId 刷新的按钮
  */
-function deleteById(url,searchId) {
+function deleteById(url,callbak) {
     $.ajax({
         type:'GET',
         url:url,
-        success:function () {
-            layer.msg("删除成功",{
-                icon: 1,
-                time: 1000
-            },function () {
+        async:false,
+        success:function (data) {
+            if(data.code==0){
+                layer.msg("删除成功",{
+                    icon: 1,
+                    time: 1000
+                },function () {
+                    layer.closeAll();
+                    callbak();
+                });
+            }else {
                 layer.closeAll();
-                $(searchId).click();
-            });
+                layer.msg(data.msg,{icon:2})
+            }
+        },
+        error:function (data) {
+            layer.close(load);
+            var msg=data.responseJSON.msg || '服务异常';
+            layer.msg(msg,{icon:2})
         }
     })
 }
@@ -208,7 +219,7 @@ function ztree(url,domObj,treeId) {
     ;
 }
 
-function ztreeAsync(url,treeId) {
+function ztreeAsync(url) {
     var setting = {
         async: {
             enable: true,
@@ -221,6 +232,6 @@ function ztreeAsync(url,treeId) {
             fontCss:{"size":"30px;"}
         }
     };
-    return $.fn.zTree.init($(treeId), setting,null);
+    return setting;
 
 }

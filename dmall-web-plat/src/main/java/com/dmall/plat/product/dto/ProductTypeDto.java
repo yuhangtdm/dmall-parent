@@ -34,7 +34,6 @@ public class ProductTypeDto implements Serializable {
     /**
      * 等级
      */
-    @NotNull(message = "等级不能为空")
     private Integer level;
     /**
      * 描述

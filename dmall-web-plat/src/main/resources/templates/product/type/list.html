@@ -22,9 +22,15 @@
         <style type="text/css">
             div#rMenu {position:absolute; visibility:hidden; top:0; text-align: left;padding:4px;}
             div#rMenu a{
+                 padding: 3px 15px 3px 15px;
+                 background-color:#cad4e6;
+                 vertical-align:middle;
+             }
+            div#rMenu a:hover{
                 padding: 3px 15px 3px 15px;
                 background-color:#cad4e6;
                 vertical-align:middle;
+                color:orange;
             }
         </style>
     </head>
@@ -35,72 +41,90 @@
               <a><cite>商品信息管理</cite></a>
               <a><cite>商品类型管理</cite></a>
             </span>
-            <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon" style="line-height:30px">ဂ</i></a>
         </div>
 
         <div class="x-body">
             <div class="layui-row">
-                <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
                     <ul id="typeTree" class="ztree"></ul>
                 </div>
-                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                    <form id="typeForm" class="layui-form layui-form-pane" action="">
 
-                        <div class="layui-form-item" style="padding-top: 5px">
-                            <label class="layui-form-label">类型名称</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="name"  lay-verify="required" autocomplete="off" placeholder="请输入类型名称" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">上级类型</label>
-                            <div class="layui-input-block">
-                                <input type="text" id="pid" name="pid"  lay-filter="pid" placeholder="上级类型" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
+                <div class="layui-col-xs6 layui-col-sm6  layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">编辑商品类型</div>
+                        <div class="layui-card-body">
+                                        <form id="typeForm" class="layui-form layui-form-pane" action="">
 
-                        <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <label class="layui-form-label">logo</label>
-                                <div class="layui-inline">
-                                    <input type="text" name="logo" autocomplete="off" placeholder="请输入logo" class="layui-input">
+                                            <div class="layui-form-item" style="padding-top: 5px">
+                                                <label class="layui-form-label">类型名称</label>
+                                                <div class="layui-inline">
+                                                    <input type="hidden" name="id" />
+                                                    <input type="text" name="name"  lay-verify="required" autocomplete="off" placeholder="请输入类型名称" class="layui-input">
+                                                </div>
+                                            </div>
+                                            <div class="layui-form-item">
+                                                <label class="layui-form-label">上级类型</label>
+                                                <div class="layui-inline">
+                                                    <input type="text" id="pid" name="pid"  lay-filter="pid" placeholder="上级类型" autocomplete="off" class="layui-input">
+                                                </div>
+                                            </div>
+
+                                            <div class="layui-form-item">
+                                                <div class="layui-inline">
+                                                    <label class="layui-form-label">logo</label>
+                                                    <div class="layui-inline">
+                                                        <input type="text" name="logo" autocomplete="off" placeholder="请输入logo" class="layui-input">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="layui-form-item">
+                                                <div class="layui-inline">
+                                                    <label class="layui-form-label">排序号</label>
+                                                    <div class="layui-inline">
+                                                        <input type="number" name="sortIndex" lay-verify="required|number" autocomplete="off" placeholder="请输入排序号" class="layui-input">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="layui-form-item">
+                                                <div class="layui-inline">
+                                                    <label class="layui-form-label">分类标题（SEO）</label>
+                                                    <div class="layui-inline">
+                                                        <input type="text" name="seoTitle" autocomplete="off" placeholder="请输入分类标题" class="layui-input">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="layui-form-item">
+                                                <div class="layui-inline">
+                                                    <label class="layui-form-label">分类关键字（SEO）</label>
+                                                    <div class="layui-inline">
+                                                        <input type="text" name="seoKeywords" autocomplete="off" placeholder="请输入分类关键字（SEO）" class="layui-input">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="layui-form-item layui-form-text">
+                                                <label class="layui-form-label">描述</label>
+                                                <div class="layui-input-block">
+                                                    <textarea name="description"  placeholder="请输入描述" class="layui-textarea"></textarea>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="layui-form-item">
+                                                <div class="layui-input-block">
+                                                    <button type="submit" class="layui-btn" lay-submit="" id="submit"  lay-filter="submit">立即提交</button>
+                                                    <button type="reset"  id="reset" class="layui-btn layui-btn-primary">清空</button>
+                                                </div>
+                                            </div>
+                                        </form>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="layui-form-item layui-form-text">
-                            <label class="layui-form-label">描述</label>
-                            <div class="layui-input-block">
-                                <textarea name="description"  placeholder="请输入描述" class="layui-textarea"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <label class="layui-form-label">分类标题（SEO）</label>
-                                <div class="layui-inline">
-                                    <input type="text" name="seoTitle" autocomplete="off" placeholder="请输入分类标题" class="layui-input">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <label class="layui-form-label">分类关键字（SEO）</label>
-                                <div class="layui-inline">
-                                    <input type="text" name="seoKeywords" autocomplete="off" placeholder="请输入分类关键字（SEO）" class="layui-input">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="layui-form-item">
-                            <div class="layui-input-block">
-                                <button type="submit" class="layui-btn" lay-submit="" id="submit"  lay-filter="submit">立即提交</button>
-                                <button type="reset"  id="reset" class="layui-btn layui-btn-primary">清空</button>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
+
                 <div class="layui-col-xs6 layui-col-sm6 layui-col-md2">
                 </div>
             </div>
@@ -108,7 +132,9 @@
 
         <div id="rMenu">
             <a href="#" id="add" >新增</a><br/>
-            <a href="#" id="edit">编辑</a>
+            <a href="#" id="edit">编辑</a><br/>
+            <a href="#" id="delete">删除</a><br/>
+            <a href="#" id="setProp">设置属性</a>
         </div>
 
         <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
@@ -117,7 +143,8 @@
 
         <SCRIPT LANGUAGE="JavaScript">
             var rMenu = $("#rMenu");
-            var zTreeObj=ztree('type/tree',$("#typeTree"),"typeTree");
+            var setting=ztreeAsync('type/tree');
+            var zTreeObj=$.fn.zTree.init($("#typeTree"), setting);
             $("#reset").hide();
 
             layui.config({
@@ -126,19 +153,14 @@
                 $ = layui.jquery;//jquery
                 form=layui.form;
                 treeselect = layui.treeselect;
-                treeselect.render(
-                    {
-                        elem: "#pid",
-                        data: '/type/tree',
-                        method: "GET"
-                    }
-                );
-                // treeselect.render();
+                showSelectTree(treeselect,'/type/tree?flag=add&level=1');
+
                 $("#add").click(function () {
                     hideRMenu();
                     $("#reset").click();
                     var treeNode = zTreeObj.getSelectedNodes()[0];
                     if (treeNode) {
+                        showSelectTree(treeselect,'/type/tree?flag=add&level='+treeNode.level);
                         var typeObj={};
                         typeObj.pid=treeNode.id;
                         initFormData($,form,typeObj);
@@ -151,9 +173,20 @@
                     $("#reset").click();
                     var treeNode = zTreeObj.getSelectedNodes()[0];
                     if (treeNode) {
+                        showSelectTree(treeselect,'/type/tree?flag=edit&level='+treeNode.level);
                         initFormData($,form,treeNode);
                         treeselect.render();
                     }
+                });
+
+                $("#delete").click(function () {
+                    hideRMenu();
+                    var treeNode = zTreeObj.getSelectedNodes()[0];
+                    layer.confirm("确认删除"+treeNode.name+"?",function (ok) {
+                        if(ok){
+                            deleteById('/type/delete?id='+treeNode.id,callbak);
+                        }
+                    })
                 });
 
                 form.on('submit(submit)',function (data) {
@@ -165,8 +198,7 @@
 
             function callbak() {
                 $("#reset").click();
-                zTreeObj=ztree('type/tree',$("#typeTree"),"typeTree");
-
+                zTreeObj.reAsyncChildNodesPromise(null, "refresh");
             }
             function OnRightClick(event, treeId, treeNode) {
                 if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
@@ -178,8 +210,15 @@
             }
 
             function showRMenu(type, x, y,treeNode) {
-                $("#rMenu").show();
                 rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
+                if(treeNode.level!=2){
+                    $("#rMenu #add").show();
+                    $("#rMenu #setProp").hide();
+                }else {
+                    $("#rMenu #add").hide();
+                    $("#rMenu #setProp").show();
+                }
+                $("#rMenu #edit").show();
                 $("body").bind("mousedown", onBodyMouseDown);
             }
 
@@ -193,6 +232,15 @@
                 $("body").unbind("mousedown", onBodyMouseDown);
             }
 
+            function showSelectTree(treeselect,url) {
+                treeselect.render(
+                    {
+                        elem: "#pid",
+                        data: url,
+                        method: "GET"
+                    }
+                );
+            }
 
 
         </SCRIPT>

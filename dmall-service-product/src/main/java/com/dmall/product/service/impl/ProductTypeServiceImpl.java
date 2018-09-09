@@ -1,6 +1,7 @@
 package com.dmall.product.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.dmall.common.Constants;
 import com.dmall.common.entity.Tree;
 import com.dmall.product.entity.ProductType;
 import com.dmall.product.mapper.ProductTypeMapper;
@@ -31,29 +32,34 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
     @Autowired
     private ProductTypeMapper mapper;
 
-    @Override
-    public ProductType selectById(Long id) {
-        return super.selectById(id);
-    }
-
     /**
      * 循环的方式得到树结构
      */
     @Override
-    public List<ProductType> tree(Long pid) {
+    public List<ProductType> tree(Long pid,Integer level,String flag) {
         List<ProductType> result=new ArrayList<>();
         List<ProductType> typeList =null;
-        if(pid==0L){
+        if(pid.equals(0L)){
             EntityWrapper<ProductType> wrapper=new EntityWrapper<>();
+            if("add".equals(flag)){
+                wrapper.le("level",level);
+            }else if("edit".equals(flag)){
+                wrapper.lt("level",level);
+            }
+            wrapper.orderBy("sort_index");
+
             typeList= this.selectList(wrapper);
         }else {
             typeList=this.getLater(pid);
         }
         Map<Long,ProductType> map=new HashMap<>();
         for (ProductType productType : typeList) {
+            if(Constants.LEVEL_ONE.equals(productType.getLevel()) || Constants.LEVEL_TWO.equals(productType.getLevel())){
+                productType.setIsParent(true);
+            }
             map.put(productType.getId(),productType);
-
         }
+
         /**
          * 遍历所有的类型
          */
@@ -64,7 +70,6 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
                 result.add(productType);
             }
             if(map.get(productType.getPid())!=null){
-                map.get(productType.getPid()).setIsParent(true);
                 map.get(productType.getPid()).getChildren().add(productType);
             }
             /**
@@ -85,6 +90,7 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
         ProductType productType = this.selectById(pid);
         EntityWrapper<ProductType> wrapper=new EntityWrapper<>();
         wrapper.like("path",productType.getPath());
+        wrapper.orderBy("sort_index");
         List<ProductType> productTypes = this.selectList(wrapper);
         return productTypes;
     }
@@ -92,31 +98,69 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
     @Override
     @Transactional
     public void saveOrUpdate(ProductType type) {
-        savePath(type);
         //编辑时需要修改所有后代元素的path
         if(type.getId()!=null){
-            List<ProductType> later = getLater(type.getPid());
-            for (ProductType productType : later) {
-                if(!productType.getId().equals(type.getId())){
-                    productType.setPath(type.getPath().substring(1,type.getPath().length()-1)+productType.getPath());
+            savePath(type);
+            if(Constants.LEVEL_TWO.equals(type.getLevel())){
+                List<ProductType> sun = getSun(type.getId());
+                if(sun.size()>0){
+                    for (ProductType productType : sun) {
+                        productType.setPath(type.getPath()+productType.getId()+".");
+                    }
+                    mapper.updateBatch(sun);
                 }
             }
-            mapper.updateBatch(later);
             this.updateById(type);
         }else {
             this.insert(type);
+            savePath(type);
+            this.updateById(type);
         }
     }
+
+    @Override
+    public List<ProductType> getSun(Long pid) {
+        EntityWrapper<ProductType> wrapper=new EntityWrapper<>();
+        wrapper.eq("pid",pid);
+        return  this.selectList(wrapper);
+    }
+
+    @Override
+    public void updateSort(Long pid) {
+        List<ProductType> tree = tree(pid, null, null);
+        update(tree);
+
+
+    }
+
+    private void update(List<ProductType> tree) {
+        for (int i=0;i<tree.size();i++) {
+            ProductType productType = tree.get(i);
+            productType.setSortIndex((i+1));
+            this.updateById(productType);
+            if(productType.getChildren().size()>0){
+                update(productType.getChildren());
+            }
+        }
+    }
+
 
     /**
      * 保存路径
      * @param type
      */
     private void savePath(ProductType type) {
+        //一级分类
         if(type.getPid()==0L){
             type.setPath("."+type.getId()+".");
+            type.setLevel(Constants.LEVEL_ONE);
         }else {
             ProductType parent = this.selectById(type.getPid());
+            if(parent.getPid()==0L){
+                type.setLevel(Constants.LEVEL_TWO);
+            }else {
+                type.setLevel(Constants.LEVEL_THREE);
+            }
             type.setPath(parent.getPath()+type.getId()+".");
         }
     }
@@ -133,7 +177,7 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
         //遍历下级 循环隐含了递归的退出条件
         for (ProductType productType : productTypes) {
             // 下级的下级
-            List<ProductType> children = tree(productType.getId());
+            List<ProductType> children = tree1(productType.getId());
             productType.setChildren(children);
         }
         return productTypes;

@@ -40,7 +40,7 @@ public class ChangeAspect {
         // 处理完请求，返回内容
         ReturnResult result= (ReturnResult) ret;
         if(result.getData()!=null){
-            List data = result.getData();
+            List data = (List) result.getData();
             doHandle(data);
 
         }

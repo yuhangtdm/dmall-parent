@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -33,10 +34,15 @@ public class ProductTypeController {
     @Autowired
     private ProductTypeService productTypeService;
 
+    /**
+     *
+     * @param level 添加节点的等级
+     * @return
+     */
     @RequestMapping("tree")
     @ResponseBody
-    public List<ProductType> tree(){
-        List<ProductType> result=productTypeService.tree(0L);
+    public List<ProductType> tree(Integer level,String flag){
+        List<ProductType> result=productTypeService.tree(0L,level,flag);
         return result;
     }
 
@@ -49,6 +55,13 @@ public class ProductTypeController {
             type.setPid(0L);
         }
         productTypeService.saveOrUpdate(type);
+        return ResultUtil.buildResult(ResultEnum.SUCC);
+    }
+
+    @RequestMapping("delete")
+    @ResponseBody
+    public ReturnResult save(@NotNull(message = "id不能为空") Long id){
+        productTypeService.deleteById(id);
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
 }
