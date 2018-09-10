@@ -31,7 +31,7 @@ import javax.validation.constraints.NotNull;
  * @since 2018-09-03
  */
 @Controller
-@RequestMapping("/sys/dict")
+@RequestMapping("/dict")
 public class DictController {
     @Autowired
     private DictService dictService;

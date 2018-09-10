@@ -82,9 +82,8 @@
                 $=layui.jquery,
                 treeselect = layui.treeselect;
             //showSelectTree(treeselect,'/type/tree','productType');
-            var bean=JSON.parse([[${bean}]]);
-            console.log(bean)
-            initFormData($,form,bean);
+
+            initFormData($,form,[[${bean}]]);
 
             form.on('submit(submit)', function(data){
                 saveOrUpdate($,'/brand/save',data.field);

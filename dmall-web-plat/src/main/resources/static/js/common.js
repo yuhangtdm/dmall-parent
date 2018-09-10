@@ -162,7 +162,6 @@ function loadSelect($,form){
  * @param bean 实体bean(简单对象)
  */
 function initFormData($,form,bean) {
-    debugger
     for(var prop in bean){
         var value=bean[prop];
         $("[name='"+prop+"'],[name='"+prop+"[]']").each(function () {
@@ -247,9 +246,9 @@ function showSelectTree(treeselect,url,id) {
     );
 }
 
-function dateFormat(time) {
-    if(time){
-        return layui.util.toDateString(time);
+function dateFormat(d) {
+    if(d.time){
+        return layui.util.toDateString(d.time);
     }else {
         return '';
     }
