@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.service.IService;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -50,4 +51,6 @@ public interface ProductTypeService extends IService<ProductType> {
      * @param id
      */
     void batchDelete(Long id);
+
+
 }

@@ -2,11 +2,14 @@ package com.dmall.plat.product.controller;
 
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.dmall.common.Constants;
 import com.dmall.common.annotation.TransBean;
 import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.exception.BusinessException;
 import com.dmall.plat.product.dto.PropsDTO;
+import com.dmall.product.entity.ProductType;
 import com.dmall.product.entity.Props;
+import com.dmall.product.service.ProductTypeService;
 import com.dmall.product.service.PropsService;
 import com.dmall.web.common.result.ReturnResult;
 import com.dmall.web.common.utils.ResultUtil;
@@ -35,6 +38,9 @@ public class PropsController {
 
     @Autowired
     private PropsService propsService;
+
+    @Autowired
+    private ProductTypeService productTypeService;
 
     /**
      *属性列表
@@ -68,6 +74,14 @@ public class PropsController {
     @RequestMapping("save")
     @ResponseBody
     public ReturnResult save(@Validated PropsDTO propsDTO){
+        ProductType productType = productTypeService.selectById(propsDTO.getProductType());
+        if(productType==null){
+            throw new BusinessException(ResultEnum.SERVER_ERROR,"商品类型已被删除,请重新选择");
+        }
+        if(!Constants.LEVEL_THREE.equals(productType.getLevel())){
+            throw new BusinessException(ResultEnum.SERVER_ERROR,"只允许三级分类添加属性,请重新选择");
+        }
+
         Props props=new Props();
         BeanUtils.copyProperties(propsDTO,props);
         propsService.saveOrUpdate(props);

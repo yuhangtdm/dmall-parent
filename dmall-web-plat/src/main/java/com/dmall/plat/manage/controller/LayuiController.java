@@ -53,4 +53,18 @@ public class LayuiController {
     public String props(){
         return "product/props/list";
     }
+
+    /**
+     * 设置品牌
+     */
+    @RequestMapping("/setBrand")
+    public String setBrand(){
+        return "product/type/setBrand";
+    }
+
+
+    @RequestMapping("/setProps")
+    public String setProps(){
+        return "product/type/setProps";
+    }
 }

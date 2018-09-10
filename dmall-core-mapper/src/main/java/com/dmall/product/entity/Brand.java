@@ -82,7 +82,7 @@ public class Brand implements Serializable {
     /**
      * 以下不是表的属性
      */
-    //@TableField(exist = false)
-   // private String productTypeCn;
+    @TableField(exist = false)
+    private String productTypeCn;
 
 }
