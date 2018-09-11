@@ -144,6 +144,7 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
 
     }
 
+
     private void update(List<ProductType> tree) {
         for (int i=0;i<tree.size();i++) {
             ProductType productType = tree.get(i);

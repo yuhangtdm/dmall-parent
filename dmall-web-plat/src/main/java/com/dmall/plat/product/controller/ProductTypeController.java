@@ -4,6 +4,7 @@ package com.dmall.plat.product.controller;
 import com.dmall.common.entity.Tree;
 import com.dmall.common.enums.ResultEnum;
 import com.dmall.plat.product.dto.ProductTypeDto;
+import com.dmall.plat.product.dto.TypeBrandDTO;
 import com.dmall.product.entity.ProductType;
 import com.dmall.product.service.ProductTypeService;
 import com.dmall.web.common.result.ReturnResult;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -64,5 +67,7 @@ public class ProductTypeController {
         productTypeService.batchDelete(id);
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
+
+
 }
 

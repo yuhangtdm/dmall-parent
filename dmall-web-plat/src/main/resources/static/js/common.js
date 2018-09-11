@@ -1,5 +1,6 @@
 /**
  * 打开弹窗的公共方法
+ * 主要用于添加数据
  * @param url 路径
  * @param title 弹窗标题
  * @param width 弹框宽度
@@ -13,6 +14,30 @@ function open(url,title,width,height) {
         content:url,
         maxmin:true,
         shadeClose:true
+    });
+}
+
+function openWindow(url,title,width,height,callback,full) {
+    layer.open({
+        type:2,
+        area: [width, height],
+        title :title,
+        content:url,
+        maxmin:true,
+        shadeClose:true,
+        btn: ['确定', '取消'],
+        success:function(layero, index){
+            if(full){
+                layer.full(index);//默认最大化
+            }
+
+        },
+        yes:function (index, layero) {
+            callback(index,layero);
+        },
+        btn2: function(index, layero){
+            layer.close(index);
+        },
     });
 }
 

@@ -18,28 +18,7 @@
     <body>
         <form class="layui-form" action="">
 
-        <div class="layui-form-item" style="padding-top: 5px">
-            <label class="layui-form-label">属性名称</label>
-            <div class="layui-input-block">
-                <input type="hidden" name="id" />
-                <input type="text" name="brandName"  lay-verify="required" autocomplete="off" placeholder="请输入属性名称" class="layui-input">
-            </div>
-        </div>
 
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">商品分类</label>
-                <div class="layui-input-inline">
-                    <input type="text" id="productType" name="productType"  lay-filter="productType" placeholder="商品分类" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">备注</label>
-            <div class="layui-input-block">
-                <textarea name="remark"  placeholder="请输入内容" class="layui-textarea"></textarea>
-            </div>
-        </div>
 
         <div class="layui-form-item">
             <div class="layui-input-block">
@@ -58,13 +37,12 @@
         }).use(['form','treeselect'], function(){
             var form = layui.form,
                 layer = layui.layer,
-                $=layui.jquery,
-                treeselect = layui.treeselect;
-            showSelectTree(treeselect,'/type/tree','productType');
+                $=layui.jquery;
+
             initFormData($,form,JSON.parse([[${bean}]]));
 
             form.on('submit(submit)', function(data){
-                saveOrUpdate($,'/props/save',data.field);
+                saveOrUpdate($,'/props/setValue',data.field);
                 return false;
             });
 
