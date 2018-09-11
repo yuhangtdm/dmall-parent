@@ -32,7 +32,7 @@ public class ReflectUtil {
                     declaredField.setAccessible(true);
                     Object o = declaredField.get(obj);
                     if(StringUtil.isNotEmptyObj(o)){
-                        map.put("code",o);
+                        map.put("value",o);
                         continue;
                     }
                 }
@@ -41,7 +41,7 @@ public class ReflectUtil {
                     declaredField.setAccessible(true);
                     Object o = declaredField.get(obj);
                     if(StringUtil.isNotEmptyObj(o)){
-                        map.put("value",o);
+                        map.put("name",o);
                         continue;
                     }
                 }

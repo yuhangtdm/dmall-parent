@@ -1,10 +1,13 @@
 package com.dmall.plat.manage.controller;
 
+import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.utils.ReflectUtil;
 import com.dmall.common.utils.SpringContextUtil;
 import com.dmall.common.utils.StringUtil;
 import com.dmall.plat.sys.service.DictService;
 import com.dmall.sys.entity.Dict;
+import com.dmall.web.common.result.ReturnResult;
+import com.dmall.web.common.utils.ResultUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +35,7 @@ public class CommonController {
 
     @RequestMapping("select")
     @ResponseBody
-    public List<Map<String,Object>> select(String dict,String bean,String methodName){
+    public ReturnResult select(String dict, String bean, String methodName){
         List<Map<String,Object>> result=new ArrayList<>();
         if(StringUtil.isNotBlank(dict)){
             List<Dict> dicts = dictService.queryDictByType(dict);
@@ -40,7 +43,7 @@ public class CommonController {
                 Map<String, Object> beanToMap = ReflectUtil.beanToMap(dict1);
                 result.add(beanToMap);
             }
-            return result;
+            return ResultUtil.buildResult(ResultEnum.SUCC,"success",result);
 
         }
         if(StringUtil.isNotBlank(bean)){
@@ -59,7 +62,7 @@ public class CommonController {
                     }
                 } catch (Exception e) {
                     logger.error("反射遇到异常{}",e.getMessage());
-                    return result;
+                    return ResultUtil.buildResult(ResultEnum.SUCC,"success",result);
                 }
             }else {
                 logger.error("spring工厂内没有该bean:{}",bean);
@@ -68,6 +71,6 @@ public class CommonController {
 
 
         }
-        return result;
+        return ResultUtil.buildResult(ResultEnum.SUCC,"success",result);
     }
 }

@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.dmall.shop.DmallWebShopApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 13.171 sec - in com.dmall.shop.DmallWebShopApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.95 sec - in com.dmall.shop.DmallWebShopApplicationTests

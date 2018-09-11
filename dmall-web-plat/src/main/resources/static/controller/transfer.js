@@ -50,28 +50,30 @@ layui.config({
             var bean=sel.attr("bean")||'';//查询下拉框的对象bean
             var method=sel.attr("method")||'';//查询的方法
             var id=sel.attr("id");
-            /**
-             * 公共的查询方法
-             */
-            $.ajax({
-                url : "/common/select",
-                type : "post",
-                data : {"dict":dict,"bean":bean,"methodName":method},
-                success : function(result){
-                    for (var i=0; i<result.length; i++){
-                        sel.append("<option value="+result[i].code+">"+result[i].value+"</option>");
-                    }
-                    if(value){
-                        var values=value.split(',');
-                        if(values.length>1){
-                            formSelects.value(id, values);
-                        }else {
-                            sel.val(value);
+            var xm=sel.attr("xm-select");
+            if(xm){
+                formSelects.data(xm, 'server', {
+                    url: '/common/select?dict='+dict+"&bean="+bean+"&methodName="+method
+                });
+            }else {
+                $.ajax({
+                    url : "/common/select",
+                    type : "post",
+                    data : {"dict":dict,"bean":bean,"methodName":method},
+                    async: false,
+                    success : function(result){
+                        if(result.code==0){
+                            for (var i=0; i<result.data.length; i++){
+                                sel.append("<option value="+result.data[i].value+">"+result.data[i].name+"</option>");
+                            }
+                            if(value){
+                                sel.val(value);
+                            }
                         }
                     }
-                    form.render();
-                }
-            });
+                });
+            }
+            form.render();
         });
     }
 
@@ -82,14 +84,7 @@ layui.config({
     function initSingleRegion() {
         
     }
-    
-    function initAjax() {
-        
-    }
-    
-    function initSingleAjax() {
-        
-    }
+
 
     function initSelectTree(url,id) {
         treeselect.render(
@@ -122,16 +117,25 @@ layui.config({
                         if(prop.lastIndexOf("Time")>-1){
                             laydate.render({
                                 elem: '#'+prop,
-                                format:'yyyy-MM-dd HH:',
+                                format:'yyyy-MM-dd HH:mm:ss',
                                 value: new Date(value) //参数即为：2018-08-20 20:08:08 的时间戳
                             });
                         }else {
+                            var xmSelect=$("select[_name='"+prop+"']");
+                            if(xmSelect){
+                                var xm=xmSelect.attr("xm-select");
+                                if(xm){
+                                    formSelects.value(xm, [2]);
+                                }
+                            }
                             $(this).val(value);
                         }
                     }
                 }else if(tagName=='img'){
                     $(this).attr('src',value);
-                }else if(tagName=='SELECT' || tagName=='TEXTAREA'){
+                }else if(tagName=='SELECT'){
+                    $(this).val(value);
+                }else if(tagName=='TEXTAREA'){
                     $(this).val(value);
                 }
 
