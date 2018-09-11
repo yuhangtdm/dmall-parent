@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dmall.product.mapper.BrandMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.dmall.product.entity.Brand">
+        <id column="id" property="id" />
+        <result column="brand_name" property="brandName" />
+        <result column="english_name" property="englishName" />
+        <result column="first_letter" property="firstLetter" />
+        <result column="description" property="description" />
+        <result column="product_type" property="productType" />
+        <result column="logo" property="logo" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, brand_name, english_name, first_letter, description, product_type, logo, create_time, update_time
+    </sql>
+
+</mapper>
