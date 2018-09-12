@@ -13,58 +13,31 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 商品属性
+ * 
  * </p>
  *
  * @author yuhang
- * @since 2018-08-29
+ * @since 2018-09-12
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("p_props")
-public class Props implements Serializable {
+@TableName("p_props_group")
+public class PropsGroup implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 主键
-     */
     private Long id;
     /**
-     * 属性名称
+     * 组名称
      */
-    @TableField("prop_name")
-    private String propName;
+    @TableField("group_name")
+    private String groupName;
     /**
-     * 组id
-     */
-    @TableField("group_id")
-    private String groupId;
-    /**
-     * 商品分类
+     * 商品分类id
      */
     @TableField("product_type")
     private Long productType;
-    /**
-     * 输入模式 0-文本框 1-下拉列表 2-复选框
-     */
-    @TableField("input_mode")
-    private Integer inputMode;
-    /**
-     * 输入类型 0-文本内容 1-数字  2-日期
-     */
-    @TableField("input_type")
-    private Integer inputType;
-    /**
-     * 验证规则 数据验证的正则表达式，如：^[A-Za-z]+$ 
-     */
-    @TableField("validate_pattern")
-    private String validatePattern;
-    /**
-     * 备注
-     */
-    private String remark;
     /**
      * 创建时间
      */

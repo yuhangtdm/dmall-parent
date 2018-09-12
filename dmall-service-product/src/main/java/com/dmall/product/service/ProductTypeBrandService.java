@@ -3,6 +3,8 @@ package com.dmall.product.service;
 import com.dmall.product.entity.ProductTypeBrand;
 import com.baomidou.mybatisplus.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -14,4 +16,8 @@ import com.baomidou.mybatisplus.service.IService;
 public interface ProductTypeBrandService extends IService<ProductTypeBrand> {
 
     void deleteByBrandId(Long id);
+
+    List<ProductTypeBrand> queryByBrandId(Long brandId);
+
+    List<ProductTypeBrand> queryByProductTypeid(Long productTypeId);
 }

@@ -146,27 +146,149 @@
 
         <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
 
+        <script th:src="@{/js/common.js}"  charset="utf-8"></script>
 
         <SCRIPT LANGUAGE="JavaScript">
+            var rMenu = $("#rMenu");
+            var setting=ztreeAsync('type/tree');
+            var zTreeObj=$.fn.zTree.init($("#typeTree"), setting);
+            $("#reset").hide();
+
             layui.extend({
-                transfer:'/controller/transfer'
-             }).use(['element','form','table','transfer','layer','zTree'], function() {
+                curd: '/controller/curd'
+            }).use(['element','form','table','layer','treeselect'], function() {
                 var $ = layui.$;
                 var form=layui.form;
-                var layer=layui.layer;
-                var zTree = layui.zTree;
+                var treeselect = layui.treeselect;
+                var    layer=layui.layer;
 
-                var rMenu = $("#rMenu");
-                $("#reset").hide();
+                showSelectTree(treeselect,'/type/tree?flag=add&level=1','pid');
 
-                var obj={
-                    url:'type/tree',
-                    id: 'typeTree'
-                };
-                var zTreeObj=zTree.zTreeAsync(obj)
+                $("#add").click(function () {
+                    hideRMenu();
+                    $("#reset").click();
+                    var treeNode = zTreeObj.getSelectedNodes()[0];
+                    if (treeNode) {
+                        showSelectTree(treeselect,'/type/tree?flag=add&level='+treeNode.level);
+                        var typeObj={};
+                        typeObj.pid=treeNode.id;
+                        initFormData($,form,typeObj);
+                        treeselect.render();
+                    }
+                });
 
+                $("#edit").click(function () {
+                    hideRMenu();
+                    $("#reset").click();
+                    var treeNode = zTreeObj.getSelectedNodes()[0];
+                    if (treeNode) {
+                        showSelectTree(treeselect,'/type/tree?flag=edit&level='+treeNode.level);
+                        initFormData($,form,treeNode);
+                        treeselect.render();
+                    }
+                });
+
+                $("#delete").click(function () {
+                    hideRMenu();
+                    var treeNode = zTreeObj.getSelectedNodes()[0];
+                    layer.confirm("确认删除节点"+treeNode.name+"以及子节点?",function (ok) {
+                        if(ok){
+                            deleteById('/type/delete?id='+treeNode.id,callbak);
+                        }
+                    })
+                });
+
+                form.on('submit(submit)',function (data) {
+                    save($,'/type/save',data.field,callbak);
+                    return false;
+                });
+
+                $("#editType").click(function () {
+                    $("#reset").click();
+                    var treeNode = zTreeObj.getSelectedNodes()[0];
+                    if (!treeNode) {
+                        layer.msg("请选择节点进行编辑",{time:2000});
+                        return false;
+                    }else {
+                        initFormData($,form,treeNode);
+                    }
+                });
+
+                $("#setBrand").click(function () {
+                    $("#reset").click();
+                    var treeNode = zTreeObj.getSelectedNodes()[0];
+                    if (!treeNode) {
+                        layer.msg("请选择节点进行设置品牌",{time:2000});
+                        return false;
+                    }else {
+                        openWindow('/setBrand','设置品牌','600px','600px',setBrandCallBack);
+                    }
+                });
+
+                $("#setProps").click(function () {
+                    $("#reset").click();
+                    var treeNode = zTreeObj.getSelectedNodes()[0];
+                    if (!treeNode) {
+                        layer.msg("请选择节点进行设置属性",{time:2000});
+                        return false;
+                    }else {
+                        openWindow('/setProps','设置属性','600px','600px',setPropsCallBack);
+                    }
+                });
+
+                function setBrandCallBack(index,layero) {
+                    var body = layer.getChildFrame('body', index);
+                    var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                    var treeNode = zTreeObj.getSelectedNodes()[0];
+                    var reqData={};
+                    reqData.typeId=treeNode.id;
+                    reqData.brandIds=iframeWin.getBrandIds();
+                    save($,'/type/setBrand',reqData,function () {
+                        layer.close(index);
+                    })
+                }
+                function setPropsCallBack() {
+
+                }
 
             });
+
+            function callbak() {
+                $("#reset").click();
+                zTreeObj.reAsyncChildNodesPromise(null, "refresh");
+            }
+            function OnRightClick(event, treeId, treeNode) {
+                if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
+                    zTreeObj.cancelSelectedNode();
+                } else if (treeNode && !treeNode.noR) {
+                    zTreeObj.selectNode(treeNode,false,false);
+                    showRMenu("node", event.clientX, event.clientY,treeNode);
+                }
+            }
+
+            function showRMenu(type, x, y,treeNode) {
+                rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
+                if(treeNode.level!=2){
+                    $("#rMenu #add").show();
+                    $("#rMenu #setProp").hide();
+                }else {
+                    $("#rMenu #add").hide();
+                    $("#rMenu #setProp").show();
+                }
+                $("#rMenu #edit").show();
+                $("body").bind("mousedown", onBodyMouseDown);
+            }
+
+            function onBodyMouseDown(event){
+                if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length>0)) {
+                    rMenu.css({"visibility" : "hidden"});
+                }
+            }
+            function hideRMenu() {
+                if (rMenu) rMenu.css({"visibility": "hidden"});
+                $("body").unbind("mousedown", onBodyMouseDown);
+            }
+
 
 
 

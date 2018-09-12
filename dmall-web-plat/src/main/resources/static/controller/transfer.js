@@ -3,7 +3,8 @@ layui.config({
 }).extend({
     curd:'/curd',
     formSelects:"/formSelects",
-    treeselect:'/treeselect'
+    treeselect:'/treeselect',
+    zTree:'/zTree'
 }).define(['util', 'layer', 'laydate', 'form','formSelects','treeselect'], function(e) {
     var $ = layui.jquery;
     var form = layui.form;
@@ -66,10 +67,10 @@ layui.config({
             var xm=sel.attr("xm-select");
             var xmValue=$("input[name='"+xm+"']").val();
             var xmVals=[];
-            if(xmValue){
+            if(xm && xmValue){
                 var xms=xmValue.split(",");
                 for(var i=0;i<xms.length;i++){
-                    xmVals.push(parseInt(xmValue[i]));
+                    xmVals.push(parseInt(xms[i]));
                 }
             }
 

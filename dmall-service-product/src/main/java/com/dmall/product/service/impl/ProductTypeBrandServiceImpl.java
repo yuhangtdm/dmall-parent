@@ -7,6 +7,8 @@ import com.dmall.product.service.ProductTypeBrandService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务实现类
@@ -23,5 +25,19 @@ public class ProductTypeBrandServiceImpl extends ServiceImpl<ProductTypeBrandMap
         EntityWrapper<ProductTypeBrand> wrapper=new EntityWrapper();
         wrapper.eq("brand_id",id);
         this.delete(wrapper);
+    }
+
+    @Override
+    public List<ProductTypeBrand> queryByBrandId(Long brandId) {
+        EntityWrapper<ProductTypeBrand> wrapper=new EntityWrapper();
+        wrapper.eq("brand_id",brandId);
+        return this.selectList(wrapper);
+    }
+
+    @Override
+    public List<ProductTypeBrand> queryByProductTypeid(Long productTypeId) {
+        EntityWrapper<ProductTypeBrand> wrapper=new EntityWrapper();
+        wrapper.eq("product_type_id",productTypeId);
+        return this.selectList(wrapper);
     }
 }

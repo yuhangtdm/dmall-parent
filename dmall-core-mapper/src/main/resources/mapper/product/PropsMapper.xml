@@ -7,6 +7,7 @@
         <id column="id" property="id" />
         <result column="prop_name" property="propName" />
         <result column="product_type" property="productType" />
+        <result column="group_id" property="groupId" />
         <result column="input_mode" property="inputMode" />
         <result column="input_type" property="inputType" />
         <result column="validate_pattern" property="validatePattern" />
@@ -17,7 +18,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, prop_name, product_type, input_mode, input_type, validate_pattern, remark, create_time, update_time
+        id, prop_name, product_type,group_id, input_mode, input_type, validate_pattern, remark, create_time, update_time
     </sql>
 
 </mapper>

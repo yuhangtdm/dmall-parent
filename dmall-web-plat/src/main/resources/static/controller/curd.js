@@ -1,9 +1,12 @@
-layui.define(['layer'],function (e) {
-    var layer=layui.layer,
-        $=layui.$;
+layui.config({
+    base: '/controller/'
+}).define(['layer','table'],function (e) {
+    var layer = layui.layer;
+    var $ = layui.$;
+    var table = layui.table;
     var obj={
-        open:function (url,title,width,height) {
-           open(url,title,width,height);
+        open:function (url,title,width,height,full) {
+           open(url,title,width,height,full);
         },
         save:function (url,requestData,callback) {
             save(url,requestData,callback);
@@ -14,8 +17,8 @@ layui.define(['layer'],function (e) {
         deleteById:function (url,callbak) {
             deleteById(url,callbak);
         },
-        pageList:function (table,id,url,cols) {
-            pageList(table,id,url,cols);
+        initPage:function (id,url,cols) {
+            initPage(id,url,cols);
         }
     }
 
@@ -26,14 +29,19 @@ layui.define(['layer'],function (e) {
      * @param width 弹框宽度
      * @param height 弹框高度
      */
-    function open(url,title,width,height) {
+    function open(url,title,width,height,full) {
         layer.open({
             type:2,
             area: [width, height],
             title :title,
             content:url,
             maxmin:true,
-            shadeClose:true
+            shadeClose:true,
+            success:function (layero,index) {
+                if(full && full==true){
+                    layer.full(index);
+                }
+            }
         });
     }
 
@@ -41,11 +49,14 @@ layui.define(['layer'],function (e) {
      * 保存
      */
     function save(url,requestData,callback) {
-        var load = layer.load(1);
+        var load ;
         $.ajax({
             url:url,
             type:'POST',
             data:requestData,
+            beforeSend:function(){
+                load=layer.load(1);
+            },
             success:function (data) {
                 if(data.code==0){
                     layer.close(load);
@@ -84,10 +95,14 @@ layui.define(['layer'],function (e) {
     }
 
     function deleteById(url,callbak) {
+        var load;
         $.ajax({
             type:'GET',
             url:url,
             async:false,
+            beforeSend:function(){
+                load=layer.load(1);
+            },
             success:function (data) {
                 if(data.code==0){
                     layer.msg("删除成功",{
@@ -98,19 +113,17 @@ layui.define(['layer'],function (e) {
                         callbak();
                     });
                 }else {
-                    layer.closeAll();
                     layer.msg(data.msg,{icon:2})
                 }
             },
             error:function (data) {
-                layer.closeAll();
                 var msg=data.responseJSON.msg || '服务异常';
                 layer.msg(msg,{icon:2})
             }
         })
     }
 
-    function pageList(table,id,url,cols) {
+    function initPage(id,url,cols) {
         table.render({
             elem: '#'+id,
             id: id,

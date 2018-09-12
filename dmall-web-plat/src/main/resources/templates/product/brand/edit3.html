@@ -13,11 +13,10 @@
         <meta name="format-detection" content="telephone=no">
         <link rel="stylesheet" th:href="@{/layui/css/layui.css}" href="./css/admin.css" media="all">
         <link rel="stylesheet" th:href="@{/layui/css/treeSelect.css}" href="./css/admin.css" media="all">
-        <link rel="stylesheet" th:href="@{/layui/css/formSelects-v4.css}" href="./css/admin.css" media="all">
 
     </head>
     <body>
-        <form class="layui-form" action="" id="brandForm">
+        <form class="layui-form" action="">
 
         <div class="layui-form-item" style="padding-top: 5px">
             <label class="layui-form-label">品牌名称</label>
@@ -33,30 +32,16 @@
             </div>
         </div>
 
-            <div class="layui-form-item">
-                <label class="layui-form-label">树</label>
-                <div class="layui-input-block">
-                    <select loadData="tree" url="/type/tree2" xm-select-search=""  name="tree"   xm-select="tree">
-                    </select>
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">省市区</label>
-                <div class="layui-input-block">
-                    <select loadData="region" xm-select-search=""  name="region" xm-select-radio xm-select="region">
-                    </select>
-                </div>
-            </div>
-
         <div class="layui-form-item">
-            <label class="layui-form-label">多选框</label>
-            <div class="layui-input-block">
-                <select loadData dict="_dealer_type"    name="productType" xm-select="productType">
-                </select>
+            <div class="layui-inline">
+                <label class="layui-form-label">商品分类</label>
+                <div class="layui-input-inline">
+                    <select loadData dict="_dealer_type" name="productType">
+                    </select>
+                </div>
             </div>
-        </div>
 
+        </div>
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">品牌LOGO</label>
@@ -71,7 +56,6 @@
             </div>
         </div>
 
-
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">品牌简介</label>
             <div class="layui-input-block">
@@ -81,11 +65,33 @@
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">更新时间</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input date" id="updateTime" name="updateTime">
+                <input type="text" class="layui-input" id="updateTime" name="updateTime">
             </div>
         </div>
 
-        <div class="layui-form-item">
+            <div class="layui-form-item">
+                <label class="layui-form-label">省市区</label>
+                <div class="layui-input-block">
+                    <select loadData="region" xm-select-search=""  name="region" xm-select-radio xm-select="region">
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">多选框</label>
+                <div class="layui-input-block">
+                    <select loadData dict="_dealer_type"    name="productType" xm-select="productType">
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">更新时间</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input date" id="updateTime" name="updateTime">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
             <div class="layui-input-block">
                 <button type="submit" class="layui-btn" lay-submit="" id="submit"  lay-filter="submit">立即提交</button>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
@@ -94,21 +100,33 @@
     </form>
 
     <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script th:src="@{/js/common.js}"  charset="utf-8"></script>
 
     <script th:inline="javascript">
-        layui.extend({
-            transfer:'/controller/transfer'
-        }).use(['form','transfer','curd'], function(){
-            var transfer=layui.transfer;
-            var form = layui.form;
-            var curd=layui.curd;
+        layui.config({
+            base: '../layui/extend/' //假设这是你存放拓展模块的根目录
+        }).use(['form','treeselect','laydate'], function(){
+            var form = layui.form,
+                layer = layui.layer,
+                $=layui.jquery,
+                treeselect = layui.treeselect;
+            //showSelectTree(treeselect,'/type/tree','productType');
 
-            transfer.init('brandForm',[[${bean}]]);
+            var laydate = layui.laydate;
+
+            laydate.render({
+                elem: '#updateTime' //指定元素
+            });
+            loadSelect($,form);
+
+            initFormData($,form,[[${bean}]],laydate);
+
+
             form.on('submit(submit)', function(data){
-                console.log(data.field);
-                curd.saveOrUpdate('/brand/save',data.field)
+                saveOrUpdate($,'/brand/save',data.field);
                 return false;
             });
+
         });
     </script>
 

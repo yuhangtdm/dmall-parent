@@ -56,7 +56,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
         }else {
             this.insert(brand);
         }
-        if(StringUtil.isBlank(brand.getProductType())){
+        if(StringUtil.isNotBlank(brand.getProductType())){
             String[] split = brand.getProductType().split(",");
             for (String s : split) {
                 ProductTypeBrand productTypeBrand=new ProductTypeBrand();

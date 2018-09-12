@@ -3,8 +3,10 @@ package com.dmall.plat.product.controller;
 
 import com.baomidou.mybatisplus.plugins.Page;
 import com.dmall.common.exception.BusinessException;
+import com.dmall.common.utils.StringUtil;
 import com.dmall.plat.product.dto.BrandDTO;
 import com.dmall.product.entity.Brand;
+import com.dmall.product.entity.ProductTypeBrand;
 import com.dmall.product.service.BrandService;
 import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.annotation.TransBean;
@@ -21,6 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -62,9 +67,13 @@ public class BrandController {
             if(brand==null){
                  throw new BusinessException(ResultEnum.BAD_REQUEST,"该品牌不存在,请刷新列表");
             }
+            List<ProductTypeBrand> typeBrandList = productTypeBrandService.queryByBrandId(brand.getId());
+            List<Long> collect = typeBrandList.stream().map(ProductTypeBrand::getProductTypeId).collect(Collectors.toList());
+            String productType = StringUtil.join(collect,",");
+            brand.setProductType(productType);
             request.setAttribute("bean",brand);
         }
-        return "product/brand/edit2";
+        return "product/brand/edit";
     }
 
     /**
@@ -88,6 +97,14 @@ public class BrandController {
         //todo 品牌维护了商品不能删除 维护了类型 则删除关联数据
         brandService.deleteById(id);
         return ResultUtil.buildResult(ResultEnum.SUCC);
+    }
+
+    public static void main(String[] args) {
+        List<Integer> col=Arrays.asList(3,4,5);
+        String join = StringUtil.join(col, ",");
+        System.out.println(join);
+
+
     }
 
 
