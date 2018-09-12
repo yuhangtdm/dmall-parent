@@ -33,19 +33,19 @@
             </div>
         </div>
 
+            <div class="layui-form-item">
+                <label class="layui-form-label">树</label>
+                <div class="layui-input-block">
+                    <select loadData="tree"   xm-select="tree">
+                    </select>
+                </div>
+            </div>
 
-            <div class="layui-form layui-form-pane">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">多选框</label>
-                    <div class="layui-input-block">
-                        <select name="city" xm-select="select2">
-                            <option value="1" disabled="disabled">北京</option>
-                            <option value="2" selected="selected" disabled="disabled">上海</option>
-                            <option value="3">广州</option>
-                            <option value="4" selected="selected">深圳</option>
-                            <option value="5">天津</option>
-                        </select>
-                    </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">省市区</label>
+                <div class="layui-input-block">
+                    <select  xm-select="region">
+                    </select>
                 </div>
             </div>
 
@@ -70,6 +70,7 @@
                 </div>
             </div>
         </div>
+
 
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">品牌简介</label>

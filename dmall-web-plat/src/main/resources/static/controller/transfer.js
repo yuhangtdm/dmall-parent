@@ -58,6 +58,7 @@ layui.config({
             for(var i=0;i<xmValue.length;i++){
                 xmVals.push(parseInt(xmValue[i]));
             }
+            var region=sel.attr("loadData");
             if(xm){
                 formSelects.data(xm, 'server', {
                     url: '/common/select?dict='+dict+"&bean="+bean+"&methodName="+method,
@@ -65,6 +66,17 @@ layui.config({
                         formSelects.value(xm,xmVals);
                     }
                 });
+                if(region){
+                    if(region=='region'){
+                        initRegion(xm);
+                    }
+                    if(region=='tree'){
+                        formSelects.data(xm, 'server', {
+                            url: '/type/tree',
+                        });
+
+                    }
+                }
             }else {
                 $.ajax({
                     url : "/common/select",
@@ -87,12 +99,21 @@ layui.config({
         });
     }
 
-    function initRegion() {
-        
-    }
-    
-    function initSingleRegion() {
-        
+    /**
+     * 省市区
+     * @param xm
+     */
+
+    function initRegion(xm) {
+        $.getJSON('/json/region.js',function (result) {
+            formSelects.data(xm, 'local', {
+                arr: result.data,
+                linkage: true
+            });
+            var regionValue=$("input[name='"+xm+"']").val();
+            var regionVals=regionValue.split(",");
+            formSelects.value(xm, regionVals);
+        });
     }
 
 
@@ -107,7 +128,6 @@ layui.config({
     }
 
     function initForm(bean) {
-        debugger
         for(var prop in bean){
             var value=bean[prop];
             $("[name='"+prop+"'],[name='"+prop+"[]']").each(function () {
