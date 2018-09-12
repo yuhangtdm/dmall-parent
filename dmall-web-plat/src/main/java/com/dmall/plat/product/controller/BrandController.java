@@ -8,6 +8,7 @@ import com.dmall.product.entity.Brand;
 import com.dmall.product.service.BrandService;
 import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.annotation.TransBean;
+import com.dmall.product.service.ProductTypeBrandService;
 import com.dmall.web.common.result.ReturnResult;
 import com.dmall.web.common.utils.ResultUtil;
 import org.springframework.beans.BeanUtils;
@@ -35,7 +36,10 @@ import javax.validation.constraints.NotNull;
 public class BrandController {
 
     @Autowired
-    BrandService brandService;
+    private BrandService brandService;
+
+    @Autowired
+    private ProductTypeBrandService productTypeBrandService;
 
     /**
      *品牌列表
@@ -81,6 +85,7 @@ public class BrandController {
     @RequestMapping("delete")
     @ResponseBody
     public ReturnResult delete(@NotNull(message = "id不能为空") Long id){
+        //todo 品牌维护了商品不能删除 维护了类型 则删除关联数据
         brandService.deleteById(id);
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }

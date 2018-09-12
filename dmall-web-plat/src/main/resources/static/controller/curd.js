@@ -61,6 +61,7 @@ layui.define(['layer'],function (e) {
                 }
             },
             error:function (data) {
+                console.log(data);
                 layer.close(load);
                 var msg=data.responseJSON.msg || '服务异常';
                 layer.msg(msg,{icon:2})

@@ -49,6 +49,13 @@ public class ProductTypeController {
         return result;
     }
 
+    @RequestMapping("tree2")
+    @ResponseBody
+    public ReturnResult tree2(Integer level,String flag){
+        List<ProductType> result=productTypeService.tree(0L,level,flag);
+        return ResultUtil.buildResult(ResultEnum.SUCC,"success",result);
+    }
+
     @RequestMapping("save")
     @ResponseBody
     public ReturnResult save(@Valid ProductTypeDto dto){
@@ -63,7 +70,8 @@ public class ProductTypeController {
 
     @RequestMapping("delete")
     @ResponseBody
-    public ReturnResult save(@NotNull(message = "id不能为空") Long id){
+    public ReturnResult delete(@NotNull(message = "id不能为空") Long id){
+        //todo 类型下维护了商品 不可删除
         productTypeService.batchDelete(id);
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }

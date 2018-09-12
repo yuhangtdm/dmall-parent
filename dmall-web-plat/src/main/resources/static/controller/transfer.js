@@ -12,8 +12,14 @@ layui.config({
     var laydate = layui.laydate;
     var formSelects = layui.formSelects;
     var treeselect = layui.treeselect;
+
+    formSelects.config(null, {
+        keyName: 'name',            //自定义返回数据中name的key, 默认 name
+        keyVal: 'id',            //自定义返回数据中value的key, 默认 value
+    }, false);
+
     var obj={
-        init:function (bean,url) {
+        init:function (formId,bean,url) {
             if(bean){
                 initForm(bean);
             }
@@ -34,9 +40,14 @@ layui.config({
             }
             initSelect();
 
+            initDate(formId);
+
         },
         initSelect:function () {
             initSelect();
+        },
+        initDate : function(formId){
+            initDate(formId);
         },
         initSelectTree:function (url,id) {
             initSelectTree(url,id);
@@ -51,13 +62,17 @@ layui.config({
             var dict=sel.attr("dict")||'';//数据字典的key
             var bean=sel.attr("bean")||'';//查询下拉框的对象bean
             var method=sel.attr("method")||'';//查询的方法
-            var id=sel.attr("id");
+            var url=sel.attr("url")||'';//查询的路径
             var xm=sel.attr("xm-select");
-            var xmValue=$("input[name='"+xm+"']").val().split(",");
+            var xmValue=$("input[name='"+xm+"']").val();
             var xmVals=[];
-            for(var i=0;i<xmValue.length;i++){
-                xmVals.push(parseInt(xmValue[i]));
+            if(xmValue){
+                var xms=xmValue.split(",");
+                for(var i=0;i<xms.length;i++){
+                    xmVals.push(parseInt(xmValue[i]));
+                }
             }
+
             var region=sel.attr("loadData");
             if(xm){
                 formSelects.data(xm, 'server', {
@@ -68,13 +83,13 @@ layui.config({
                 });
                 if(region){
                     if(region=='region'){
-                        initRegion(xm);
+                        initRegion(xm,xmValue);
                     }
                     if(region=='tree'){
                         formSelects.data(xm, 'server', {
-                            url: '/type/tree',
+                            url: url,
                         });
-
+                        formSelects.value(xm,xmVals);
                     }
                 }
             }else {
@@ -104,13 +119,12 @@ layui.config({
      * @param xm
      */
 
-    function initRegion(xm) {
+    function initRegion(xm,regionValue) {
         $.getJSON('/json/region.js',function (result) {
             formSelects.data(xm, 'local', {
                 arr: result.data,
                 linkage: true
             });
-            var regionValue=$("input[name='"+xm+"']").val();
             var regionVals=regionValue.split(",");
             formSelects.value(xm, regionVals);
         });
@@ -125,6 +139,17 @@ layui.config({
                 method: "GET"
             }
         );
+    }
+
+    function initDate(formId) {
+        $("#"+formId).find(".date").each(function () {
+            laydate.render({
+                elem: '#'+$(this).attr("id"),
+                type:'datetime',
+                format:'yyyy-MM-dd HH:mm:ss'
+            });
+        })
+
     }
 
     function initForm(bean) {

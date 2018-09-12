@@ -17,7 +17,7 @@
 
     </head>
     <body>
-        <form class="layui-form" action="">
+        <form class="layui-form" action="" id="brandForm">
 
         <div class="layui-form-item" style="padding-top: 5px">
             <label class="layui-form-label">品牌名称</label>
@@ -36,7 +36,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">树</label>
                 <div class="layui-input-block">
-                    <select loadData="tree"   xm-select="tree">
+                    <select loadData="tree" url="/type/tree2" xm-select-search=""  name="tree"   xm-select="tree">
                     </select>
                 </div>
             </div>
@@ -44,7 +44,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">省市区</label>
                 <div class="layui-input-block">
-                    <select  xm-select="region">
+                    <select loadData="region" xm-select-search=""  name="region" xm-select-radio xm-select="region">
                     </select>
                 </div>
             </div>
@@ -52,7 +52,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">多选框</label>
             <div class="layui-input-block">
-                <select loadData dict="_dealer_type"  name="productType" xm-select="productType">
+                <select loadData dict="_dealer_type"    name="productType" xm-select="productType">
                 </select>
             </div>
         </div>
@@ -81,7 +81,7 @@
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">更新时间</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input" id="updateTime" name="updateTime">
+                <input type="text" class="layui-input date" id="updateTime" name="updateTime">
             </div>
         </div>
 
@@ -103,7 +103,7 @@
             var form = layui.form;
             var curd=layui.curd;
 
-            transfer.init([[${bean}]]);
+            transfer.init('brandForm',[[${bean}]]);
             form.on('submit(submit)', function(data){
                 console.log(data.field);
                 curd.saveOrUpdate('/brand/save',data.field)
