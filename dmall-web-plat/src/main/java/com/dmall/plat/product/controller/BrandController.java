@@ -60,7 +60,7 @@ public class BrandController {
             }
             request.setAttribute("bean",brand);
         }
-        return "product/brand/edit2";
+        return "product/brand/edit";
     }
 
     /**
