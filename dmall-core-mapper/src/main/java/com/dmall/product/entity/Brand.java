@@ -58,12 +58,7 @@ public class Brand implements Serializable {
      */
     @ChangeColumn("productTypeCn")
     private String description;
-    /**
-     * 商品分类ID
-     */
-    @TableField("product_type")
-    @ChangeColumn("productTypeCn")
-    private Long productType;
+
     /**
      * 品牌LOGO
      */
@@ -79,10 +74,10 @@ public class Brand implements Serializable {
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Long updateTime;
 
-    /**
-     * 以下不是表的属性
-     */
-    @TableField(exist = false)
-    private String productTypeCn;
 
+    /**
+     * 多个商品分类ID
+     */
+    @TableField(value = "product_type")
+    private String productType;
 }

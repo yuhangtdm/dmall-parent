@@ -1,5 +1,9 @@
 layui.config({
-    base: '/layui/extend/' //此处路径请自行处理, 可以使用绝对路径
+    base: '/controller/'
+}).extend({
+    curd:'/curd',
+    formSelects:"/formSelects",
+    treeselect:'/treeselect'
 }).define(['util', 'layer', 'laydate', 'form','formSelects','treeselect'], function(e) {
     var $ = layui.jquery;
     var form = layui.form;
@@ -10,9 +14,6 @@ layui.config({
     var treeselect = layui.treeselect;
     var obj={
         init:function (bean,url) {
-
-            //初始化下拉框
-            initSelect();
             if(bean){
                 initForm(bean);
             }
@@ -31,6 +32,7 @@ layui.config({
                     dataType: 'json'
                 });
             }
+            initSelect();
 
         },
         initSelect:function () {
@@ -51,9 +53,17 @@ layui.config({
             var method=sel.attr("method")||'';//查询的方法
             var id=sel.attr("id");
             var xm=sel.attr("xm-select");
+            var xmValue=$("input[name='"+xm+"']").val().split(",");
+            var xmVals=[];
+            for(var i=0;i<xmValue.length;i++){
+                xmVals.push(parseInt(xmValue[i]));
+            }
             if(xm){
                 formSelects.data(xm, 'server', {
-                    url: '/common/select?dict='+dict+"&bean="+bean+"&methodName="+method
+                    url: '/common/select?dict='+dict+"&bean="+bean+"&methodName="+method,
+                    success:function () {
+                        formSelects.value(xm,xmVals);
+                    }
                 });
             }else {
                 $.ajax({
@@ -97,6 +107,7 @@ layui.config({
     }
 
     function initForm(bean) {
+        debugger
         for(var prop in bean){
             var value=bean[prop];
             $("[name='"+prop+"'],[name='"+prop+"[]']").each(function () {
@@ -121,13 +132,6 @@ layui.config({
                                 value: new Date(value) //参数即为：2018-08-20 20:08:08 的时间戳
                             });
                         }else {
-                            var xmSelect=$("select[_name='"+prop+"']");
-                            if(xmSelect){
-                                var xm=xmSelect.attr("xm-select");
-                                if(xm){
-                                    formSelects.value(xm, [2]);
-                                }
-                            }
                             $(this).val(value);
                         }
                     }

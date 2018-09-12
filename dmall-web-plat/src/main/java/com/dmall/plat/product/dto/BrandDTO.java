@@ -30,11 +30,13 @@ public class BrandDTO implements Serializable {
      * 品牌简介
      */
     private String description;
+
     /**
      * 商品分类ID
      */
     @NotNull(message = "商品分类不能为空")
-    private Long productType;
+    private String productType;
+
     /**
      * 品牌LOGO
      */
