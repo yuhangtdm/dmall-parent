@@ -1,10 +1,11 @@
 layui.extend({
     zTree:'/controller/zTree'
-}).define(['layer','table','zTree'],function (e) {
+}).define(['layer','table','zTree','form'],function (e) {
     var layer = layui.layer;
     var $ = layui.$;
     var table = layui.table;
     var zTree=layui.zTree;
+    var form = layui.form;
 
     var obj={
         openForm:function (url,title,width,height,full) {
@@ -249,6 +250,27 @@ layui.extend({
         var index=parent.layer.getFrameIndex(window.name);
         parent.layer.close(index);//关闭父窗口
     }
+
+    form.verify({
+        password:function (value) {
+            var passReg='(?![0-9A-Z]+$)(?![0-9a-z]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,18}$';
+            var r = '/^[^\u4e00-\u9fa5]+$/';
+            if(!passReg.match(value) && r.match(value)){
+                return "密码必须包含数字、大小写字母,不包含汉字,且至少六位";
+            }
+        },
+        bigZero:function (value) {
+            if(parseFloat(value)<0){
+                return "数字必须大于0";
+            }
+        },
+        twoDecimal:function (value) {
+            var decimalReg='/^\\d+(\\.\\d{1,2})?$/';
+            if(!decimalReg.match(value)){
+                return "只能有两位小数点";
+            }
+        }
+    })
 
 
     e('curd',obj);
