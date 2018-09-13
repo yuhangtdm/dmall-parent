@@ -160,6 +160,9 @@ layui.extend({
     function initForm(bean) {
         for(var prop in bean){
             var value=bean[prop];
+            if(Object.prototype.toString.call(value) === "[object Null]"){
+                continue;
+            }
             if(Object.prototype.toString.call(value) === "[object Object]"){
                 initForm(value);
             }
