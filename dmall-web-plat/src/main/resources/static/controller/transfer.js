@@ -1,22 +1,17 @@
-layui.config({
-    base: '/controller/'
-}).extend({
-    curd:'/curd',
-    formSelects:"/formSelects",
-    treeselect:'/treeselect',
-    zTree:'/zTree'
-}).define(['util', 'layer', 'laydate', 'form','formSelects','treeselect'], function(e) {
+layui.extend({
+    formSelects:'/controller/formSelects',
+    treeSelect:'/controller/treeSelect'
+}).define(['layer', 'laydate', 'form','formSelects','treeSelect'], function(e) {
     var $ = layui.jquery;
     var form = layui.form;
-    var util = layui.util;
     var layer = layui.layer;
     var laydate = layui.laydate;
     var formSelects = layui.formSelects;
-    var treeselect = layui.treeselect;
+    var treeSelect = layui.treeSelect;
 
     formSelects.config(null, {
-        keyName: 'name',            //自定义返回数据中name的key, 默认 name
-        keyVal: 'id',            //自定义返回数据中value的key, 默认 value
+        keyName: 'name',
+        keyVal: 'id',
     }, false);
 
     var obj={
@@ -40,9 +35,7 @@ layui.config({
                 });
             }
             initSelect();
-
             initDate(formId);
-
         },
         initSelect:function () {
             initSelect();
@@ -55,6 +48,9 @@ layui.config({
         }
     }
 
+    /**
+     * 初始化下拉框 包括单选 多选 联动选择  树
+     */
     function initSelect() {
         $("select[loadData]").each(function(){
             var sel = $(this);
@@ -116,7 +112,7 @@ layui.config({
     }
 
     /**
-     * 省市区
+     * 省市区的加载
      * @param xm
      */
 
@@ -133,7 +129,7 @@ layui.config({
 
 
     function initSelectTree(url,id) {
-        treeselect.render(
+        treeSelect.render(
             {
                 elem: "#"+id,
                 data: url,
@@ -142,6 +138,10 @@ layui.config({
         );
     }
 
+    /**
+     * 初始化日期控件
+     * @param formId
+     */
     function initDate(formId) {
         $("#"+formId).find(".date").each(function () {
             laydate.render({
@@ -153,9 +153,16 @@ layui.config({
 
     }
 
+    /**
+     * 根据对象给表单赋值
+     * @param bean
+     */
     function initForm(bean) {
         for(var prop in bean){
             var value=bean[prop];
+            if(Object.prototype.toString.call(value) === "[object Object]"){
+                initForm(value);
+            }
             $("[name='"+prop+"'],[name='"+prop+"[]']").each(function () {
                 var tagName=$(this)[0].tagName;
                 var type=$(this).attr('type');
@@ -163,13 +170,21 @@ layui.config({
                     if(type=='radio'){
                         $(this).attr('checked',value==$(this).val());
                     }else if(type=='checkbox'){
-                        var vals=value.split(",");
-                        for(var i=0;i<vals.length;i++){
-                            if($(this).val()==vals[i]){
-                                $(this).attr('checked',true);
-                                break;
+                        if(Object.prototype.toString.call(value) === "[object Array]"){
+                            for(var i=0;i<value.length;i++){
+                                if($(this).val()==value[i]){
+                                    $(this).attr('checked',true);
+                                }
+                            }
+                        }else{
+                            var vals=value.split(",");
+                            for(var i=0;i<vals.length;i++){
+                                if($(this).val()==vals[i]){
+                                    $(this).attr('checked',true);
+                                }
                             }
                         }
+
                     }else{
                         if(prop.lastIndexOf("Time")>-1){
                             laydate.render({
@@ -184,14 +199,22 @@ layui.config({
                 }else if(tagName=='img'){
                     $(this).attr('src',value);
                 }else if(tagName=='SELECT'){
-                    $(this).val(value);
+                    if(Object.prototype.toString.call(value) === "[object Array]"){
+                        var selectValue='';
+                        for(var i=0;i<value.length;i++){
+                            selectValue=value[i]+",";
+                        }
+                        $(this).val(selectValue.substring(0,selectValue.length-1));
+                    }else {
+                        $(this).val(value);
+                    }
                 }else if(tagName=='TEXTAREA'){
                     $(this).val(value);
                 }
 
             });
         }
-        form.render();//更新全部
+        form.render();
     }
 
     

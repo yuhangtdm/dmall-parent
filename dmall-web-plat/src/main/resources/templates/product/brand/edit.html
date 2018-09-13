@@ -76,7 +76,8 @@
 
     <script th:inline="javascript">
         layui.extend({
-            transfer:'/controller/transfer'
+            transfer:'/controller/transfer',
+            curd:'/controller/curd'
         }).use(['form','transfer','curd'], function(){
             var transfer=layui.transfer;
             var form = layui.form;
@@ -84,7 +85,6 @@
 
             transfer.init('brandForm',[[${bean}]]);
             form.on('submit(submit)', function(data){
-                console.log(data.field);
                 curd.saveOrUpdate('/brand/save',data.field)
                 return false;
             });

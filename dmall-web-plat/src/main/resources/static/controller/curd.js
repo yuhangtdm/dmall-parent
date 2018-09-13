@@ -1,12 +1,20 @@
-layui.config({
-    base: '/controller/'
-}).define(['layer','table'],function (e) {
+layui.extend({
+    zTree:'/controller/zTree'
+}).define(['layer','table','zTree'],function (e) {
     var layer = layui.layer;
     var $ = layui.$;
     var table = layui.table;
+    var zTree=layui.zTree;
+
     var obj={
-        open:function (url,title,width,height,full) {
-           open(url,title,width,height,full);
+        openForm:function (url,title,width,height,full) {
+            openForm(url,title,width,height,full);
+        },
+        openTable: function(url,title,width,height,callback,full){
+            openTable(url,title,width,height,callback,full);
+        },
+        openTree:function (url,style,title,width,height,callback,full) {
+            openTree(url,style,title,width,height,callback,full)
         },
         save:function (url,requestData,callback) {
             save(url,requestData,callback);
@@ -23,13 +31,13 @@ layui.config({
     }
 
     /**
-     * 打开弹窗的公共方法
+     * 打开弹窗表单
      * @param url 路径
      * @param title 弹窗标题
      * @param width 弹框宽度
      * @param height 弹框高度
      */
-    function open(url,title,width,height,full) {
+    function openForm(url,title,width,height,full) {
         layer.open({
             type:2,
             area: [width, height],
@@ -46,7 +54,89 @@ layui.config({
     }
 
     /**
-     * 保存
+     * 打开弹窗表格
+     * @param url
+     * @param title
+     * @param width
+     * @param height
+     * @param full
+     */
+    function openTable(url,title,width,height,callback,full) {
+        layer.open({
+            type:2,
+            area: [width, height],
+            title :title,
+            content:url,
+            maxmin:true,
+            shadeClose:true,
+            success:function (layero,index) {
+                if(full && full==true){
+                    layer.full(index);
+                }
+            },
+            btn: ['确定', '取消'],
+            yes:function (index, layero) {
+               var result= callback(index,layero);
+               if(result){
+                   layer.closeAll();
+               }
+            },
+            btn2: function(layero,index){
+                layer.close(index);
+            },
+        });
+    }
+
+    /**
+     * 打开树
+     * @param url
+     * @param style
+     * @param title
+     * @param width
+     * @param height
+     * @param callback
+     * @param full
+     */
+    function openTree(url,style,title,width,height,callback,full) {
+        var obj={
+            "url":url,
+            "style":style
+        };
+        var zTreeObj;
+        var html = $('<form class="layui-form"><div class="layui-form-item" style="width:360px;"><div class="ztree" id="tree-area" style="max-height:420px;overflow-y:auto;overflow-x:hidden;"></div></div></form>');
+        layer.open({
+            type:1,
+            area: [width, height],
+            title :title,
+            content:html.html(),
+            maxmin:true,
+            shadeClose:true,
+            success:function (layero,index) {
+                zTreeObj=zTree.zTreeAsync(obj);
+                if(full && full==true){
+                    layer.full(index);
+                }
+            },
+            btn: ['确定', '取消'],
+            yes:function (index, layero) {
+                var nodes = zTree.getCheckedNodes(true);
+                if (callback) {
+                    var result = callback(zTree, nodes);
+                    if (result) {
+                        layer.closeAll();
+                    }
+                } else {
+                    layer.closeAll();
+                }
+            },
+            btn2: function(layero,index){
+                layer.close(index);
+            },
+        });
+    }
+
+    /**
+     * 有回调的保存
      */
     function save(url,requestData,callback) {
         var load ;
@@ -64,7 +154,9 @@ layui.config({
                         icon:1,
                         time:1000
                     },function () {
-                        callback();
+                        if(callback){
+                            callback();
+                        }
                     });
                 }else{
                     layer.close(load);
@@ -72,7 +164,6 @@ layui.config({
                 }
             },
             error:function (data) {
-                console.log(data);
                 layer.close(load);
                 var msg=data.responseJSON.msg || '服务异常';
                 layer.msg(msg,{icon:2})
@@ -82,19 +173,20 @@ layui.config({
     }
 
     /**
-     * 保存之后关闭弹窗
+     * 正常表单弹窗的保存
+     * @param url
+     * @param requestData
      */
-    function saveAfter() {
-        window.parent.location.reload();//刷新父页面
-        var index=parent.layer.getFrameIndex(window.name);
-        parent.layer.close(index);//关闭父窗口
-    }
-
     function saveOrUpdate(url,requestData) {
         save(url,requestData,saveAfter);
     }
 
-    function deleteById(url,callbak) {
+    /**
+     * 有回调的删除
+     * @param url
+     * @param callbak
+     */
+    function deleteById(url,callback) {
         var load;
         $.ajax({
             type:'GET',
@@ -110,7 +202,7 @@ layui.config({
                         time: 1000
                     },function () {
                         layer.closeAll();
-                        callbak();
+                        callback();
                     });
                 }else {
                     layer.msg(data.msg,{icon:2})
@@ -123,6 +215,12 @@ layui.config({
         })
     }
 
+    /**
+     * 表格的初始化
+     * @param id
+     * @param url
+     * @param cols
+     */
     function initPage(id,url,cols) {
         table.render({
             elem: '#'+id,
@@ -143,6 +241,14 @@ layui.config({
         });
     }
 
+    /**
+     * 保存之后关闭弹窗
+     */
+    function saveAfter() {
+        window.parent.location.reload();//刷新父页面
+        var index=parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);//关闭父窗口
+    }
 
 
     e('curd',obj);

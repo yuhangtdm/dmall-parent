@@ -2,7 +2,7 @@
 layui.define('tree', function (exports) {
     "use strict";
 
-    var _MOD = 'treeselect',
+    var _MOD = 'treeSelect',
         treeData = {}, //全局树形数据缓存
         $ = layui.jquery,
         hint = layui.hint(),
