@@ -1,6 +1,6 @@
 layui.extend({
-    formSelects:'/controller/formSelects',
-    treeSelect:'/controller/treeSelect'
+    formSelects:'formSelects',
+    treeSelect:'treeSelect'
 }).define(['layer', 'laydate', 'form','formSelects','treeSelect'], function(e) {
     var $ = layui.jquery;
     var form = layui.form;

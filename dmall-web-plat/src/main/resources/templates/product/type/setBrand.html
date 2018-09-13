@@ -15,14 +15,6 @@
         <link rel="stylesheet" th:href="@{/admin/css/admin.css}" href="./css/admin.css" media="all">
     </head>
     <body>
-        <div class="x-nav">
-            <span class="layui-breadcrumb">
-              <a><cite>首页</cite></a>
-              <a><cite>商品信息管理</cite></a>
-              <a><cite>品牌管理</cite></a>
-            </span>
-            <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon" style="line-height:30px">ဂ</i></a>
-        </div>
 
         <div class="x-body">
 
@@ -48,8 +40,6 @@
                             </div>
                         </div>
                     </div>
-
-
                 </div>
 
             </form>
@@ -57,17 +47,18 @@
             </table>
         </div>
         <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
-        <script th:src="@{/js/common.js}"  charset="utf-8"></script>
 
         <script>
             var brandIds=[];
-            layui.use(['element','form','table','layer'], function() {
-                $ = layui.jquery;//jquery
-                table=layui.table;//表格
-                form=layui.form;
-                var cols=buildColumn();
+            layui.config({
+                base: '/controller/'
+            }).use(['element','form','table','layer','curd'], function() {
+                var $ = layui.$;
+                var table=layui.table;
+                var form=layui.form;
+                var curd = layui.curd;
 
-                pageList(table,'setBrand','/brand/list',cols);
+                curd.initPage('setBrand','/brand/list',buildColumn());
 
                 function buildColumn() {
                     var cols=[
@@ -92,7 +83,7 @@
                 
                 function getCheck() {
                     var checkStatus = table.checkStatus('setBrand');
-                    data = checkStatus.data;
+                    var data = checkStatus.data;
                     for(var i=0;i<data.length;i++){
                         brandIds.push(data[i].id);
                     }
@@ -103,9 +94,11 @@
                 });
 
             });
+
             function getBrandIds() {
                 return brandIds;
             }
+
         </script>
     </body>
 </html>

@@ -75,23 +75,23 @@
         <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
 
         <script>
-            layui.extend({
-                curd: '/controller/curd'
+            layui.config({
+                base: '/controller/'
             }).use(['element','form','table','layer','curd'], function() {
-                var $ = layui.$;//jquery
-                var table=layui.table;//表格
+                var $ = layui.$;
+                var table=layui.table;
                 var form=layui.form;
                 var curd=layui.curd;
 
 
-                curd.initPage('brand','/brand/list',buildColumn())
+                curd.initPage('brand','/brand/list',buildColumn());
 
                 //头工具栏事件
                 table.on('toolbar(brand)', function(obj){
                     var checkStatus = table.checkStatus(obj.config.id);
                     switch(obj.event){
                         case 'add':
-                             curd.open('/brand/edit','添加品牌','600px', '500px',true);
+                             curd.openForm('/brand/edit','添加品牌','600px', '500px',true);
                             break;
                     };
                 });
@@ -107,7 +107,7 @@
                         });
 
                     } else if(obj.event === 'edit'){
-                        curd.open('/brand/edit?id='+data.id,'修改品牌','600px', '500px',true);
+                        curd.openForm('/brand/edit?id='+data.id,'修改品牌','600px', '500px',true);
                     }
                 });
 
@@ -141,7 +141,6 @@
                     ];
                     return cols;
                 }
-
 
             });
         </script>

@@ -19,6 +19,8 @@
           type="text/css">
     <link rel="stylesheet" th:href="@{/zTree/css/metroStyle/metroStyle.css}" href="zTreeStyle/zTreeStyle.css"
           type="text/css">
+    <link rel="stylesheet" th:href="@{/layui/css/formSelects-v4.css}" href="./css/admin.css" media="all">
+
     <style type="text/css">
         div#rMenu {
             position: absolute;
@@ -64,7 +66,7 @@
             </div>
         </div>
 
-        <div class="layui-col-xs6 layui-col-sm6  layui-col-md6">
+        <div class="layui-col-xs6 layui-col-sm6  layui-col-md4">
             <div class="layui-card">
                 <div class="layui-card-header">编辑商品类型</div>
                 <div class="layui-card-body">
@@ -72,7 +74,7 @@
 
                         <div class="layui-form-item" style="padding-top: 5px">
                             <label class="layui-form-label">类型名称</label>
-                            <div class="layui-inline">
+                            <div class="layui-input-block">
                                 <input type="hidden" name="id"/>
                                 <input type="text" name="name" lay-verify="required" autocomplete="off"
                                        placeholder="请输入类型名称" class="layui-input">
@@ -80,37 +82,33 @@
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">上级类型</label>
-                            <div class="layui-inline">
-                                <select id="pId"  xm-select-search="" url="/type/tree?flag=add&level=1"  name="pid"  xm-select-radio xm-select="tree">
+                            <div class="layui-input-block">
+                                <select id="pId" loadData="tree"  xm-select-search="" url="/type/tree?flag=add&level=1"  name="pid"  xm-select-radio xm-select="pid">
                                 </select>
                             </div>
                         </div>
 
                         <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <label class="layui-form-label">logo</label>
-                                <div class="layui-inline">
-                                    <input type="text" name="logo" autocomplete="off" placeholder="请输入logo"
-                                           class="layui-input">
-                                </div>
+                            <label class="layui-form-label">logo</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="logo" autocomplete="off" placeholder="请输入logo"
+                                       class="layui-input">
                             </div>
                         </div>
 
 
                         <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <label class="layui-form-label">排序号</label>
-                                <div class="layui-inline">
-                                    <input type="number" name="sortIndex" lay-verify="required|number"
-                                           autocomplete="off" placeholder="请输入排序号" class="layui-input">
-                                </div>
+                            <label class="layui-form-label">排序号</label>
+                            <div class="layui-input-block">
+                                <input type="number" name="sortIndex" lay-verify="required|number"
+                                       autocomplete="off" placeholder="请输入排序号" class="layui-input">
                             </div>
                         </div>
 
                         <div class="layui-form-item">
                             <div class="layui-inline">
                                 <label class="layui-form-label">分类标题（SEO）</label>
-                                <div class="layui-inline">
+                                <div class="layui-input-block">
                                     <input type="text" name="seoTitle" autocomplete="off" placeholder="请输入分类标题"
                                            class="layui-input">
                                 </div>
@@ -118,12 +116,10 @@
                         </div>
 
                         <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <label class="layui-form-label">分类关键字（SEO）</label>
-                                <div class="layui-inline">
-                                    <input type="text" name="seoKeywords" autocomplete="off" placeholder="请输入分类关键字（SEO）"
-                                           class="layui-input">
-                                </div>
+                            <label class="layui-form-label">分类关键字（SEO）</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="seoKeywords" autocomplete="off" placeholder="请输入分类关键字（SEO）"
+                                       class="layui-input">
                             </div>
                         </div>
 
@@ -148,7 +144,7 @@
             </div>
         </div>
 
-        <div class="layui-col-xs6 layui-col-sm6 layui-col-md2">
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md1">
         </div>
     </div>
 </div>
@@ -164,10 +160,8 @@
 
 
 <script th:inline="javascript">
-    layui.extend({
-        transfer: '/controller/transfer',
-        zTree:'/controller/zTree',
-        curd:'/controller/curd'
+    layui.config({
+        base: '/controller/'
     }).use(['transfer', 'form', 'table', 'layer','zTree','curd'], function () {
         var $ = layui.$;
         var form=layui.form;
@@ -188,7 +182,7 @@
         var zTreeObj=zTree.zTreeAsync(obj);
 
         form.on('submit(submit)',function (data) {
-            curd.save($,'/type/save',data.field,callBack);
+            curd.save('/type/save',data.field,callBack);
             return false;
         });
 
@@ -245,7 +239,7 @@
                 layer.msg("请选择节点进行设置品牌",{time:2000});
                 return false;
             }else {
-                openWindow('/setBrand','设置品牌','600px','600px',setBrandCallBack);
+                curd.openTable('/setBrand','设置品牌','600px','600px',setBrandCallBack,true);
             }
         });
 
@@ -305,6 +299,9 @@
         //设置品牌之后的回调
         function setBrandCallBack(index,layero) {
             var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+            debugger
+            console.log(iframeWin.getBrandIds());
+            return false;
             var treeNode = zTreeObj.getSelectedNodes()[0];
             var reqData={
                 "typeId":treeNode.id,

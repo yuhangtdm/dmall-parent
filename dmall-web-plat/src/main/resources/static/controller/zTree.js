@@ -1,22 +1,18 @@
-layui.extend({
-    ztreecore: '/controller/ztree.core',
-    ztreeexcheck: '/controller/ztree.excheck',
-    ztreeexedit: '/controller/ztree.exedit'
-}).define(["ztreecore", "ztreeexcheck", "ztreeexedit", 'layer'], function(e) {
+layui.define(["ztreecore", "ztreeexcheck", "ztreeexedit", 'layer'], function(e) {
     var $=layui.$;
-
+    var rightClickCallback;
+    var zTreeObj;
     var obj={
         zTreeAsync:function(obj){
-            zTreeAsync(obj);
+            return zTreeAsync(obj);
         },
         zTree:function (obj) {
-            zTree(obj);
+            return zTree(obj);
         }
     }
 
     //树的异步加载
     function zTreeAsync(obj){
-        var zTreeObj;
         var url=obj.url;
         var id=obj.id;
         var setting = {
@@ -25,7 +21,7 @@ layui.extend({
                 url: url
             },
             callback : {
-                onRightClick: null,
+                onRightClick: OnRightClick,
                 oncheck: null,
                 onClick:null
             },
@@ -46,7 +42,7 @@ layui.extend({
             }
         }
         if(obj.rightClickCallback){
-            setting.callback.onRightClick=obj.rightClickCallback;
+            rightClickCallback=obj.rightClickCallback;
         }
         if(obj.checkCallBack){
             setting.callback.onCheck=obj.checkCallBack;
@@ -87,7 +83,7 @@ layui.extend({
             setting.callback.onClick = obj.onclick;
         }
         if(obj.rightClickCallback){
-            setting.callback.onRightClick=obj.rightClickCallback;
+            OnRightClick=obj.rightClickCallback;
         }
         if(obj.checkCallBack){
             setting.callback.onCheck=obj.checkCallBack;

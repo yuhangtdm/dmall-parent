@@ -70,23 +70,26 @@
             </script>
         </div>
         <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
-        <script th:src="@{/js/common.js}"  charset="utf-8"></script>
 
         <script>
-            layui.use(['element','form','table','layer'], function() {
-                $ = layui.jquery;//jquery
-                table=layui.table;//表格
-                form=layui.form;
-                var cols=buildColumn();
+            layui.config({
+                base: '/controller/'
+            }).use(['element','transfer','form','layer','curd'], function() {
+                var $ = layui.$;
+                var table=layui.table;
+                var transfer = layui.transfer;
+                var curd=layui.curd;
+                var form=layui.form;
 
-                pageList(table,'props','/props/list',cols);
+
+                curd.initPage('props','/props/list',buildColumn())
 
                 //头工具栏事件
                 table.on('toolbar(props)', function(obj){
                     var checkStatus = table.checkStatus(obj.config.id);
                     switch(obj.event){
                         case 'add':
-                             open('/props/edit','添加属性','600px', '400px');
+                            curd.openForm('/props/edit','添加属性','600px', '400px');
                             break;
                     };
                 });
@@ -96,15 +99,15 @@
                     var data = obj.data;
                     if(obj.event === 'del'){
                         layer.confirm('确定删除该属性?', {icon: 3, title:'提示'}, function(index){
-                            deleteById('/props/delete?id='+data.id,function(){
+                            curd.deleteById('/props/delete?id='+data.id,function(){
                                 $("#formSearch").click();
                             });
                         });
 
                     } else if(obj.event === 'edit'){
-                        open('/props/edit?id='+data.id,'修改品牌','600px', '400px');
+                        curd.openForm('/props/edit?id='+data.id,'修改品牌','600px', '400px');
                     }else if(obj.event==='setValue'){
-                        open('/setValue','设置属性值','600px','400px');
+                        curd.openForm('/setValue','设置属性值','600px','400px');
                     }
                 });
 

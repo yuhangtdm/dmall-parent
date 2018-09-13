@@ -59,7 +59,6 @@
                         </div>
                     </div>
 
-
                 </div>
 
             </form>
@@ -77,23 +76,24 @@
             </script>
         </div>
         <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
-        <script th:src="@{/js/common.js}"  charset="utf-8"></script>
 
         <script>
-            layui.use(['element','form','table','layer'], function() {
-                $ = layui.jquery;//jquery
-                table=layui.table;//表格
-                form=layui.form;
-                var cols=buildColumn();
+            layui.config({
+                base: '/controller/'
+            }).use(['element','form','table','layer','curd'], function() {
+                var $ = layui.jquery;
+                var table=layui.table;
+                var form=layui.form;
+                var curd= layui.curd;
 
-                pageList(table,'dict','/dict/list',cols);
+                curd.initPage('brand','/brand/list',buildColumn());
 
                 //头工具栏事件
                 table.on('toolbar(dict)', function(obj){
                     var checkStatus = table.checkStatus(obj.config.id);
                     switch(obj.event){
                         case 'add':
-                             add('/dict/add','添加字典','600px', '500px');
+                            curd.openForm('/dict/add','添加字典','600px', '500px');
                             break;
                     };
                 });
@@ -103,13 +103,13 @@
                     var data = obj.data;
                     if(obj.event === 'del'){
                         layer.confirm('确定删除该字典?', {icon: 3, title:'提示'}, function(index){
-                            deleteById('/dict/delete?id='+data.id,function () {
+                            curd.deleteById('/dict/delete?id='+data.id,function () {
                                 $("#formSearch").click();
                             });
                         });
 
                     } else if(obj.event === 'edit'){
-                        add('/dict/add?id='+data.id,'修改字典','600px', '500px');
+                        curd.openForm('/dict/add?id='+data.id,'修改字典','600px', '500px');
                     }
                 });
 

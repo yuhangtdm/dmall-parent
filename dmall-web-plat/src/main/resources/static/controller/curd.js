@@ -1,6 +1,4 @@
-layui.extend({
-    zTree:'/controller/zTree'
-}).define(['layer','table','zTree','form'],function (e) {
+layui.define(['layer','table','zTree','form'],function (e) {
     var layer = layui.layer;
     var $ = layui.$;
     var table = layui.table;
@@ -238,6 +236,9 @@ layui.extend({
             request: {
                 pageName: 'current',
                 limitName: 'size'
+            },
+            done:function (res, curr, count) {
+                
             }
         });
     }

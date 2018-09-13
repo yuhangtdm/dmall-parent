@@ -16,7 +16,7 @@
 
     </head>
     <body>
-        <form class="layui-form" action="">
+        <form class="layui-form" id="props-group-form" action="">
 
         <div class="layui-form-item" style="padding-top: 5px">
             <label class="layui-form-label">属性名称</label>
@@ -54,14 +54,13 @@
 
     <script th:inline="javascript">
         layui.config({
-            base: '../layui/extend/' //假设这是你存放拓展模块的根目录
-        }).use(['form','treeselect'], function(){
-            var form = layui.form,
-                layer = layui.layer,
-                $=layui.jquery,
-                treeselect = layui.treeselect;
-            showSelectTree(treeselect,'/type/tree','productType');
-            initFormData($,form,JSON.parse([[${bean}]]));
+            base: '/controller'
+        }).use(['form','transfer'], function(){
+            var form = layui.form;
+            var layer = layui.layer;
+            var $=layui.$;
+
+            transfer.init('props-group-form',[[${bean}]]);
 
             form.on('submit(submit)', function(data){
                 saveOrUpdate($,'/props/save',data.field);
