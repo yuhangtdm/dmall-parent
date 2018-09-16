@@ -6,21 +6,28 @@ import com.dmall.common.enums.ResultEnum;
 import com.dmall.plat.product.dto.ProductTypeDto;
 import com.dmall.plat.product.dto.TypeBrandDTO;
 import com.dmall.product.entity.ProductType;
+import com.dmall.product.entity.ProductTypeBrand;
+import com.dmall.product.service.ProductTypeBrandService;
 import com.dmall.product.service.ProductTypeService;
 import com.dmall.web.common.result.ReturnResult;
 import com.dmall.web.common.utils.ResultUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -36,6 +43,9 @@ public class ProductTypeController {
 
     @Autowired
     private ProductTypeService productTypeService;
+
+    @Autowired
+    private ProductTypeBrandService productTypeBrandService;
 
     /**
      *
@@ -76,6 +86,41 @@ public class ProductTypeController {
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
 
+    /**
+     * 设置品牌
+     */
+    @GetMapping("/setBrand")
+    public String setBrand(Long typeId, HttpServletRequest request){
+        List<ProductTypeBrand> productTypeBrands = productTypeBrandService.queryByProductTypeid(typeId);
+        List<Long> collect = productTypeBrands.stream().map(ProductTypeBrand::getBrandId).collect(Collectors.toList());
+        Map<String,Object> bean=new HashMap<>();
+        bean.put("brandIds",collect);
+        request.setAttribute("bean",bean);
+        ProductType productType = productTypeService.selectById(typeId);
+        request.setAttribute("typeName",productType.getName());
+        return "product/type/setBrand";
+    }
+
+    @PostMapping("setBrand")
+    @ResponseBody
+    public ReturnResult setBrand(@Valid TypeBrandDTO typeBrandDTO){
+        productTypeService.setBrand(build(typeBrandDTO));
+        return ResultUtil.buildResult(ResultEnum.SUCC);
+    }
+
+    private Map<String,List<Long>> build(TypeBrandDTO typeBrandDTO){
+        Map<String,List<Long>> build=new HashMap<>();
+        List<Long> brandIds=new ArrayList<>();
+        for (String s : typeBrandDTO.getBrandIds().split(",")) {
+            brandIds.add(Long.parseLong(s));
+        }
+        build.put("brandIds",brandIds);
+
+        List<Long> list=new ArrayList<>();
+        list.add(Long.parseLong(typeBrandDTO.getTypeIds()));
+        build.put("typeIds",list);
+        return build;
+    }
 
 }
 

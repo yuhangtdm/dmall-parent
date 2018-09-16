@@ -13,90 +13,55 @@
         <meta name="format-detection" content="telephone=no">
         <link rel="stylesheet" th:href="@{/layui/css/layui.css}" href="./css/admin.css" media="all">
         <link rel="stylesheet" th:href="@{/admin/css/admin.css}" href="./css/admin.css" media="all">
+        <link rel="stylesheet" th:href="@{/layui/css/formSelects-v4.css}" href="./css/admin.css" media="all">
     </head>
     <body>
 
         <div class="x-body">
-
-            <form class="layui-form  layui-form-pane" action="" >
-                <div class="layui-form-item">
-
-                    <div class="layui-row">
-                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
-                            <label class="layui-form-label">品牌名称：</label>
-                            <div class="layui-input-inline">
-                                <input class="layui-input" name="brandName" >
-                            </div>
-                        </div>
-                        <div class="layui-col-xs4 layui-col-sm12 layui-col-md3">
-                            <label class="layui-form-label">首字母：</label>
-                            <div class="layui-input-inline">
-                                <input class="layui-input" name="firstLetter" >
-                            </div>
-                        </div>
-                        <div class="layui-col-xs4 layui-col-sm12 layui-col-md3">
-                            <div class="layui-input-inline" style="width:80px">
-                                <button class="layui-btn" lay-submit id="formSearch" lay-filter="formSearch"><i class="layui-icon">&#xe615;</i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </form>
-            <table id="setBrand"  class="layui-hide"  lay-filter="setBrand">
-            </table>
+            <select loadData bean="brandServiceImpl" xm-select-search="" name="brandIds" xm-select="brandIds">
+            </select>
         </div>
         <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
 
-        <script>
+        <script th:inline="javascript">
             var brandIds=[];
             layui.config({
                 base: '/controller/'
-            }).use(['element','form','table','layer','curd'], function() {
+            }).use(['element','form','table','layer','curd','transfer','formSelects'], function() {
                 var $ = layui.$;
-                var table=layui.table;
                 var form=layui.form;
                 var curd = layui.curd;
+                var transfer = layui.transfer;
+                var formSelects = layui.formSelects;
 
-                curd.initPage('setBrand','/brand/list',buildColumn());
+                transfer.init([[${bean}]]);
+                brandIds=[[${bean.brandIds}]];
+                console.log(brandIds);
 
-                function buildColumn() {
-                    var cols=[
-                        [
-                            {type: 'checkbox', fixed: 'left'},
-                            {field:'id',  title: 'ID', sort: true},
-                            {field:'brandName',  title: '品牌名称'},
-                            {field:'englishName', title: '英文名称'},
-                            {field:'firstLetter', title: '首字母', sort: true},
-                            {field:'updateTime',  title: '更新时间', sort: true,templet: function (d) {
-                                    if(d.updateTime){
-                                        return layui.util.toDateString(d.updateTime);
-                                    }else {
-                                        return '';
-                                    }
-                                }},
-                        ]
+                formSelects.on('brandIds', function(id, vals, val, isAdd, isDisabled){
+                    //id:           点击select的id
+                    //vals:         当前select已选中的值
+                    //val:          当前select点击的值
+                    //isAdd:        当前操作选中or取消
+                    //isDisabled:   当前选项是否是disabled
 
-                    ];
-                    return cols;
-                }
-                
-                function getCheck() {
-                    var checkStatus = table.checkStatus('setBrand');
-                    var data = checkStatus.data;
-                    for(var i=0;i<data.length;i++){
-                        brandIds.push(data[i].id);
+                    if(isAdd){
+                        if($.inArray(val.id,brandIds)==(-1)){
+                            brandIds.push(val.id);
+                        }
+                    }else {
+                        brandIds.splice($.inArray(val.id,brandIds),1);
                     }
-                }
-
-                table.on('checkbox(setBrand)', function(obj){
-                    getCheck();
+                    //如果return false, 那么将取消本次操作
                 });
-
             });
 
             function getBrandIds() {
-                return brandIds;
+                var result="";
+                for(var i=0;i<brandIds.length;i++){
+                    result+=brandIds[i]+",";
+                }
+                return result.substring(0,result.length-1);
             }
 
         </script>

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -133,6 +134,25 @@ public class PlatExceptionHandler  {
         return  "forward:/error";
     }
 
+    @ExceptionHandler(SQLException.class)
+    public String sqlException(SQLException ex, HttpServletRequest request){
+        Map<String,Object> map=new LinkedHashMap<>();
+        map.put("code",ResultEnum.SERVER_ERROR.getCode());
+        map.put("msg","数据库异常");
+        request.setAttribute("javax.servlet.error.status_code",ResultEnum.SERVER_ERROR.getCode());
+        request.setAttribute("data",map);
+        return "forward:/error";
+    }
+
+    @ExceptionHandler(Exception.class)
+    public String exception(Exception ex, HttpServletRequest request){
+        Map<String,Object> map=new LinkedHashMap<>();
+        map.put("code",ResultEnum.SERVER_ERROR.getCode());
+        map.put("msg","未知异常");
+        request.setAttribute("javax.servlet.error.status_code",ResultEnum.SERVER_ERROR.getCode());
+        request.setAttribute("data",map);
+        return "forward:/error";
+    }
 
 
 }

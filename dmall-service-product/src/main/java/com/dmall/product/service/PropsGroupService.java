@@ -1,5 +1,6 @@
 package com.dmall.product.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.dmall.product.entity.PropsGroup;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface PropsGroupService extends IService<PropsGroup> {
 
+    Page pageList(PropsGroup group, Page page);
 }

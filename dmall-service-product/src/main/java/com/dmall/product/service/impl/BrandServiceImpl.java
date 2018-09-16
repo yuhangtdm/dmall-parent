@@ -3,14 +3,19 @@ package com.dmall.product.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.dmall.common.Constants;
+import com.dmall.common.enums.ResultEnum;
+import com.dmall.common.exception.BusinessException;
 import com.dmall.common.utils.ChineseCharToEnUtil;
 import com.dmall.common.utils.StringUtil;
 import com.dmall.product.entity.Brand;
+import com.dmall.product.entity.ProductType;
 import com.dmall.product.entity.ProductTypeBrand;
 import com.dmall.product.mapper.BrandMapper;
 import com.dmall.product.service.BrandService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.dmall.product.service.ProductTypeBrandService;
+import com.dmall.product.service.ProductTypeService;
 import com.dmall.util.QueryUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
@@ -19,8 +24,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -36,6 +43,9 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     @Autowired
     private ProductTypeBrandService productTypeBrandService;
 
+    @Autowired
+    private ProductTypeService productTypeService;
+
     @Override
     public Page pageList(Brand brand, Page page) {
         EntityWrapper<Brand> wrapper=new EntityWrapper<>();
@@ -49,26 +59,43 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     @Transactional
     @CachePut(value = "brandCache",key = "'select:com.dmall.product.service.impl.BrandServiceImpl.list()'")
     public List<Brand> saveOrUpdate(Brand brand) {
+        List<Long> typeIds=buildTypeIds(brand);
+        List<ProductType> valid=productTypeService.selectByParam(typeIds);
+        if(StringUtil.isNotEmptyObj(valid)){
+            throw new BusinessException(ResultEnum.BAD_REQUEST,"只可以设置三级商品类型");
+        }
         brand.setFirstLetter(ChineseCharToEnUtil.getFirstLetter(brand.getBrandName()));
         if (brand.getId()!=null){
-            productTypeBrandService.deleteByBrandId(brand.getId());
             this.updateById(brand);
+            List<ProductTypeBrand> productTypeBrands = productTypeBrandService.queryByBrandId(brand.getId());
+            if(StringUtil.isNotEmptyObj(productTypeBrands)){
+                List<Long> collect = productTypeBrands.stream().map(ProductTypeBrand::getProductTypeId).collect(Collectors.toList());
+                List<Long> insertTypeIds=new ArrayList<>();
+                List<Long> delTypeIds=new ArrayList<>();
+                for (Long typeId : typeIds) {
+                    if(!collect.contains(typeId)){
+                        insertTypeIds.add(typeId);
+                    }
+                }
+                for (ProductTypeBrand productTypeBrand : productTypeBrands) {
+                    if(!typeIds.contains(productTypeBrand.getProductTypeId())){
+                        delTypeIds.add(productTypeBrand.getProductTypeId());
+                    }
+                }
+                productTypeBrandService.deleteByTypeIds(brand.getId(),delTypeIds);
+                productTypeBrandService.batchInsert(brand.getId(),insertTypeIds);
+            }else {
+                productTypeBrandService.batchInsert(brand.getId(),typeIds);
+            }
         }else {
             this.insert(brand);
+            productTypeBrandService.batchInsert(brand.getId(),typeIds);
         }
-        if(StringUtil.isNotBlank(brand.getProductType())){
-            String[] split = brand.getProductType().split(",");
-            for (String s : split) {
-                ProductTypeBrand productTypeBrand=new ProductTypeBrand();
-                productTypeBrand.setBrandId(brand.getId());
-                productTypeBrand.setProductTypeId(Long.parseLong(s));
-                productTypeBrandService.insert(productTypeBrand);
-            }
-        }
+
         return list();
     }
 
-    @Cacheable("brandCache")
+    @Cacheable(value = "brandCache",key = "'select:com.dmall.product.service.impl.BrandServiceImpl.list()'")
     public List<Brand> list() {
         EntityWrapper<Brand> wrapper=new EntityWrapper<>();
         return super.selectList(wrapper);
@@ -80,4 +107,16 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
         super.deleteById(id);
         return list();
     }
+
+    private List<Long> buildTypeIds(Brand brand){
+        List<Long> typeIds=new ArrayList<>();
+        if(StringUtil.isNotBlank(brand.getProductType())){
+            String[] split = brand.getProductType().split(",");
+            for (String s : split) {
+                typeIds.add(Long.parseLong(s));
+            }
+        }
+        return typeIds;
+    }
+
 }

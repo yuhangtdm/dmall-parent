@@ -9,8 +9,8 @@ layui.define(['layer','table','zTree','form'],function (e) {
         openForm:function (url,title,width,height,full) {
             openForm(url,title,width,height,full);
         },
-        openTable: function(url,title,width,height,callback,full){
-            openTable(url,title,width,height,callback,full);
+        open: function(url,title,width,height,callback,full){
+            open(url,title,width,height,callback,full);
         },
         openTree:function (url,style,title,width,height,callback,full) {
             openTree(url,style,title,width,height,callback,full)
@@ -53,14 +53,14 @@ layui.define(['layer','table','zTree','form'],function (e) {
     }
 
     /**
-     * 打开弹窗表格
+     *
      * @param url
      * @param title
      * @param width
      * @param height
      * @param full
      */
-    function openTable(url,title,width,height,callback,full) {
+    function open(url,title,width,height,callback,full) {
         layer.open({
             type:2,
             area: [width, height],
@@ -75,10 +75,7 @@ layui.define(['layer','table','zTree','form'],function (e) {
             },
             btn: ['确定', '取消'],
             yes:function (index, layero) {
-               var result= callback(index,layero);
-               if(result){
-                   layer.closeAll();
-               }
+                callback(index,layero);
             },
             btn2: function(layero,index){
                 layer.close(index);
@@ -138,7 +135,7 @@ layui.define(['layer','table','zTree','form'],function (e) {
      * 有回调的保存
      */
     function save(url,requestData,callback) {
-        var load ;
+        var load;
         $.ajax({
             url:url,
             type:'POST',
@@ -164,7 +161,12 @@ layui.define(['layer','table','zTree','form'],function (e) {
             },
             error:function (data) {
                 layer.close(load);
-                var msg=data.responseJSON.msg || '服务异常';
+                var msg="";
+                if(data && data.responseJSON && data.responseJSON.msg){
+                    msg=data.responseJSON.msg;
+                }else{
+                    msg='服务故障';
+                }
                 layer.msg(msg,{icon:2})
             }
 

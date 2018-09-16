@@ -16,4 +16,20 @@
         id, product_type_id, brand_id, create_time, update_time
     </sql>
 
+    <insert id="batchInsert1" >
+        insert into p_product_type_brand(product_type_id, brand_id, create_time, update_time)
+        values
+        <foreach collection="typeIds" separator="," item="type">
+            (#{type},#{brandId},unix_timestamp(),unix_timestamp())
+        </foreach>
+    </insert>
+
+    <insert id="batchInsert2" >
+        insert into p_product_type_brand(product_type_id, brand_id,create_time, update_time)
+        values
+        <foreach collection="brandIds" separator="," item="brand">
+            (#{typeId},#{brand},unix_timestamp(),unix_timestamp())
+        </foreach>
+    </insert>
+
 </mapper>

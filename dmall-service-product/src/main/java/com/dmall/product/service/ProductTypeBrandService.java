@@ -20,4 +20,21 @@ public interface ProductTypeBrandService extends IService<ProductTypeBrand> {
     List<ProductTypeBrand> queryByBrandId(Long brandId);
 
     List<ProductTypeBrand> queryByProductTypeid(Long productTypeId);
+
+
+    void batchInsert(Long brandId,List<Long> typeIds);
+
+    void batchInsert(List<Long> brandIds,Long typeId);
+
+    List<ProductTypeBrand> selectByParam(Long brandId, Long typeId);
+
+    /**
+     * 删除品牌的类型
+     */
+    void deleteByTypeIds(Long brandId,List<Long> typeIds);
+
+    /**
+     * 删除类型的品牌
+     */
+    void deleteByBrandId(List<Long> delBrandIds,Long typeId);
 }

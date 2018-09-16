@@ -12,7 +12,6 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="format-detection" content="telephone=no">
         <link rel="stylesheet" th:href="@{/layui/css/layui.css}" href="./css/admin.css" media="all">
-        <link rel="stylesheet" th:href="@{/layui/css/treeSelect.css}" href="./css/admin.css" media="all">
         <link rel="stylesheet" th:href="@{/layui/css/formSelects-v4.css}" href="./css/admin.css" media="all">
 
     </head>
@@ -36,8 +35,14 @@
         <div class="layui-form-item">
             <label class="layui-form-label">商品类型</label>
             <div class="layui-input-block">
+
                 <select loadData="tree" url="/type/tree2" xm-select-search=""  name="productType"   xm-select="productType">
                 </select>
+
+                <!--<select loadData="tree" url="/type/tree2" xm-select-search=""  name="productType"  xm-select="productType"
+                        linkage="true" linkageWidth="140" >
+                </select>-->
+
             </div>
         </div>
 
@@ -82,7 +87,7 @@
             var form = layui.form;
             var curd=layui.curd;
 
-            transfer.init('brandForm',[[${bean}]]);
+            transfer.init([[${bean}]],null,'brandForm');
             form.on('submit(submit)', function(data){
                 curd.saveOrUpdate('/brand/save',data.field)
                 return false;

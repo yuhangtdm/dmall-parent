@@ -15,7 +15,7 @@ layui.extend({
     }, false);
 
     var obj={
-        init:function (formId,bean,url) {
+        init:function (bean,url,formId) {
             if(bean){
                 initForm(bean);
             }
@@ -59,6 +59,14 @@ layui.extend({
             var dict=sel.attr("dict")||'';//数据字典的key
             var bean=sel.attr("bean")||'';//查询下拉框的对象bean
             var method=sel.attr("method")||'';//查询的方法
+            var linkage=sel.attr("linkage") || false;
+            var linkageWidth=sel.attr("linkageWidth") || 100;
+            if(linkage=='true'){
+                linkage=new Boolean(linkage);
+            }
+            if(typeof linkageWidth==="string"){
+                linkageWidth=parseInt(linkageWidth);
+            }
             var url=sel.attr("url")||'';//查询的路径
             var xm=sel.attr("xm-select");
             var xmValue=$("input[name='"+xm+"']").val();
@@ -85,6 +93,8 @@ layui.extend({
                     if(region=='tree'){
                         formSelects.data(xm, 'server', {
                             url: url,
+                            linkage: linkage,
+                            linkageWidth: linkageWidth
                         });
                         formSelects.value(xm,xmVals);
                     }
@@ -98,7 +108,7 @@ layui.extend({
                     success : function(result){
                         if(result.code==0){
                             for (var i=0; i<result.data.length; i++){
-                                sel.append("<option value="+result.data[i].value+">"+result.data[i].name+"</option>");
+                                sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
                             }
                             if(value){
                                 sel.val(value);
@@ -143,13 +153,16 @@ layui.extend({
      * @param formId
      */
     function initDate(formId) {
-        $("#"+formId).find(".date").each(function () {
-            laydate.render({
-                elem: '#'+$(this).attr("id"),
-                type:'datetime',
-                format:'yyyy-MM-dd HH:mm:ss'
-            });
-        })
+        if(formId){
+            $("#"+formId).find(".date").each(function () {
+                laydate.render({
+                    elem: '#'+$(this).attr("id"),
+                    type:'datetime',
+                    format:'yyyy-MM-dd HH:mm:ss'
+                });
+            })
+        }
+
 
     }
 
@@ -166,60 +179,64 @@ layui.extend({
             if(Object.prototype.toString.call(value) === "[object Object]"){
                 initForm(value);
             }
-            $("[name='"+prop+"'],[name='"+prop+"[]']").each(function () {
-                var tagName=$(this)[0].tagName;
-                var type=$(this).attr('type');
-                if(tagName=='INPUT'){
-                    if(type=='radio'){
-                        $(this).attr('checked',value==$(this).val());
-                    }else if(type=='checkbox'){
-                        if(Object.prototype.toString.call(value) === "[object Array]"){
-                            for(var i=0;i<value.length;i++){
-                                if($(this).val()==value[i]){
-                                    $(this).attr('checked',true);
-                                }
-                            }
-                        }else{
-                            var vals=value.split(",");
-                            for(var i=0;i<vals.length;i++){
-                                if($(this).val()==vals[i]){
-                                    $(this).attr('checked',true);
-                                }
-                            }
-                        }
+            initData(prop,value);
 
-                    }else{
-                        if(prop.lastIndexOf("Time")>-1){
-                            laydate.render({
-                                elem: '#'+prop,
-                                format:'yyyy-MM-dd HH:mm:ss',
-                                value: new Date(value) //参数即为：2018-08-20 20:08:08 的时间戳
-                            });
-                        }else {
-                            $(this).val(value);
-                        }
-                    }
-                }else if(tagName=='img'){
-                    $(this).attr('src',value);
-                }else if(tagName=='SELECT'){
-                    if(Object.prototype.toString.call(value) === "[object Array]"){
-                        var selectValue='';
-                        for(var i=0;i<value.length;i++){
-                            selectValue=value[i]+",";
-                        }
-                        $(this).val(selectValue.substring(0,selectValue.length-1));
-                    }else {
-                        $(this).val(value);
-                    }
-                }else if(tagName=='TEXTAREA'){
-                    $(this).val(value);
-                }
-
-            });
         }
         form.render();
     }
 
+    function initData(prop,value){
+        $("[name='"+prop+"'],[name='"+prop+"[]']").each(function () {
+            var tagName=$(this)[0].tagName;
+            var type=$(this).attr('type');
+            if(tagName=='INPUT'){
+                if(type=='radio'){
+                    $(this).attr('checked',value==$(this).val());
+                }else if(type=='checkbox'){
+                    if(Object.prototype.toString.call(value) === "[object Array]"){
+                        for(var i=0;i<value.length;i++){
+                            if($(this).val()==value[i]){
+                                $(this).attr('checked',true);
+                            }
+                        }
+                    }else{
+                        var vals=value.split(",");
+                        for(var i=0;i<vals.length;i++){
+                            if($(this).val()==vals[i]){
+                                $(this).attr('checked',true);
+                            }
+                        }
+                    }
+
+                }else{
+                    if(prop.lastIndexOf("Time")>-1){
+                        laydate.render({
+                            elem: '#'+prop,
+                            format:'yyyy-MM-dd HH:mm:ss',
+                            value: new Date(value) //参数即为：2018-08-20 20:08:08 的时间戳
+                        });
+                    }else {
+                        $(this).val(value);
+                    }
+                }
+            }else if(tagName=='img'){
+                $(this).attr('src',value);
+            }else if(tagName=='SELECT'){
+                if(Object.prototype.toString.call(value) === "[object Array]"){
+                    var selectValue='';
+                    for(var i=0;i<value.length;i++){
+                        selectValue=value[i]+",";
+                    }
+                    $(this).val(selectValue.substring(0,selectValue.length-1));
+                }else {
+                    $(this).val(value);
+                }
+            }else if(tagName=='TEXTAREA'){
+                $(this).val(value);
+            }
+
+        });
+    }
     
     e('transfer',obj);
 });

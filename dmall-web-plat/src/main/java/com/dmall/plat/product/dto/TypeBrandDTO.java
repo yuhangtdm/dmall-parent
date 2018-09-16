@@ -1,6 +1,7 @@
 package com.dmall.plat.product.dto;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -12,10 +13,10 @@ import java.io.Serializable;
 @Data
 public class TypeBrandDTO implements Serializable {
 
-    @NotNull(message = "商品类型id不可为空")
-    private Long[] typeId;
+    @NotBlank(message = "商品类型id不可为空")
+    private String typeIds;
 
-    @NotNull(message = "品牌id不可为空")
-    private Long[] brandIds;
+    @NotBlank(message = "品牌id不可为空")
+    private String brandIds;
 
 }

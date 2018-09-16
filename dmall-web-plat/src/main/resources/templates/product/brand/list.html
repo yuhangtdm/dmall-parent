@@ -91,7 +91,7 @@
                     var checkStatus = table.checkStatus(obj.config.id);
                     switch(obj.event){
                         case 'add':
-                             curd.openForm('/brand/edit','添加品牌','600px', '500px',true);
+                             curd.openForm('/brand/edit','添加品牌','600px', '800px',true);
                             break;
                     };
                 });
@@ -107,7 +107,7 @@
                         });
 
                     } else if(obj.event === 'edit'){
-                        curd.openForm('/brand/edit?id='+data.id,'修改品牌','600px', '500px',true);
+                        curd.openForm('/brand/edit?id='+data.id,'修改品牌','600px', '800px',true);
                     }
                 });
 

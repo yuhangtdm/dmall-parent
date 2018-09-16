@@ -13,13 +13,14 @@
         <meta name="format-detection" content="telephone=no">
         <link rel="stylesheet" th:href="@{/layui/css/layui.css}" href="./css/admin.css" media="all">
         <link rel="stylesheet" th:href="@{/admin/css/admin.css}" href="./css/admin.css" media="all">
+
     </head>
     <body>
         <div class="x-nav">
             <span class="layui-breadcrumb">
               <a><cite>首页</cite></a>
               <a><cite>商品信息管理</cite></a>
-              <a><cite>属性管理</cite></a>
+              <a><cite>属性组管理</cite></a>
             </span>
             <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon" style="line-height:30px">ဂ</i></a>
         </div>
@@ -31,18 +32,20 @@
 
                     <div class="layui-row">
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
-                            <label class="layui-form-label">属性名称：</label>
+                            <label class="layui-form-label">属性组名称：</label>
                             <div class="layui-input-inline">
-                                <input class="layui-input" lay-verify="required" name="propName" >
-                            </div>
-                        </div>
-                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
-                            <label class="layui-form-label">商品类型：</label>
-                            <div class="layui-input-inline">
-                                <input class="layui-input" name="englishName" >
+                                <input class="layui-input" name="groupName" >
                             </div>
                         </div>
 
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
+                            <label class="layui-form-label">商品分类</label>
+                            <div class="layui-input-inline">
+                                <select loadData="tree" url="/type/tree2" xm-select-search="" name="productType" xm-select="productType"
+                                        linkage="true" linkageWidth="140">
+                                </select>
+                            </div>
+                        </div>
 
                         <div class="layui-col-xs4 layui-col-sm12 layui-col-md3">
                             <div class="layui-input-inline" style="width:80px">
@@ -53,9 +56,8 @@
 
 
                 </div>
-
             </form>
-            <table id="props"  class="layui-hide"  lay-filter="props">
+            <table id="propGroup"  class="layui-hide"  lay-filter="propGroup">
             </table>
             <script type="text/html" id="toolbarDemo">
                 <div class="layui-btn-container">
@@ -77,19 +79,17 @@
             }).use(['element','transfer','form','layer','curd'], function() {
                 var $ = layui.$;
                 var table=layui.table;
-                var transfer = layui.transfer;
                 var curd=layui.curd;
                 var form=layui.form;
 
 
-                curd.initPage('props','/props/list',buildColumn())
+                curd.initPage('propGroup','/props/group/list',buildColumn());
 
                 //头工具栏事件
-                table.on('toolbar(props)', function(obj){
-                    var checkStatus = table.checkStatus(obj.config.id);
+                table.on('toolbar(propGroup)', function(obj){
                     switch(obj.event){
                         case 'add':
-                            curd.openForm('/props/edit','添加属性','600px', '400px');
+                            curd.openForm('/props/group/edit','添加属性组','600px', '400px');
                             break;
                     };
                 });
@@ -99,22 +99,22 @@
                     var data = obj.data;
                     if(obj.event === 'del'){
                         layer.confirm('确定删除该属性?', {icon: 3, title:'提示'}, function(index){
-                            curd.deleteById('/props/delete?id='+data.id,function(){
+                            curd.deleteById('/props/group/delete?id='+data.id,function(){
                                 $("#formSearch").click();
                             });
                         });
 
                     } else if(obj.event === 'edit'){
-                        curd.openForm('/props/edit?id='+data.id,'修改品牌','600px', '400px');
+                        curd.openForm('/props/group/edit?id='+data.id,'修改属性组','600px', '400px');
                     }else if(obj.event==='setValue'){
-                        curd.openForm('/setValue','设置属性值','600px','400px');
+                        curd.openForm('/setProp','设置属性','600px','400px');
                     }
                 });
 
 
                 //监听提交
                 form.on('submit(formSearch)', function(data){
-                    table.reload('props', {
+                    table.reload('propGroup', {
                         where: data.field
                     });
                     return false;
@@ -125,8 +125,8 @@
                         [
                             {type: 'checkbox', fixed: 'left'},
                             {field:'id',  title: 'ID', sort: true},
-                            {field:'propName',  title: '属性名称'},
-                            {field:'productTypeCn',  title: '商品分类'},
+                            {field:'groupName',  title: '属性组名称'},
+                            {field:'productTypeName',  title: '商品分类'},
                             {field:'updateTime',  title: '更新时间', sort: true,templet: function (d) {
                                     if(d.updateTime){
                                         return layui.util.toDateString(d.updateTime);
@@ -141,8 +141,6 @@
                     ];
                     return cols;
                 }
-
-
             });
         </script>
     </body>

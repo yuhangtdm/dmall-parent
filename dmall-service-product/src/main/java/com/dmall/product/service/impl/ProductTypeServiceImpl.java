@@ -3,8 +3,12 @@ package com.dmall.product.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.dmall.common.Constants;
 import com.dmall.common.entity.Tree;
+import com.dmall.common.utils.StringUtil;
 import com.dmall.product.entity.ProductType;
+import com.dmall.product.entity.ProductTypeBrand;
+import com.dmall.product.mapper.ProductTypeBrandMapper;
 import com.dmall.product.mapper.ProductTypeMapper;
+import com.dmall.product.service.ProductTypeBrandService;
 import com.dmall.product.service.ProductTypeService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +16,8 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -31,6 +33,9 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
 
     @Autowired
     private ProductTypeMapper mapper;
+
+    @Autowired
+    private ProductTypeBrandService productTypeBrandService;
 
     /**
      * 循环的方式得到树结构
@@ -142,6 +147,48 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
         }
 
 
+    }
+
+    // 为类型设置品牌
+    @Override
+    @Transactional
+    public void setBrand(Map<String, List<Long>> build) {
+        List<Long> typeIds = build.get("typeIds");
+        Long typeId = typeIds.get(0);
+        List<Long> brandIds = build.get("brandIds");
+        List<ProductTypeBrand> productTypeBrands = productTypeBrandService.queryByProductTypeid(typeId);
+        if(StringUtil.isEmptyObj(productTypeBrands)){
+            productTypeBrandService.batchInsert(brandIds,typeId);
+        }else {
+            List<Long> insertBrandIds=new ArrayList<>();
+            List<Long> delBrandIds=new ArrayList<>();
+            List<Long> collect = productTypeBrands.stream().map(ProductTypeBrand::getBrandId).collect(Collectors.toList());
+            for (Long brandId : brandIds) {
+                if(!collect.contains(brandId)){
+                    insertBrandIds.add(brandId);
+                }
+            }
+            for (Long brandId : collect) {
+                if(!brandIds.contains(brandId)){
+                    delBrandIds.add(brandId);
+                }
+            }
+            if(StringUtil.isNotEmptyObj(insertBrandIds)){
+                productTypeBrandService.batchInsert(insertBrandIds,typeId);
+            }
+            if(StringUtil.isNotEmptyObj(delBrandIds)){
+                productTypeBrandService.deleteByBrandId(delBrandIds,typeId);
+            }
+        }
+    }
+
+    @Override
+    public List<ProductType> selectByParam(List<Long> typeIds) {
+        EntityWrapper<ProductType> wrapper=new EntityWrapper<>();
+        wrapper.in("id",typeIds);
+        wrapper.in("level",Arrays.asList(Constants.LEVEL_ONE,Constants.LEVEL_TWO));
+        List<ProductType> productTypes = this.selectList(wrapper);
+        return productTypes;
     }
 
 

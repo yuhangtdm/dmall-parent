@@ -53,4 +53,12 @@ public interface ProductTypeService extends IService<ProductType> {
     void batchDelete(Long id);
 
 
+    /**
+     * 设置品牌
+     * @param build
+     */
+    void setBrand(Map<String,List<Long>> build);
+
+
+    List<ProductType> selectByParam(List<Long> typeIds);
 }

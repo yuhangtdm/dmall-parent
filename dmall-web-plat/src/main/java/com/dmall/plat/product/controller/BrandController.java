@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
@@ -81,7 +82,7 @@ public class BrandController {
      */
     @RequestMapping("save")
     @ResponseBody
-    public ReturnResult save(@Validated BrandDTO brandDTO){
+    public ReturnResult save(@Valid BrandDTO brandDTO){
         Brand brand=new Brand();
         BeanUtils.copyProperties(brandDTO,brand);
         brandService.saveOrUpdate(brand);

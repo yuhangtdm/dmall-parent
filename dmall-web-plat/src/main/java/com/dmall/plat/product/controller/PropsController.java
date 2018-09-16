@@ -9,7 +9,9 @@ import com.dmall.common.exception.BusinessException;
 import com.dmall.plat.product.dto.PropsDTO;
 import com.dmall.product.entity.ProductType;
 import com.dmall.product.entity.Props;
+import com.dmall.product.entity.PropsGroup;
 import com.dmall.product.service.ProductTypeService;
+import com.dmall.product.service.PropsGroupService;
 import com.dmall.product.service.PropsService;
 import com.dmall.web.common.result.ReturnResult;
 import com.dmall.web.common.utils.ResultUtil;
@@ -41,6 +43,20 @@ public class PropsController {
 
     @Autowired
     private ProductTypeService productTypeService;
+
+    @Autowired
+    private PropsGroupService propsGroupService;
+
+    /**
+     *属性组列表
+     */
+    @RequestMapping("group/list")
+    @ResponseBody
+    @TransBean
+    public ReturnResult groupList(PropsGroup group, Page page){
+        page=propsGroupService.pageList(group,page);
+        return ResultUtil.buildResult(ResultEnum.SUCC,page.getTotal(),page.getRecords());
+    }
 
     /**
      *属性列表
