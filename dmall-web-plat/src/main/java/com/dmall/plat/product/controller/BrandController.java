@@ -100,14 +100,6 @@ public class BrandController {
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
 
-    public static void main(String[] args) {
-        List<Integer> col=Arrays.asList(3,4,5);
-        String join = StringUtil.join(col, ",");
-        System.out.println(join);
-
-
-    }
-
 
 }
 

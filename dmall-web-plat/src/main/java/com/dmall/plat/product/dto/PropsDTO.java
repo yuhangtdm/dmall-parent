@@ -3,6 +3,7 @@ package com.dmall.plat.product.dto;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author: yuhang
@@ -16,13 +17,9 @@ public class PropsDTO implements Serializable {
      * 属性名称
      */
     private String propName;
-    /**
-     * 商品分类
-     */
-    private Long productType;
 
     /**
-     * 备注
+     * 属性值
      */
-    private String remark;
+    private List<String> propValues;
 }

@@ -15,4 +15,6 @@ import com.baomidou.mybatisplus.service.IService;
 public interface PropsGroupService extends IService<PropsGroup> {
 
     Page pageList(PropsGroup group, Page page);
+
+    void saveOrUpdate(PropsGroup group);
 }

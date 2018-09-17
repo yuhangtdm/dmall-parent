@@ -3,6 +3,8 @@ package com.dmall.product.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.dmall.common.Constants;
 import com.dmall.common.entity.Tree;
+import com.dmall.common.enums.ResultEnum;
+import com.dmall.common.exception.BusinessException;
 import com.dmall.common.utils.StringUtil;
 import com.dmall.product.entity.ProductType;
 import com.dmall.product.entity.ProductTypeBrand;
@@ -11,6 +13,7 @@ import com.dmall.product.mapper.ProductTypeMapper;
 import com.dmall.product.service.ProductTypeBrandService;
 import com.dmall.product.service.ProductTypeService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.dmall.util.ValidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
@@ -103,6 +106,9 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
     @Override
     @Transactional
     public void saveOrUpdate(ProductType type) {
+        if(!ValidUtil.valid(type,"productTypeServiceImpl","pid","name")){
+            throw new BusinessException(ResultEnum.BAD_REQUEST,"同一父商品类型下的名称必须唯一");
+        }
         //编辑时需要修改所有后代元素的path
         if(type.getId()!=null){
             savePath(type);

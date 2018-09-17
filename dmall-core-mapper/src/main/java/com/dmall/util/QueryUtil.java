@@ -18,7 +18,6 @@ public class QueryUtil {
                 Field[] declaredFields = entity.getClass().getDeclaredFields();
                 for (Field declaredField : declaredFields) {
                     declaredField.setAccessible(true);
-                   // if(declaredField.get(entity))
                     Object field = declaredField.get(entity);
                     if(StringUtil.isNotEmptyObj(field)){
                         TableField annotation = declaredField.getAnnotation(TableField.class);

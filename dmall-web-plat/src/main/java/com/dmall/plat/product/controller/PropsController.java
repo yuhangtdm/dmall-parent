@@ -6,12 +6,16 @@ import com.dmall.common.Constants;
 import com.dmall.common.annotation.TransBean;
 import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.exception.BusinessException;
+import com.dmall.common.utils.StringUtil;
 import com.dmall.plat.product.dto.PropsDTO;
+import com.dmall.plat.product.dto.PropsGroupDTO;
 import com.dmall.product.entity.ProductType;
 import com.dmall.product.entity.Props;
 import com.dmall.product.entity.PropsGroup;
+import com.dmall.product.entity.PropsOption;
 import com.dmall.product.service.ProductTypeService;
 import com.dmall.product.service.PropsGroupService;
+import com.dmall.product.service.PropsOptionService;
 import com.dmall.product.service.PropsService;
 import com.dmall.web.common.result.ReturnResult;
 import com.dmall.web.common.utils.ResultUtil;
@@ -24,7 +28,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -36,6 +46,7 @@ import javax.validation.constraints.NotNull;
  */
 @Controller
 @RequestMapping("props")
+@Validated
 public class PropsController {
 
     @Autowired
@@ -46,6 +57,9 @@ public class PropsController {
 
     @Autowired
     private PropsGroupService propsGroupService;
+
+    @Autowired
+    private PropsOptionService propsOptionService;
 
     /**
      *属性组列表
@@ -59,6 +73,91 @@ public class PropsController {
     }
 
     /**
+     * 属性组编辑页面
+     */
+    @RequestMapping("group/edit")
+    public String groupEdit(Long id, HttpServletRequest request){
+        if(id!=null){
+            PropsGroup group = propsGroupService.selectById(id);
+            if(group==null){
+                throw new BusinessException(ResultEnum.BAD_REQUEST,"该属性组不存在,请刷新列表");
+            }
+            request.setAttribute("bean",group);
+        }
+        return "product/props/group_edit";
+    }
+
+    /**
+     * 属性组保存
+     */
+    @RequestMapping("group/save")
+    @ResponseBody
+    public ReturnResult groupSave(@Validated PropsGroupDTO groupDTO){
+        validGroup(groupDTO);
+        PropsGroup group=new PropsGroup();
+        BeanUtils.copyProperties(groupDTO,group);
+        propsGroupService.saveOrUpdate(group);
+        return ResultUtil.buildResult(ResultEnum.SUCC);
+    }
+
+    /**
+     * 前端校验 校验商品类型
+     */
+    private void validGroup(PropsGroupDTO groupDTO) {
+        ProductType type =null;
+        try {
+            String productType=groupDTO.getProductType();
+            Long productTypeId=Long.parseLong(productType.substring(productType.lastIndexOf("/")+1));
+            type=productTypeService.selectById(productTypeId);
+        }catch (Exception e){
+            throw new BusinessException(ResultEnum.BAD_REQUEST,"商品类型productType格式不正确");
+        }
+        if(type==null){
+            throw new BusinessException(ResultEnum.BAD_REQUEST,"商品类型已被删除，请重新选择");
+        }
+    }
+
+    /**
+     * 给属性组设置属性
+     */
+    @RequestMapping("group/setProp")
+    public String setProp(@NotNull(message = "属性组id不能为空") Long groupId, HttpServletRequest request){
+        return "product/props/setProp";
+    }
+
+    /**
+     * 属性编辑页面
+     */
+    @RequestMapping("edit")
+    public String edit(Long id, HttpServletRequest request){
+        if(id!=null){
+            Props props = propsService.selectById(id);
+            if(props==null){
+                throw new BusinessException(ResultEnum.BAD_REQUEST,"该属性不存在,请刷新列表");
+            }
+            request.setAttribute("bean",props);
+            List<PropsOption> optionList=propsOptionService.selectByPropId(id);
+            List<String> collect = optionList.stream().map(PropsOption::getOptionValue).collect(Collectors.toList());
+            String values = StringUtil.join(collect,",");
+            request.setAttribute("values",values);
+
+        }
+        return "product/props/edit";
+    }
+
+    /**
+     * 属性组保存
+     */
+    @RequestMapping("save")
+    @ResponseBody
+    public ReturnResult save(@Validated PropsDTO propsDTO){
+        Props group=new Props();
+        BeanUtils.copyProperties(propsDTO,group);
+        propsService.saveOrUpdate(group,propsDTO.getPropValues());
+        return ResultUtil.buildResult(ResultEnum.SUCC);
+    }
+
+    /**
      *属性列表
      */
     @RequestMapping("list")
@@ -69,40 +168,6 @@ public class PropsController {
         return ResultUtil.buildResult(ResultEnum.SUCC,page.getTotal(),page.getRecords());
     }
 
-    /**
-     * 跳转到属性编辑页面
-     */
-    @RequestMapping("edit")
-    public String edit(Long id, HttpServletRequest request){
-        if(id!=null){
-            Props props = propsService.selectById(id);
-            if(props==null){
-                throw new BusinessException(ResultEnum.BAD_REQUEST,"该属性不存在,请刷新列表");
-            }
-            request.setAttribute("bean",props);
-        }
-        return "product/props/edit";
-    }
-
-    /**
-     * 保存或更新属性
-     */
-    @RequestMapping("save")
-    @ResponseBody
-    public ReturnResult save(@Validated PropsDTO propsDTO){
-        ProductType productType = productTypeService.selectById(propsDTO.getProductType());
-        if(productType==null){
-            throw new BusinessException(ResultEnum.SERVER_ERROR,"商品类型已被删除,请重新选择");
-        }
-        if(!Constants.LEVEL_THREE.equals(productType.getLevel())){
-            throw new BusinessException(ResultEnum.SERVER_ERROR,"只允许三级分类添加属性,请重新选择");
-        }
-
-        Props props=new Props();
-        BeanUtils.copyProperties(propsDTO,props);
-        propsService.saveOrUpdate(props);
-        return ResultUtil.buildResult(ResultEnum.SUCC);
-    }
 
     /**
      * 删除属性

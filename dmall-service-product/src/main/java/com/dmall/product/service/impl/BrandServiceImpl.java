@@ -17,6 +17,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.dmall.product.service.ProductTypeBrandService;
 import com.dmall.product.service.ProductTypeService;
 import com.dmall.util.QueryUtil;
+import com.dmall.util.ValidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -59,6 +60,9 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     @Transactional
     @CachePut(value = "brandCache",key = "'select:com.dmall.product.service.impl.BrandServiceImpl.list()'")
     public List<Brand> saveOrUpdate(Brand brand) {
+        if(!ValidUtil.valid(brand,"brandServiceImpl","brandName")){
+            throw new BusinessException(ResultEnum.BAD_REQUEST,"品牌名称必须唯一");
+        }
         List<Long> typeIds=buildTypeIds(brand);
         List<ProductType> valid=productTypeService.selectByParam(typeIds);
         if(StringUtil.isNotEmptyObj(valid)){

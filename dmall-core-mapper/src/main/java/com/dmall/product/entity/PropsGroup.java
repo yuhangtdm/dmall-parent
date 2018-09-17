@@ -37,7 +37,7 @@ public class PropsGroup implements Serializable {
      * 商品分类id
      */
     @TableField("product_type")
-    private Long productType;
+    private String productType;
     /**
      * 创建时间
      */
@@ -49,5 +49,6 @@ public class PropsGroup implements Serializable {
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Long updateTime;
 
+    private String remark;
 
 }

@@ -45,7 +45,7 @@ public class Props implements Serializable {
      * 商品分类
      */
     @TableField("product_type")
-    private Long productType;
+    private String productType;
     /**
      * 输入模式 0-文本框 1-下拉列表 2-复选框
      */

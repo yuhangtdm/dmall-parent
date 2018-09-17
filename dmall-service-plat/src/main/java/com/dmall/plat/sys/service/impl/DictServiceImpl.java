@@ -9,6 +9,7 @@ import com.dmall.plat.sys.service.DictService;
 import com.dmall.sys.entity.Dict;
 import com.dmall.sys.mapper.DictMapper;
 import com.dmall.util.QueryUtil;
+import com.dmall.util.ValidUtil;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -61,7 +62,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
     @Override
     @CachePut(key = "'dict:'+#root.args[0].dictType")
     public List<Dict> saveOrUpdate(Dict dict) {
-        if(!validCode(dict)){
+        if(!ValidUtil.valid(dict,"dictServiceImpl","dict_code")){
             throw new BusinessException(ResultEnum.BAD_REQUEST,"字典码code必须唯一");
         }
         if(dict.getId()!=null){
