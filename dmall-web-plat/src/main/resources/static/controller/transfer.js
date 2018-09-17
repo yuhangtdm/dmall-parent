@@ -59,11 +59,7 @@ layui.extend({
             var dict=sel.attr("dict")||'';//数据字典的key
             var bean=sel.attr("bean")||'';//查询下拉框的对象bean
             var method=sel.attr("method")||'';//查询的方法
-            var linkage=sel.attr("linkage") || false;
             var linkageWidth=sel.attr("linkageWidth") || 100;
-            if(linkage=='true'){
-                linkage=new Boolean(linkage);
-            }
             if(typeof linkageWidth==="string"){
                 linkageWidth=parseInt(linkageWidth);
             }
@@ -71,33 +67,47 @@ layui.extend({
             var xm=sel.attr("xm-select");
             var xmValue=$("input[name='"+xm+"']").val();
             var xmVals=[];
+            var type=sel.attr("loadData");
             if(xm && xmValue){
-                var xms=xmValue.split(",");
-                for(var i=0;i<xms.length;i++){
-                    xmVals.push(parseInt(xms[i]));
+                if(type=='normal' || type=='tree'){
+                    var xms=xmValue.split(",");
+                    for(var i=0;i<xms.length;i++){
+                        xmVals.push(parseInt(xms[i]));
+                    }
+                }else if(type=='linkage' || type=='region'){
+                    var xms=xmValue.split(",");
+                    for(var i=0;i<xms.length;i++){
+                        xmVals.push(xms[i]);
+                    }
                 }
             }
+            if(xm && type){
+                if(type=='normal'){
+                    formSelects.data(xm, 'server', {
+                        url: '/common/select?dict='+dict+"&bean="+bean+"&methodName="+method,
+                        success:function () {
+                            formSelects.value(xm,xmVals);
+                        }
+                    });
+                } else if(type=='region'){
+                    initRegion(xm,xmValue);
+                } else if(type=='tree'){
+                    formSelects.data(xm, 'server', {
+                        url: url,
+                        success:function () {
+                            formSelects.value(xm,xmVals);
+                        }
+                    });
 
-            var region=sel.attr("loadData");
-            if(xm){
-                formSelects.data(xm, 'server', {
-                    url: '/common/select?dict='+dict+"&bean="+bean+"&methodName="+method,
-                    success:function () {
-                        formSelects.value(xm,xmVals);
-                    }
-                });
-                if(region){
-                    if(region=='region'){
-                        initRegion(xm,xmValue);
-                    }
-                    if(region=='tree'){
-                        formSelects.data(xm, 'server', {
-                            url: url,
-                            linkage: linkage,
-                            linkageWidth: linkageWidth
-                        });
-                        formSelects.value(xm,xmVals);
-                    }
+                } else if(type=='linkage'){
+                    formSelects.data(xm, 'server', {
+                        url: url,
+                        linkage: true,
+                        linkageWidth: linkageWidth,
+                        success:function () {
+                            formSelects.value(xm,xmVals);
+                        }
+                    });
                 }
             }else {
                 $.ajax({

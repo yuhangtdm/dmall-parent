@@ -2,6 +2,7 @@ package com.dmall.util;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.exception.BusinessException;
 import com.dmall.common.utils.SpringContextUtil;
@@ -31,7 +32,7 @@ public class ValidUtil{
                 }
             }
             Object bean = SpringContextUtil.getBean(beanName);
-            Method selectList = bean.getClass().getMethod("selectList",EntityWrapper.class);
+            Method selectList = bean.getClass().getMethod("selectList",Wrapper.class);
             List<T> list= (List<T>) selectList.invoke(bean,wrapper);
             if(list==null || list.size()==0){
                 return true;

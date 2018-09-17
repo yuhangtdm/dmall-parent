@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +67,6 @@ public class PropsController {
      */
     @RequestMapping("group/list")
     @ResponseBody
-    @TransBean
     public ReturnResult groupList(PropsGroup group, Page page){
         page=propsGroupService.pageList(group,page);
         return ResultUtil.buildResult(ResultEnum.SUCC,page.getTotal(),page.getRecords());
@@ -153,7 +153,7 @@ public class PropsController {
     public ReturnResult save(@Validated PropsDTO propsDTO){
         Props group=new Props();
         BeanUtils.copyProperties(propsDTO,group);
-        propsService.saveOrUpdate(group,propsDTO.getPropValues());
+        propsService.saveOrUpdate(group,Arrays.asList(propsDTO.getPropValues()));
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
 

@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 public class PropsDTO implements Serializable {
 
+    private static final long serialVersionUID = 4092276563120191943L;
     private Long id;
     /**
      * 属性名称
@@ -21,5 +22,5 @@ public class PropsDTO implements Serializable {
     /**
      * 属性值
      */
-    private List<String> propValues;
+    private String[] propValues;
 }

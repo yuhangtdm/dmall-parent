@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -31,7 +32,8 @@ public class PropsGroupServiceImpl extends ServiceImpl<PropsGroupMapper, PropsGr
 
     @Override
     public Page pageList(PropsGroup group, Page page) {
-        return page.setRecords(propsGroupMapper.pageList(page,group));
+        List<Map<String, Object>> maps = propsGroupMapper.pageList(page, group);
+        return page.setRecords(maps);
     }
 
     @Override

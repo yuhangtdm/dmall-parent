@@ -29,11 +29,11 @@
 	    p_props_group ppg
         INNER JOIN p_product_type ppt ON substring_index(ppg.product_type, '/' ,- 1) = ppt.id
         <where>
-            <if test="groupName!=null and groupName!=''">
-                and ppg.group_name like '%${groupName}%'
+            <if test="group.groupName!=null and group.groupName!=''">
+                and ppg.group_name like '%${group.groupName}%'
             </if>
-            <if test="productType!=null and productType!=''">
-                and ppg.product_type = #{productType}
+            <if test="group.productType!=null and group.productType!=''">
+                and ppg.product_type = #{group.productType}
             </if>
         </where>
     </select>

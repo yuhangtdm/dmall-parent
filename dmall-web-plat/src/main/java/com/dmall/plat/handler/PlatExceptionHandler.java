@@ -146,6 +146,7 @@ public class PlatExceptionHandler  {
 
     @ExceptionHandler(Exception.class)
     public String exception(Exception ex, HttpServletRequest request){
+        ex.printStackTrace();
         Map<String,Object> map=new LinkedHashMap<>();
         map.put("code",ResultEnum.SERVER_ERROR.getCode());
         map.put("msg","未知异常");

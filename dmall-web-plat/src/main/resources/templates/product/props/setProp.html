@@ -14,32 +14,34 @@
         <link rel="stylesheet" th:href="@{/layui/css/layui.css}" href="./css/admin.css" media="all">
     </head>
     <body>
-        <form class="layui-form  layui-form-pane" action="" >
-            <div class="layui-form-item">
-                <div class="layui-row">
-                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
-                        <label class="layui-form-label">属性名称：</label>
-                        <div class="layui-input-inline">
-                            <input class="layui-input" name="propName" >
-                            <input type="hidden" name="groupId" th:value="${param.groupId}" >
+        <div class="x-body">
+            <form class="layui-form  layui-form-pane" action="" >
+                <div class="layui-form-item">
+                    <div class="layui-row">
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
+                            <label class="layui-form-label">属性名称：</label>
+                            <div class="layui-input-inline">
+                                <input class="layui-input" name="propName" >
+                                <input type="hidden" name="groupId" th:value="${param.groupId}" >
+                            </div>
                         </div>
-                    </div>
-                    <div class="layui-col-xs4 layui-col-sm12 layui-col-md3">
-                        <div class="layui-input-inline" style="width:80px">
-                            <button class="layui-btn" lay-submit id="formSearch" lay-filter="formSearch"><i class="layui-icon">&#xe615;</i></button>
+                        <div class="layui-col-xs4 layui-col-sm12 layui-col-md3">
+                            <div class="layui-input-inline" style="width:80px">
+                                <button class="layui-btn" lay-submit id="formSearch" lay-filter="formSearch"><i class="layui-icon">&#xe615;</i></button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </form>
-        <table id="props"  class="layui-hide"  lay-filter="props">
-        </table>
+            </form>
+            <table id="props"  class="layui-hide"  lay-filter="props">
+            </table>
+        </div>
+
         <script type="text/html" id="toolbarDemo">
             <div class="layui-btn-container">
                 <button class="layui-btn layui-btn" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>添加属性</button>
             </div>
         </script>
-
         <script type="text/html" id="barDemo">
             <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
             <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
@@ -59,10 +61,10 @@
                 curd.initPage('props','/props/list',buildColumn());
 
                 //头工具栏事件
-                table.on('toolbar(propGroup)', function(obj){
+                table.on('toolbar(props)', function(obj){
                     switch(obj.event){
                         case 'add':
-                            curd.openForm('/props/edit','添加属性','600px', '400px');
+                            curd.openForm('/props/edit','添加属性','800px', '600px');
                             break;
                     };
                 });
@@ -77,7 +79,7 @@
                             });
                         });
                     } else if(obj.event === 'edit'){
-                        curd.openForm('/props/edit?id='+data.id,'修改属性','600px', '400px');
+                        curd.openForm('/props/edit?id='+data.id,'修改属性','800px', '600px');
                     }
                 });
 

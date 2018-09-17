@@ -82,7 +82,7 @@ public class BrandController {
      */
     @RequestMapping("save")
     @ResponseBody
-    public ReturnResult save(@Valid BrandDTO brandDTO){
+    public ReturnResult save(@Validated BrandDTO brandDTO){
         Brand brand=new Brand();
         BeanUtils.copyProperties(brandDTO,brand);
         brandService.saveOrUpdate(brand);
