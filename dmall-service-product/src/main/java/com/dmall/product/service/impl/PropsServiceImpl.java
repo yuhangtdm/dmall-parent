@@ -2,6 +2,9 @@ package com.dmall.product.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.dmall.common.enums.ResultEnum;
+import com.dmall.common.exception.BusinessException;
+import com.dmall.common.utils.StringUtil;
 import com.dmall.product.entity.Props;
 import com.dmall.product.entity.PropsGroup;
 import com.dmall.product.entity.PropsOption;
@@ -50,6 +53,9 @@ public class PropsServiceImpl extends ServiceImpl<PropsMapper, Props> implements
     @Transactional
     public void saveOrUpdate(Props props,List<String> propValues) {
         PropsGroup group = groupMapper.selectById(props.getGroupId());
+        if(group==null){
+            throw new BusinessException(ResultEnum.SERVER_ERROR,"属性组不存在，请刷新后重试");
+        }
         props.setProductType(group.getProductType());
         if (props.getId()!=null){
             this.updateById(props);
@@ -67,11 +73,15 @@ public class PropsServiceImpl extends ServiceImpl<PropsMapper, Props> implements
                     delete.add(s);
                 }
             }
-            batchInsert(props,insert);
-            propsOptionService.batchDelete(props.getId(),delete);
+            if(StringUtil.isNotEmptyObj(insert)){
+                batchInsert(props,insert);
+            }
+            if(StringUtil.isNotEmptyObj(delete)){
+                propsOptionService.batchDelete(props.getId(),delete);
+            }
         }else {
             this.insert(props);
-           batchInsert(props,propValues);
+            batchInsert(props,propValues);
         }
 
 
@@ -80,7 +90,7 @@ public class PropsServiceImpl extends ServiceImpl<PropsMapper, Props> implements
     private void batchInsert(Props props,List<String> propValues){
         for (String propValue : propValues) {
             PropsOption propsOption=new PropsOption();
-            propsOption.setPropertyId(props.getId());
+            propsOption.setPropsId(props.getId());
             propsOption.setOptionValue(propValue);
             propsOptionService.insert(propsOption);
         }

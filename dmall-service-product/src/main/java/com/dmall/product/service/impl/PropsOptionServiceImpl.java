@@ -23,15 +23,15 @@ public class PropsOptionServiceImpl extends ServiceImpl<PropsOptionMapper, Props
     @Override
     public List<PropsOption> selectByPropId(Long id) {
         EntityWrapper<PropsOption> wrapper=new EntityWrapper<>();
-        wrapper.eq("property_id",id);
+        wrapper.eq("props_id",id);
         return this.selectList(wrapper);
     }
 
     @Override
     public void batchDelete(Long id, List<String> delete) {
         EntityWrapper<PropsOption> wrapper=new EntityWrapper<>();
-        wrapper.eq("property_id",id);
-        wrapper.in("optionValue",delete);
+        wrapper.eq("props_id",id);
+        wrapper.in("option_value",delete);
         this.delete(wrapper);
     }
 }

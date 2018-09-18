@@ -40,7 +40,7 @@ public class Props implements Serializable {
      * 组id
      */
     @TableField("group_id")
-    private String groupId;
+    private Long groupId;
     /**
      * 商品分类
      */
@@ -76,5 +76,7 @@ public class Props implements Serializable {
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Long updateTime;
 
+  /*  @TableField(exist = false)
+    private String optionValues;*/
 
 }

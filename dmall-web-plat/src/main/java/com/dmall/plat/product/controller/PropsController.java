@@ -135,11 +135,12 @@ public class PropsController {
             if(props==null){
                 throw new BusinessException(ResultEnum.BAD_REQUEST,"该属性不存在,请刷新列表");
             }
-            request.setAttribute("bean",props);
             List<PropsOption> optionList=propsOptionService.selectByPropId(id);
             List<String> collect = optionList.stream().map(PropsOption::getOptionValue).collect(Collectors.toList());
             String values = StringUtil.join(collect,",");
             request.setAttribute("values",values);
+           // props.setOptionValues(values);
+            request.setAttribute("bean",props);
 
         }
         return "product/props/edit";
@@ -153,7 +154,7 @@ public class PropsController {
     public ReturnResult save(@Validated PropsDTO propsDTO){
         Props group=new Props();
         BeanUtils.copyProperties(propsDTO,group);
-        propsService.saveOrUpdate(group,Arrays.asList(propsDTO.getPropValues()));
+        propsService.saveOrUpdate(group,propsDTO.getPropValues());
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
 

@@ -37,8 +37,8 @@ public class PropsOption implements Serializable {
     /**
      * 属性ID
      */
-    @TableField("property_id")
-    private Long propertyId;
+    @TableField("props_id")
+    private Long propsId;
     /**
      * 选项值
      */

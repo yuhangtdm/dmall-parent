@@ -48,7 +48,7 @@
         </script>
 
         <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
-        <script>
+        <script th:inline="javascript">
             layui.config({
                 base: '/controller/'
             }).use(['element','transfer','form','layer','curd'], function() {
@@ -56,7 +56,8 @@
                 var table=layui.table;
                 var curd=layui.curd;
                 var form=layui.form;
-
+                var groupId=[[${param.groupId}]];
+                console.log(groupId,typeof groupId);
 
                 curd.initPage('props','/props/list',buildColumn());
 
@@ -64,7 +65,7 @@
                 table.on('toolbar(props)', function(obj){
                     switch(obj.event){
                         case 'add':
-                            curd.openForm('/props/edit','添加属性','800px', '600px');
+                            curd.openForm('/props/edit?groupId='+groupId,'添加属性','800px', '600px');
                             break;
                     };
                 });
@@ -79,7 +80,7 @@
                             });
                         });
                     } else if(obj.event === 'edit'){
-                        curd.openForm('/props/edit?id='+data.id,'修改属性','800px', '600px');
+                        curd.openForm('/props/edit?id='+data.id+'&groupId='+groupId,'修改属性','800px', '600px');
                     }
                 });
 

@@ -22,6 +22,7 @@
             <label class="layui-form-label">属性名称</label>
             <div class="layui-input-block">
                 <input type="hidden" name="id" />
+                <input type="hidden" name="groupId" th:value="${param.groupId}" >
                 <input type="text" name="propName" lay-verify="required" autocomplete="off" placeholder="请输入属性名称"
                        class="layui-input">
             </div>
@@ -30,15 +31,21 @@
         <div class="layui-form-item" style="padding-top: 5px">
             <label class="layui-form-label">属性值</label>
             <div class="layui-input-block">
-                <input type="text"  id="tagValue" placeholder="回车添加属性值"
+                <input type="text" name=""  id="tagValue"
                        class="layui-input">
             </div>
         </div>
 
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <textarea name="remark"  placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+        </div>
 
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button type="submit" class="layui-btn" lay-submit="" id="submit" lay-filter="submit">立即提交</button>
+                <button type="button" class="layui-btn" lay-submit="" id="submit" lay-filter="submit">立即提交</button>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
             </div>
         </div>
@@ -59,7 +66,7 @@
             tag.tagValue=[[${values}]];
             tag.initView();
 
-            transfer.init('props-form', [[${bean}]]);
+            transfer.init([[${bean}]],null,'props-form');
 
             form.on('submit(submit)', function (data) {
                 var obj=data.field;
