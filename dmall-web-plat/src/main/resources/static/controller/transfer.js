@@ -203,6 +203,7 @@ layui.extend({
                 if(type=='radio'){
                     $(this).attr('checked',value==$(this).val());
                 }else if(type=='checkbox'){
+                    //复选框支持数组和字符串以逗号分隔两种
                     if(Object.prototype.toString.call(value) === "[object Array]"){
                         for(var i=0;i<value.length;i++){
                             if($(this).val()==value[i]){
@@ -217,7 +218,6 @@ layui.extend({
                             }
                         }
                     }
-
                 }else{
                     if(prop.lastIndexOf("Time")>-1){
                         laydate.render({
@@ -232,6 +232,7 @@ layui.extend({
             }else if(tagName=='img'){
                 $(this).attr('src',value);
             }else if(tagName=='SELECT'){
+                //多选框支持数组和字符串以逗号分隔两种
                 if(Object.prototype.toString.call(value) === "[object Array]"){
                     var selectValue='';
                     for(var i=0;i<value.length;i++){

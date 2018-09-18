@@ -15,17 +15,20 @@ layui.define(['layer','table','zTree','form'],function (e) {
         openTree:function (url,style,title,width,height,callback,full) {
             openTree(url,style,title,width,height,callback,full)
         },
-        save:function (url,requestData,callback) {
+        save:function (url,requestData,json,callback) {
             save(url,requestData,callback);
         },
-        saveOrUpdate:function (url,requestData) {
-            saveOrUpdate(url,requestData);
+        saveOrUpdate:function (url,requestData,json) {
+            saveOrUpdate(url,requestData,json);
         },
         deleteById:function (url,callbak) {
             deleteById(url,callbak);
         },
         initPage:function (id,url,cols) {
             initPage(id,url,cols);
+        },
+        toJson:function (formId) {
+            return toJson(formId);
         }
     }
 
@@ -133,17 +136,25 @@ layui.define(['layer','table','zTree','form'],function (e) {
 
     /**
      * 有回调的保存
-     */
-    function save(url,requestData,callback) {
-        debugger
+     */save
+    function save(url,requestData,json,callback) {
+        var contentType='application/x-www-form-urlencoded';
+        var traditional=true;
+        if(json){
+            requestData=JSON.stringify(requestData);
+            contentType='application/json';
+            traditional=false;
+        }
         var load;
         $.ajax({
             url:url,
             type:'POST',
             data:requestData,
+            contentType:contentType,
             beforeSend:function(){
                 load=layer.load(1);
             },
+            traditional:traditional,
             success:function (data) {
                 if(data.code==0){
                     layer.close(load);
@@ -179,8 +190,8 @@ layui.define(['layer','table','zTree','form'],function (e) {
      * @param url
      * @param requestData
      */
-    function saveOrUpdate(url,requestData) {
-        save(url,requestData,saveAfter);
+    function saveOrUpdate(url,requestData,json) {
+        save(url,requestData,json,saveAfter);
     }
 
     /**
@@ -274,7 +285,39 @@ layui.define(['layer','table','zTree','form'],function (e) {
                 return "只能有两位小数点";
             }
         }
-    })
+    });
+
+    /**
+     * 格式化表单对象为json对象
+     */
+    function toJson(formId) {
+        var o={};
+        var form=$("#"+formId);
+        var data=form.serializeArray();
+        console.log(data);
+        $.each(data,function () {
+            var name=this.name;
+            var value=this.value;
+            var paths=name.split(".");
+            var len=paths.length;
+            var obj=o;
+            $.each(paths,function (i,e) {
+                if(i==len-1){
+                    if(obj[e]){
+                        obj[e]=obj[e]+","+value;
+                    }else {
+                        obj[e]=value || '';
+                    }
+                }else {
+                    if(!obj[e]){
+                        obj[e]={};
+                    }
+                }
+                obj=o[e];
+            })
+        });
+        return o;
+    }
 
 
     e('curd',obj);
