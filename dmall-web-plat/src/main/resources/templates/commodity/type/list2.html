@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <title>
+            品牌管理
+        </title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" th:href="@{/layui/css/layui.css}" href="./css/admin.css" media="all">
+        <link rel="stylesheet" th:href="@{/admin/css/admin.css}" href="./css/admin.css" media="all">
+        <link rel="stylesheet" th:href="@{/layui/css/treeSelect.css}" href="./css/admin.css" media="all">
+
+        <link rel="stylesheet" th:href="@{/zTree/css/zTreeStyle/zTreeStyle.css}" href="zTreeStyle/zTreeStyle.css" type="text/css">
+        <link rel="stylesheet" th:href="@{/zTree/css/metroStyle/metroStyle.css}" href="zTreeStyle/zTreeStyle.css" type="text/css">
+        <script type="text/javascript" th:src="@{/zTree/js/jquery-1.4.4.min.js}" src="jquery-1.4.2.js"></script>
+        <script type="text/javascript" th:src="@{/zTree/js/jquery.ztree.core.js}" src="jquery.ztree.core-3.x.js"></script>
+        <style type="text/css">
+            div#rMenu {position:absolute; visibility:hidden; top:0; text-align: left;padding:4px;}
+            div#rMenu a{
+                 padding: 3px 15px 3px 15px;
+                 background-color:#cad4e6;
+                 vertical-align:middle;
+             }
+            div#rMenu a:hover{
+                padding: 3px 15px 3px 15px;
+                background-color:#cad4e6;
+                vertical-align:middle;
+                color:orange;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="x-nav">
+            <span class="layui-breadcrumb">
+              <a><cite>首页</cite></a>
+              <a><cite>商品信息管理</cite></a>
+              <a><cite>商品类型管理</cite></a>
+            </span>
+        </div>
+
+        <div class="x-body">
+            <div class="layui-row">
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
+                    <div class="layui-row" style="margin-bottom: 20px;">
+                        <!--<button id="setBrand" class="layui-btn layui-btn layui-btn-sm">设置品牌</button>-->
+                        <button id="editType" class="layui-btn layui-btn-primary layui-btn-sm">编辑</button>
+                        <button id="setProps" class="layui-btn layui-btn-normal layui-btn-sm">设置属性</button>
+                    </div>
+                    <div class="layui-row">
+                        <ul id="typeTree" class="ztree"></ul>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6  layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">编辑商品类型</div>
+                        <div class="layui-card-body">
+                            <form id="typeForm" class="layui-form layui-form-pane" action="">
+
+                                            <div class="layui-form-item" style="padding-top: 5px">
+                                                <label class="layui-form-label">类型名称</label>
+                                                <div class="layui-inline">
+                                                    <input type="hidden" name="id" />
+                                                    <input type="text" name="name"  lay-verify="required" autocomplete="off" placeholder="请输入类型名称" class="layui-input">
+                                                </div>
+                                            </div>
+                                            <div class="layui-form-item">
+                                                <label class="layui-form-label">上级类型</label>
+                                                <div class="layui-inline">
+                                                    <input type="text" id="pid" name="pid"  lay-filter="pid" placeholder="上级类型" autocomplete="off" class="layui-input">
+                                                </div>
+                                            </div>
+
+                                            <div class="layui-form-item">
+                                                <div class="layui-inline">
+                                                    <label class="layui-form-label">logo</label>
+                                                    <div class="layui-inline">
+                                                        <input type="text" name="logo" autocomplete="off" placeholder="请输入logo" class="layui-input">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="layui-form-item">
+                                                <div class="layui-inline">
+                                                    <label class="layui-form-label">排序号</label>
+                                                    <div class="layui-inline">
+                                                        <input type="number" name="sortIndex" lay-verify="required|number" autocomplete="off" placeholder="请输入排序号" class="layui-input">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="layui-form-item">
+                                                <div class="layui-inline">
+                                                    <label class="layui-form-label">分类标题（SEO）</label>
+                                                    <div class="layui-inline">
+                                                        <input type="text" name="seoTitle" autocomplete="off" placeholder="请输入分类标题" class="layui-input">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="layui-form-item">
+                                                <div class="layui-inline">
+                                                    <label class="layui-form-label">分类关键字（SEO）</label>
+                                                    <div class="layui-inline">
+                                                        <input type="text" name="seoKeywords" autocomplete="off" placeholder="请输入分类关键字（SEO）" class="layui-input">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="layui-form-item layui-form-text">
+                                                <label class="layui-form-label">描述</label>
+                                                <div class="layui-input-block">
+                                                    <textarea name="description"  placeholder="请输入描述" class="layui-textarea"></textarea>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="layui-form-item">
+                                                <div class="layui-input-block">
+                                                    <button type="submit" class="layui-btn" lay-submit="" id="submit"  lay-filter="submit">立即提交</button>
+                                                    <button type="reset"  id="reset" class="layui-btn layui-btn-primary">清空</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md2">
+                </div>
+            </div>
+        </div>
+
+        <div id="rMenu">
+            <a href="#" id="add" >新增</a><br/>
+            <a href="#" id="edit">编辑</a><br/>
+            <a href="#" id="delete">删除</a><br/>
+            <a href="#" id="setProp">设置属性</a>
+        </div>
+
+        <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
+
+        <script th:src="@{/js/common.js}"  charset="utf-8"></script>
+
+        <SCRIPT LANGUAGE="JavaScript">
+            var rMenu = $("#rMenu");
+            var setting=ztreeAsync('type/tree');
+            var zTreeObj=$.fn.zTree.init($("#typeTree"), setting);
+            $("#reset").hide();
+
+            layui.extend({
+                curd: '/controller/curd'
+            }).use(['element','form','table','layer','treeselect'], function() {
+                var $ = layui.$;
+                var form=layui.form;
+                var treeselect = layui.treeselect;
+                var    layer=layui.layer;
+
+                showSelectTree(treeselect,'/type/tree?flag=add&level=1','pid');
+
+                $("#add").click(function () {
+                    hideRMenu();
+                    $("#reset").click();
+                    var treeNode = zTreeObj.getSelectedNodes()[0];
+                    if (treeNode) {
+                        showSelectTree(treeselect,'/type/tree?flag=add&level='+treeNode.level);
+                        var typeObj={};
+                        typeObj.pid=treeNode.id;
+                        initFormData($,form,typeObj);
+                        treeselect.render();
+                    }
+                });
+
+                $("#edit").click(function () {
+                    hideRMenu();
+                    $("#reset").click();
+                    var treeNode = zTreeObj.getSelectedNodes()[0];
+                    if (treeNode) {
+                        showSelectTree(treeselect,'/type/tree?flag=edit&level='+treeNode.level);
+                        initFormData($,form,treeNode);
+                        treeselect.render();
+                    }
+                });
+
+                $("#delete").click(function () {
+                    hideRMenu();
+                    var treeNode = zTreeObj.getSelectedNodes()[0];
+                    layer.confirm("确认删除节点"+treeNode.name+"以及子节点?",function (ok) {
+                        if(ok){
+                            deleteById('/type/delete?id='+treeNode.id,callbak);
+                        }
+                    })
+                });
+
+                form.on('submit(submit)',function (data) {
+                    save($,'/type/save',data.field,callbak);
+                    return false;
+                });
+
+                $("#editType").click(function () {
+                    $("#reset").click();
+                    var treeNode = zTreeObj.getSelectedNodes()[0];
+                    if (!treeNode) {
+                        layer.msg("请选择节点进行编辑",{time:2000});
+                        return false;
+                    }else {
+                        initFormData($,form,treeNode);
+                    }
+                });
+
+                $("#setBrand").click(function () {
+                    $("#reset").click();
+                    var treeNode = zTreeObj.getSelectedNodes()[0];
+                    if (!treeNode) {
+                        layer.msg("请选择节点进行设置品牌",{time:2000});
+                        return false;
+                    }else {
+                        openWindow('/setBrand','设置品牌','600px','600px',setBrandCallBack);
+                    }
+                });
+
+                $("#setProps").click(function () {
+                    $("#reset").click();
+                    var treeNode = zTreeObj.getSelectedNodes()[0];
+                    if (!treeNode) {
+                        layer.msg("请选择节点进行设置属性",{time:2000});
+                        return false;
+                    }else {
+                        openWindow('/setProps','设置属性','600px','600px',setPropsCallBack);
+                    }
+                });
+
+                function setBrandCallBack(index,layero) {
+                    var body = layer.getChildFrame('body', index);
+                    var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                    var treeNode = zTreeObj.getSelectedNodes()[0];
+                    var reqData={};
+                    reqData.typeId=treeNode.id;
+                    reqData.brandIds=iframeWin.getBrandIds();
+                    save($,'/type/setBrand',reqData,function () {
+                        layer.close(index);
+                    })
+                }
+                function setPropsCallBack() {
+
+                }
+
+            });
+
+            function callbak() {
+                $("#reset").click();
+                zTreeObj.reAsyncChildNodesPromise(null, "refresh");
+            }
+            function OnRightClick(event, treeId, treeNode) {
+                if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
+                    zTreeObj.cancelSelectedNode();
+                } else if (treeNode && !treeNode.noR) {
+                    zTreeObj.selectNode(treeNode,false,false);
+                    showRMenu("node", event.clientX, event.clientY,treeNode);
+                }
+            }
+
+            function showRMenu(type, x, y,treeNode) {
+                rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
+                if(treeNode.level!=2){
+                    $("#rMenu #add").show();
+                    $("#rMenu #setProp").hide();
+                }else {
+                    $("#rMenu #add").hide();
+                    $("#rMenu #setProp").show();
+                }
+                $("#rMenu #edit").show();
+                $("body").bind("mousedown", onBodyMouseDown);
+            }
+
+            function onBodyMouseDown(event){
+                if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length>0)) {
+                    rMenu.css({"visibility" : "hidden"});
+                }
+            }
+            function hideRMenu() {
+                if (rMenu) rMenu.css({"visibility": "hidden"});
+                $("body").unbind("mousedown", onBodyMouseDown);
+            }
+
+
+
+
+        </SCRIPT>
+
+    </body>
+</html>

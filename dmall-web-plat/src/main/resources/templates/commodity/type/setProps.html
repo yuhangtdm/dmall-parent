@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <title>
+            设置属性
+        </title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" th:href="@{/layui/css/layui.css}" href="./css/admin.css" media="all">
+        <link rel="stylesheet" th:href="@{/admin/css/admin.css}" href="./css/admin.css" media="all">
+    </head>
+    <body>
+
+        <div class="x-body">
+
+            <form class="layui-form  layui-form-pane" action="" >
+                <div class="layui-form-item">
+
+
+
+                </div>
+
+            </form>
+            <table id="setBrand"  class="layui-hide"  lay-filter="setBrand">
+            </table>
+        </div>
+        <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
+        <script th:src="@{/js/common.js}"  charset="utf-8"></script>
+
+        <script>
+            layui.use(['element','form','table','layer'], function() {
+                $ = layui.jquery;//jquery
+                table=layui.table;//表格
+                form=layui.form;
+
+
+            });
+
+        </script>
+    </body>
+</html>
