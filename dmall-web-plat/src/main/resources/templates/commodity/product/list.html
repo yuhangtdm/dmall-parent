@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>
-            品牌管理
+            商品管理
         </title>
         <meta name="renderer" content="webkit">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -19,7 +19,7 @@
             <span class="layui-breadcrumb">
               <a><cite>首页</cite></a>
               <a><cite>商品信息管理</cite></a>
-              <a><cite>品牌管理</cite></a>
+              <a><cite>商品管理</cite></a>
             </span>
             <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon" style="line-height:30px">ဂ</i></a>
         </div>
@@ -31,21 +31,30 @@
 
                     <div class="layui-row">
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
-                            <label class="layui-form-label">品牌名称：</label>
+                            <label class="layui-form-label">商品编码：</label>
                             <div class="layui-input-inline">
-                                <input class="layui-input" name="brandName" >
+                                <input class="layui-input" name="productCode" >
                             </div>
                         </div>
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
-                            <label class="layui-form-label">英文名称：</label>
+                            <label class="layui-form-label">商品名称：</label>
                             <div class="layui-input-inline">
-                                <input class="layui-input" name="englishName" >
+                                <input class="layui-input" name="name" >
                             </div>
                         </div>
                         <div class="layui-col-xs4 layui-col-sm12 layui-col-md3">
-                            <label class="layui-form-label">首字母：</label>
+                            <label class="layui-form-label">状态：</label>
                             <div class="layui-input-inline">
-                                <input class="layui-input" name="firstLetter" >
+                                <select loadData="normal"  name="state" dict="product_state">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-col-xs4 layui-col-sm12 layui-col-md3">
+                            <label class="layui-form-label">商品分类：</label>
+                            <div class="layui-input-inline">
+                                <select loadData="tree" url="/type/tree" xm-select-search="" name="productType" xm-select="productType"
+                                        linkage="true" linkageWidth="140" xm-select-radio="">
+                                </select>
                             </div>
                         </div>
                         <div class="layui-col-xs4 layui-col-sm12 layui-col-md3">
@@ -59,11 +68,11 @@
                 </div>
 
             </form>
-            <table id="brand"  class="layui-hide"  lay-filter="brand">
+            <table id="product"  class="layui-hide"  lay-filter="product">
             </table>
             <script type="text/html" id="toolbarDemo">
                 <div class="layui-btn-container">
-                    <button class="layui-btn layui-btn" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>添加品牌</button>
+                    <button class="layui-btn layui-btn" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>添加商品</button>
                 </div>
             </script>
 
@@ -84,14 +93,14 @@
                 var curd=layui.curd;
 
 
-                curd.initPage('brand','/brand/list',buildColumn());
+                curd.initPage('product','/product/list',buildColumn());
 
                 //头工具栏事件
-                table.on('toolbar(brand)', function(obj){
+                table.on('toolbar(product)', function(obj){
                     var checkStatus = table.checkStatus(obj.config.id);
                     switch(obj.event){
                         case 'add':
-                             curd.openForm('/brand/edit','添加品牌','600px', '800px',true);
+                             curd.openForm('/product/edit','添加商品','800px', '800px',true);
                             break;
                     };
                 });
@@ -101,19 +110,19 @@
                     var data = obj.data;
                     if(obj.event === 'del'){
                         layer.confirm('确定删除该品牌?', {icon: 3, title:'提示'}, function(index){
-                            curd.deleteById('/brand/delete?id='+data.id,function(){
+                            curd.deleteById('/product/delete?id='+data.id,function(){
                                 $("#formSearch").click();
                             });
                         });
 
                     } else if(obj.event === 'edit'){
-                        curd.openForm('/brand/edit?id='+data.id,'修改品牌','600px', '800px',true);
+                        curd.openForm('/product/edit?id='+data.id,'修改商品','800px', '800px',true);
                     }
                 });
 
                 //监听提交
                 form.on('submit(formSearch)', function(data){
-                    table.reload('brand', {
+                    table.reload('product', {
                         where: data.field
                     });
                     return false;
@@ -124,16 +133,37 @@
                         [
                             {type: 'checkbox', fixed: 'left'},
                             {field:'id',  title: 'ID', sort: true},
-                            {field:'brandName',  title: '品牌名称'},
-                            {field:'englishName', title: '英文名称'},
-                            {field:'firstLetter', title: '首字母', sort: true},
-                            {field:'updateTime',  title: '更新时间', sort: true,templet: function (d) {
-                                    if(d.updateTime){
-                                        return layui.util.toDateString(d.updateTime);
+                            {field:'productCode',  title: '商品编码'},
+                            {field:'mainImage',  title: '主图'},
+                            {field:'name', title: '商品名称'},
+                            {field:'productType', title: '商品分类'},
+                            {field:'state', title: '状态'},
+                            {field:'onSaleTime', title: '上架时间', sort: true,templet: function (d) {
+                                    if(d.onSaleTime){
+                                        return layui.util.toDateString(d.onSaleTime);
+                                    }else {
+                                        return '';
+                                    }
+                                }
+                            },
+                            {field:'offSaleTime', title: '下架时间', sort: true,templet: function (d) {
+                                    if(d.offSaleTime){
+                                        return layui.util.toDateString(d.offSaleTime);
                                     }else {
                                         return '';
                                     }
                                 }},
+                            {field:'maxPrice', title: '最高价', sort: true},
+                            {field:'minPrice', title: '最低价', sort: true},
+                            {field:'saleCount', title: '销量', sort: true},
+                            {field:'brandId', title: '品牌'},
+                            {field:'updateTime',  title: '更新时间', sort: true,templet: function (d) {
+                                if(d.updateTime){
+                                    return layui.util.toDateString(d.updateTime);
+                                }else {
+                                    return '';
+                                }
+                            }},
                             {fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
 
                         ]

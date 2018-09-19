@@ -47,19 +47,8 @@ public class ProductTypeController {
     @Autowired
     private ProductTypeBrandService productTypeBrandService;
 
-    /**
-     *
-     * @param level 添加节点的等级
-     * @return
-     */
-    @RequestMapping("tree")
-    @ResponseBody
-    public List<ProductType> tree(Integer level,String flag){
-        List<ProductType> result=productTypeService.tree(0L,level,flag);
-        return result;
-    }
 
-    @RequestMapping("tree2")
+    @RequestMapping("tree")
     @ResponseBody
     public ReturnResult tree2(Integer level,String flag){
         List<ProductType> result=productTypeService.tree(0L,level,flag);
@@ -98,7 +87,7 @@ public class ProductTypeController {
         request.setAttribute("bean",bean);
         ProductType productType = productTypeService.selectById(typeId);
         request.setAttribute("typeName",productType.getName());
-        return "product/type/setBrand";
+        return "commodity/type/setBrand";
     }
 
     @PostMapping("setBrand")

@@ -61,4 +61,6 @@ public interface ProductTypeService extends IService<ProductType> {
 
 
     List<ProductType> selectByParam(List<Long> typeIds);
+
+    String selectTypeName(String typeId);
 }

@@ -5,6 +5,8 @@ import com.dmall.common.utils.JsonUtil;
 import com.dmall.common.utils.ReflectUtil;
 import com.dmall.common.utils.SpringContextUtil;
 import com.dmall.common.utils.StringUtil;
+import com.dmall.plat.sys.service.DictService;
+import com.dmall.sys.entity.Dict;
 import com.dmall.web.common.result.ReturnResult;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -28,6 +30,9 @@ public class ChangeAspect {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private DictService dictService;
     /*
      * 定义一个切入点
      */
@@ -42,7 +47,6 @@ public class ChangeAspect {
         if(result.getData()!=null){
             List data = (List) result.getData();
             doHandle(data);
-
         }
     }
 
@@ -55,36 +59,36 @@ public class ChangeAspect {
                 Field[] declaredFields = datum.getClass().getDeclaredFields();
                 for (Field declaredField : declaredFields) {
                     declaredField.setAccessible(true);
+                    Object key=declaredField.get(datum);
                     ChangeColumn annotation = declaredField.getAnnotation(ChangeColumn.class);
-
                     if(annotation!=null){
-                        String value = annotation.value();//要转换的字段
+                        String value = annotation.value();//转换的字段
                         Field changeField = datum.getClass().getDeclaredField(value);
                         if(changeField!=null){
                             changeField.setAccessible(true);
-                            Object hValue="";
                             if(!annotation.dictType().equals("")){
                                 //数据字典
-                            }else if(!annotation.beanName().equals("")){
-                                Class cacheClass=annotation.cacheClass();
-                                String display=annotation.display();
-                                String className=cacheClass.getName();
-                                Object key=declaredField.get(datum);
-                                String objJson= (String) redisTemplate.opsForValue().get(className+":"+key);
-                                hValue=ReflectUtil.getValue(JsonUtil.toBean(objJson,cacheClass),display);
-                                if(StringUtil.isEmptyObj(hValue)){
-                                    //数据库查询
-                                    Object bean = SpringContextUtil.getBean(annotation.beanName());//service
-                                    Method method = bean.getClass().getDeclaredMethod(annotation.methodName());
-                                    //查询到的对象
-                                    Object invoke=method.invoke(bean,key);
-                                    if(invoke!=null){
-                                        redisTemplate.opsForValue().set(className+":"+key,JsonUtil.toJson(invoke));
-                                        hValue=ReflectUtil.getValue(invoke,annotation.display());
+                                List<Dict> dicts = dictService.queryDictByType(annotation.dictType());
+                                for (Dict dict : dicts) {
+                                    if(dict.getDictCode().equals(String.valueOf(key))){
+                                        changeField.set(datum,dict.getDictValue());
+                                        break;
                                     }
                                 }
+                            }else if(!annotation.beanName().equals("")){
+                               /* Class cacheClass=annotation.cacheClass();//缓存类
+                                String display=annotation.display();//要展示的字段
+                                String className=cacheClass.getName();//类名称
+                                Object key=declaredField.get(datum);//key
+                                String objJson= (String) redisTemplate.opsForValue().get(className+":"+key);
+                                hValue=ReflectUtil.getValue(JsonUtil.toBean(objJson,cacheClass),display);*/
+                                //数据库查询
+                                Object bean = SpringContextUtil.getBean(annotation.beanName());//service
+                                Method method = bean.getClass().getDeclaredMethod(annotation.methodName());
+                                //查询到的值
+                                Object invoke=method.invoke(bean,key);
+                                changeField.set(datum,invoke);
                             }
-                            changeField.set(datum,hValue);
                         }
                     }
                 }

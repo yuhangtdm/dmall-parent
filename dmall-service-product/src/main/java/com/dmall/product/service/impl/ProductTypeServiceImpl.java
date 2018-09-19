@@ -151,8 +151,6 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
         for (ProductType productType : later) {
             this.deleteById(productType.getId());
         }
-
-
     }
 
     // 为类型设置品牌
@@ -195,6 +193,18 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
         wrapper.in("level",Arrays.asList(Constants.LEVEL_ONE,Constants.LEVEL_TWO));
         List<ProductType> productTypes = this.selectList(wrapper);
         return productTypes;
+    }
+
+    @Override
+    public String selectTypeName(String typeId) {
+        StringBuilder sb=new StringBuilder();
+        String[] split = typeId.split("/");
+        for (String s : split) {
+            ProductType productType = this.selectById(Long.parseLong(s));
+            sb.append(productType.getName()).append("/");
+        }
+
+        return sb.substring(0,sb.length()-1);
     }
 
 

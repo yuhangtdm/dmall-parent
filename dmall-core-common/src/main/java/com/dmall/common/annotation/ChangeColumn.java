@@ -28,24 +28,6 @@ public @interface ChangeColumn {
     String methodName()default "selectById";
 
     /**
-     * 要缓存的class 即实体
-     * @return
-     */
-    Class cacheClass() default Object.class;
-
-    /**
-     * 数据源的id字段
-     * @return
-     */
-    String id()default "id";
-
-    /**
-     * 要展示数据源的字段
-     * @return
-     */
-    String display()default "";
-
-    /**
      * 数据字典时需要传入数据字典key
      * @return
      */

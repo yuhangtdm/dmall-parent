@@ -29,7 +29,7 @@ public interface DictService extends IService<Dict> {
      * @param dictType
      * @return
      */
-    public List<Dict> queryDictByType(String dictType);
+    List<Dict> queryDictByType(String dictType);
 
     /**
      * 保存或更新字典

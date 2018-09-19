@@ -84,7 +84,7 @@ public class PropsController {
             }
             request.setAttribute("bean",group);
         }
-        return "product/props/group_edit";
+        return "commodity/props/group_edit";
     }
 
     /**
@@ -122,7 +122,7 @@ public class PropsController {
      */
     @RequestMapping("group/setProp")
     public String setProp(@NotNull(message = "属性组id不能为空") Long groupId, HttpServletRequest request){
-        return "product/props/setProp";
+        return "commodity/props/setProp";
     }
 
     /**
@@ -143,7 +143,7 @@ public class PropsController {
             request.setAttribute("bean",props);
 
         }
-        return "product/props/edit";
+        return "commodity/props/edit";
     }
 
     /**

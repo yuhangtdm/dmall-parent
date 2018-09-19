@@ -19,7 +19,7 @@ public class LayuiController {
      */
     @RequestMapping("/brand")
     public String brand(){
-        return "product/brand/list";
+        return "commodity/brand/list";
     }
 
     /**
@@ -43,7 +43,7 @@ public class LayuiController {
      */
     @RequestMapping("/type")
     public String productType(){
-        return "product/type/list";
+        return "commodity/type/list";
     }
 
     /**
@@ -51,7 +51,7 @@ public class LayuiController {
      */
     @RequestMapping("/props")
     public String props(){
-        return "product/props/list";
+        return "commodity/props/list";
     }
 
 
@@ -59,6 +59,11 @@ public class LayuiController {
 
     @RequestMapping("/setProps")
     public String setProps(){
-        return "product/type/setProps";
+        return "commodity/type/setProps";
+    }
+
+    @RequestMapping("/product")
+    public String product(){
+        return "commodity/product/list";
     }
 }

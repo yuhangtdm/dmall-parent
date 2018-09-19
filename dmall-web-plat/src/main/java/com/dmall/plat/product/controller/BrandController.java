@@ -74,7 +74,7 @@ public class BrandController {
             brand.setProductType(productType);
             request.setAttribute("bean",brand);
         }
-        return "product/brand/edit";
+        return "commodity/brand/edit";
     }
 
     /**

@@ -9,6 +9,7 @@ import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotations.Version;
 
+import com.dmall.common.annotation.ChangeColumn;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -52,10 +53,12 @@ public class Product implements Serializable {
      * 商品类型
      */
     @TableField("product_type")
-    private Long productType;
+    @ChangeColumn(beanName = "productTypeServiceImpl",methodName = "selectTypeName")
+    private String productType;
     /**
      * 状态 0 上架 1 下架
      */
+    @ChangeColumn(value = "stateName",dictType = "product_state")
     private Integer state;
     /**
      * 上架时间
@@ -138,5 +141,10 @@ public class Product implements Serializable {
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Long updateTime;
 
+    @TableField(exist = false)
+    private String stateName;
+
+    @TableField(exist = false)
+    private String productTypeName;
 
 }
