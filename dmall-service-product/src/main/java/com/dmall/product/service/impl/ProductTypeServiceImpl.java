@@ -16,6 +16,8 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.dmall.util.ValidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +33,7 @@ import java.util.stream.Collectors;
  * @since 2018-08-29
  */
 @Service
-@CacheConfig(cacheNames = "product")
+@CacheConfig(cacheNames = "productType")
 public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, ProductType> implements ProductTypeService {
 
     @Autowired
@@ -94,6 +96,11 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
     }
 
     @Override
+    @Cacheable(key = "'productType:ztree'")
+    public List<ProductType> ztree(long pid) {
+        return tree(pid,null,null);
+    }
+    @Override
     public List<ProductType> getLater(Long pid) {
         ProductType productType = this.selectById(pid);
         EntityWrapper<ProductType> wrapper=new EntityWrapper<>();
@@ -105,7 +112,8 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
 
     @Override
     @Transactional
-    public void saveOrUpdate(ProductType type) {
+    @CachePut(key = "'productType:ztree'")
+    public List<ProductType> saveOrUpdate(ProductType type) {
         if(!ValidUtil.valid(type,"productTypeServiceImpl","pid","name")){
             throw new BusinessException(ResultEnum.BAD_REQUEST,"同一父商品类型下的名称必须唯一");
         }
@@ -127,6 +135,7 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
             savePath(type);
             this.updateById(type);
         }
+        return ztree(0L);
     }
 
     @Override
@@ -139,11 +148,13 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
 
     @Override
     @Transactional
-    public void batchDelete(Long id) {
+    @CachePut(key = "'productType:ztree'")
+    public List<ProductType> batchDelete(Long id) {
         List<ProductType> later = getLater(id);
         for (ProductType productType : later) {
             this.deleteById(productType.getId());
         }
+        return ztree(0L);
     }
 
     // 为类型设置品牌
@@ -187,6 +198,8 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
         List<ProductType> productTypes = this.selectList(wrapper);
         return productTypes;
     }
+
+
 
 
     /**

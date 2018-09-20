@@ -50,9 +50,9 @@ public class BrandController {
     /**
      *品牌分页列表
      */
-    @RequestMapping("list")
+    @RequestMapping("page")
     @ResponseBody
-    public ReturnResult list(Brand brand, Page page){
+    public ReturnResult page(Brand brand, Page page){
         page=brandService.pageList(brand,page);
         return ResultUtil.buildResult(ResultEnum.SUCC,page.getTotal(),page.getRecords());
     }

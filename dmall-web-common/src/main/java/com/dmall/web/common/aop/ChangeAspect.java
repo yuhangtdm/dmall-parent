@@ -48,13 +48,67 @@ public class ChangeAspect {
     }
 
     @AfterReturning(returning = "ret", pointcut = "ip()")
-    public void doAfterReturning(Object ret) throws Throwable {
+    public ReturnResult doAfterReturning(Object ret) throws Throwable {
         // 处理完请求，返回内容
         ReturnResult result= (ReturnResult) ret;
         if(result.getData()!=null){
             List data = (List) result.getData();
             doHandle(data);
         }
+        return result;
+    }
+
+
+    private void doHandle(List data) {
+        try {
+            Map<String,List> map=new HashMap<>();
+            if(StringUtil.isNotEmptyObj(data)){
+                Object obj = data.get(0);
+                Field[] declaredFields = obj.getClass().getDeclaredFields();
+                for (Field declaredField : declaredFields) {
+                    ChangeColumn changeColumn = declaredField.getAnnotation(ChangeColumn.class);
+                    if(changeColumn!=null){
+                        if(StringUtil.isNotEmptyObj(changeColumn.dictType())){
+                            List<Dict> dicts = dictService.queryDictByType(changeColumn.dictType());
+                            map.put(declaredField.getName(),dicts);
+                        }else if(StringUtil.isNotEmptyObj(changeColumn.beanName())){
+                            Object bean=SpringContextUtil.getBean(changeColumn.beanName());
+                            Method method = bean.getClass().getMethod(changeColumn.methodName(), Wrapper.class);
+                            Object invoke = method.invoke(obj, new EntityWrapper());
+                            map.put(declaredField.getName(),(List)invoke);
+                        }
+                    }
+                }
+            }
+            for (Object datum : data) {
+                Field[] declaredFields = datum.getClass().getDeclaredFields();
+                for (Field declaredField : declaredFields) {
+                    declaredField.setAccessible(true);
+                    ChangeColumn changeColumn = declaredField.getAnnotation(ChangeColumn.class);
+                    if(changeColumn!=null){
+                        Object key=declaredField.get(datum);
+                        String value = changeColumn.value();
+                        Field changeField = datum.getClass().getDeclaredField(value);
+                        changeField.setAccessible(true);
+                        List list = map.get(declaredField.getName());
+                        for (Object o : list) {
+                            Field keyField = o.getClass().getDeclaredField(changeColumn.key());
+                            keyField.setAccessible(true);
+                            Field displayField = o.getClass().getDeclaredField(changeColumn.display());
+                            displayField.setAccessible(true);
+                            if(String.valueOf(key).equals(keyField.get(o))){
+                                changeField.set(datum,displayField.get(o));
+                                break;
+                            }
+                        }
+                    }
+                }
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -107,55 +161,4 @@ public class ChangeAspect {
         }
 
     }*/
-
-
-    private void doHandle(List data) {
-        try {
-            Map<String,List> map=new HashMap<>();
-            if(StringUtil.isNotEmptyObj(data)){
-                Object obj = data.get(0);
-                Field[] declaredFields = obj.getClass().getDeclaredFields();
-                for (Field declaredField : declaredFields) {
-                    ChangeColumn changeColumn = declaredField.getAnnotation(ChangeColumn.class);
-                    if(changeColumn!=null){
-                        if(StringUtil.isNotEmptyObj(changeColumn.dictType())){
-                            List<Dict> dicts = dictService.queryDictByType(changeColumn.dictType());
-                            map.put(declaredField.getName(),dicts);
-                        }else if(StringUtil.isNotEmptyObj(changeColumn.beanName())){
-                            Object bean=SpringContextUtil.getBean(changeColumn.beanName());
-                            Method method = bean.getClass().getMethod(changeColumn.methodName(), Wrapper.class);
-                            Object invoke = method.invoke(obj, new EntityWrapper());
-                            map.put(declaredField.getName(),(List)invoke);
-                        }
-                    }
-                }
-            }
-            for (Object datum : data) {
-                Field[] declaredFields = datum.getClass().getDeclaredFields();
-                for (Field declaredField : declaredFields) {
-                    declaredField.setAccessible(true);
-                    ChangeColumn changeColumn = declaredField.getAnnotation(ChangeColumn.class);
-                    if(changeColumn!=null){
-                        Object key=declaredField.get(datum);
-                        String value = changeColumn.value();
-                        Field changeField = datum.getClass().getDeclaredField(value);
-                        changeField.setAccessible(true);
-                        List list = map.get(declaredField.getName());
-                        for (Object o : list) {
-                            Field keyField = o.getClass().getDeclaredField(changeColumn.key());
-                            Field displayValue = o.getClass().getDeclaredField(changeColumn.display());
-                            if(key.equals(keyField.get(o))){
-                                changeField.set(o,displayValue);
-                                break;
-                            }
-                        }
-                    }
-                }
-
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-    }
 }

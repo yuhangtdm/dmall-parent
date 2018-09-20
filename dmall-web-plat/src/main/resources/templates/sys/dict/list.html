@@ -91,42 +91,44 @@
                 var form=layui.form;
                 var curd= layui.curd;
 
-                curd.initPage('brand','/brand/list',buildColumn());
+                curd.initPage('dict','/dict/list',buildColumn());
 
                 //头工具栏事件
                 table.on('toolbar(dict)', function(obj){
                     var checkStatus = table.checkStatus(obj.config.id);
                     switch(obj.event){
                         case 'add':
-                            curd.openForm('/dict/add','添加字典','600px', '500px');
+                            curd.openForm('/dict/edit','添加字典','600px', '500px');
                             break;
                     };
                 });
 
                 //监听行工具事件
-                table.on('tool(brand)', function(obj){
+                table.on('tool(dict)', function(obj){
                     var data = obj.data;
                     if(obj.event === 'invalid'){
                         layer.confirm('确定停用该字典?', {icon: 3, title:'提示'}, function(index){
-                            curd.deleteById('/dict/invalid?id='+data.id,function () {
+                            curd.save('/dict/invalid?id='+data.id,null,function () {
+                                layer.msg('停用成功',{icon:1,time:2000})
                                 $("#formSearch").click();
-                            });
+                            },'GET');
                         });
                     } else if(obj.event=='active'){
                         layer.confirm('确定启用该字典?', {icon: 3, title:'提示'}, function(index){
-                            curd.deleteById('/dict/active?id='+data.id,function () {
+                            curd.save('/dict/active?id='+data.id,null,function () {
+                                layer.msg('启用成功',{icon:1,time:2000})
                                 $("#formSearch").click();
-                            });
+                            },'GET');
                         });
                     }
                     else if(obj.event === 'edit'){
-                        curd.openForm('/dict/add?id='+data.id,'修改字典','600px', '500px');
+                        curd.openForm('/dict/edit?id='+data.id,'修改字典','600px', '500px');
                     }
                 });
 
                 //监听提交
                 form.on('submit(formSearch)', function(data){
-                    table.reload('brand', {
+                    table.reload('dict', {
                         where: data.field
                     });
                     return false;
@@ -139,8 +141,8 @@
                             {field:'id',  title: 'ID', sort: true},
                             {field:'dictType', title: '字典key'},
                             {field:'dictName',  title: '字典名称'},
-                            {field:'code', title: '字典代码', sort: true},
-                            {field:'value',  title: '字典值'},
+                            {field:'dictCode', title: '字典代码', sort: true},
+                            {field:'dictValue',  title: '字典值'},
                             {field:'sortIndex',  title: '排序'},
                             {field:'statusName',  title: '是否有效'},
                             {field:'updateTime',  title: '更新时间', sort: true,templet: function (d) {

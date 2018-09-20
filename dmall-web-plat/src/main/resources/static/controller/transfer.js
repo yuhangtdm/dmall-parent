@@ -68,6 +68,7 @@ layui.extend({
             var xmValue=$("input[name='"+xm+"']").val();
             var xmVals=[];
             var type=sel.attr("loadData");
+            var query=sel.attr("query");
             if(xm && xmValue){
                 if(type=='normal' || type=='tree'){
                     var xms=xmValue.split(",");
@@ -110,22 +111,41 @@ layui.extend({
                     });
                 }
             }else {
-                $.ajax({
-                    url : "/common/select",
-                    type : "post",
-                    data : {"dict":dict,"bean":bean,"methodName":method},
-                    async: false,
-                    success : function(result){
-                        if(result.code==0){
-                            for (var i=0; i<result.data.length; i++){
-                                sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
-                            }
-                            if(value){
-                                sel.val(value);
+                if(url){
+                    $.ajax({
+                        url : url,
+                        type : "post",
+                        async: false,
+                        success : function(result){
+                            if(result.code==0){
+                                for (var i=0; i<result.data.length; i++){
+                                    sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
+                                }
+                                if(value){
+                                    sel.val(value);
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }else{
+                    $.ajax({
+                        url : "/common/select",
+                        type : "post",
+                        data : {"dict":dict,"bean":bean,"methodName":method,"query":query},
+                        async: false,
+                        success : function(result){
+                            if(result.code==0){
+                                for (var i=0; i<result.data.length; i++){
+                                    sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
+                                }
+                                if(value){
+                                    sel.val(value);
+                                }
+                            }
+                        }
+                    });
+                }
+
             }
             form.render();
         });

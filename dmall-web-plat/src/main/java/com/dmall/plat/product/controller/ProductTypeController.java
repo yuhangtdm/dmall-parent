@@ -52,9 +52,16 @@ public class ProductTypeController {
      */
     @RequestMapping("tree")
     @ResponseBody
-    public ReturnResult tree2(Integer level,String flag){
+    public ReturnResult tree(Integer level,String flag){
         List<ProductType> result=productTypeService.tree(0L,level,flag);
         return ResultUtil.buildResult(ResultEnum.SUCC,"success",result);
+    }
+
+    @RequestMapping("ztree")
+    @ResponseBody
+    public List<ProductType> ztree(){
+        List<ProductType> result=productTypeService.ztree(0L);
+        return result;
     }
 
     /**

@@ -65,6 +65,10 @@ public class Dict implements Serializable {
     @ChangeColumn(value = "statusName",dictType = "_status")
     private Integer status;
 
+    @TableField("sort_index")
+    private Integer sortIndex;
+
+
     /**
      * 创建时间
      */

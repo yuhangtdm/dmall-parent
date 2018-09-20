@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * <p>
  * 商品表 前端控制器
@@ -30,14 +32,25 @@ public class ProductController {
     private ProductService productService;
 
     /**
-     *品牌列表
+     *商品列表
      */
-    @RequestMapping("list")
+    @RequestMapping("page")
     @ResponseBody
     @TransBean
-    public ReturnResult list(Product product, Page page){
+    public ReturnResult page(Product product, Page page){
         page=productService.pageList(product,page);
         return ResultUtil.buildResult(ResultEnum.SUCC,page.getTotal(),page.getRecords());
+    }
+
+    /**
+     * 跳转到商品编辑页面
+     */
+    @RequestMapping("edit")
+    public String edit(Long id, HttpServletRequest request){
+        if(id!=null){
+
+        }
+        return "commodity/product/edit";
     }
 }
 

@@ -35,14 +35,14 @@ public @interface ChangeColumn {
     String methodName()default "selectList";
 
     /**
-     * 查询对象的id
+     *
      */
-    String key()default "id";
+    String key()default "dictCode";
     /**
      * 展示的字段名
      * @return
      */
-    String display()default "dictName";
+    String display()default "dictValue";
 
 
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -36,4 +37,17 @@ public class DictDTO implements Serializable {
      */
     @NotBlank(message = "字典值不能为空")
     private String dictValue;
+
+    /**
+     * 是否有效
+     */
+    @NotNull(message = "是否有效不能为空")
+    private Integer status;
+
+    /**
+     * 排序号
+     */
+    @NotNull(message = "排序号不能为空")
+    private Integer sortIndex;
+
 }

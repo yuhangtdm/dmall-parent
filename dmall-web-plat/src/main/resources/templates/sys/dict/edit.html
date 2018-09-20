@@ -18,14 +18,14 @@
 
         <div class="layui-form-item" style="padding-top: 5px">
             <label class="layui-form-label">字典类型</label>
-            <div class="layui-input-block">
+            <div class="layui-input-inline">
                 <input type="hidden"  name="id" />
                 <input type="text" name="dictType"  lay-verify="required" autocomplete="off" placeholder="请输入字典类型代码" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">字典名称</label>
-            <div class="layui-input-block">
+            <div class="layui-input-inline">
                 <input type="text" name="dictName"  placeholder="请输入字典类型名称" autocomplete="off" class="layui-input">
             </div>
         </div>
@@ -33,25 +33,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label">是否启用</label>
             <div class="layui-input-block">
-                <input type="radio" name="isDel" value="1" title="是" checked>
-                <input type="radio" name="isDel" value="0" title="否" >
-            </div>
-        </div>
-
-        <div class="layui-form-item">
-            <label class="layui-form-label">爱好</label>
-            <div class="layui-input-block">
-                <input type="checkbox" name="like" value="0" title="写作">
-                <input type="checkbox" name="like" value="1" title="阅读" checked>
-                <input type="checkbox" name="like" value="2" title="发呆">
-            </div>
-        </div>
-
-        <div class="layui-form-item">
-            <label class="layui-form-label">用户标识</label>
-            <div class="layui-input-block">
-                <select name="city"  loadData="userType" dict="_user_type" lay-verify="required">
-                </select>
+                <input type="radio" name="status" value="1" title="是" checked>
+                <input type="radio" name="status" value="0" title="否" >
             </div>
         </div>
 
@@ -81,24 +64,26 @@
 
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button type="submit" class="layui-btn" lay-submit="" id="submit"  lay-filter="submit">立即提交</button>
+                <button type="button" class="layui-btn" lay-submit="" id="submit"  lay-filter="submit">立即提交</button>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
             </div>
         </div>
     </form>
 
     <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
-    <script th:src="@{/js/common.js}"  charset="utf-8"></script>
 
     <script th:inline="javascript">
-        layui.use(['form'], function(){
-            var form = layui.form,
-                $=layui.jquery;
-            loadSelect($,form);
-            initFormData($,form,JSON.parse([[${bean}]]));
+        layui.config({
+            base: '/controller/'
+        }).use(['form', 'transfer','curd'], function () {
+            var form = layui.form;
+            var transfer = layui.transfer;
+            var curd=layui.curd;
+
+            transfer.init([[${bean}]],null,'dictForm');
+
             form.on('submit(submit)', function(data){
-                $("#submit").attr("disabled",true);
-                saveOrUpdate($,'/sys/dict/save',data.field);
+                curd.saveOrUpdate('/dict/save',data.field)
                 return false;
             });
         });

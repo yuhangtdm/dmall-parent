@@ -15,11 +15,11 @@ layui.define(['layer','table','zTree','form'],function (e) {
         openTree:function (url,style,title,width,height,callback,full) {
             openTree(url,style,title,width,height,callback,full)
         },
-        save:function (url,requestData,json,callback) {
-            save(url,requestData,callback);
+        save:function (url,requestData,callback,type,json) {
+            save(url,requestData,callback,type,json);
         },
-        saveOrUpdate:function (url,requestData,json) {
-            saveOrUpdate(url,requestData,json);
+        saveOrUpdate:function (url,requestData,type,json) {
+            saveOrUpdate(url,requestData,type,json);
         },
         deleteById:function (url,callbak) {
             deleteById(url,callbak);
@@ -136,8 +136,8 @@ layui.define(['layer','table','zTree','form'],function (e) {
 
     /**
      * 有回调的保存
-     */save
-    function save(url,requestData,json,callback) {
+     */
+    function save(url,requestData,callback,type,json) {
         var contentType='application/x-www-form-urlencoded';
         var traditional=true;
         if(json){
@@ -145,19 +145,21 @@ layui.define(['layer','table','zTree','form'],function (e) {
             contentType='application/json';
             traditional=false;
         }
-        var load;
+        var ty='POST';
+        if(type){
+            ty='POST';
+        }
         $.ajax({
             url:url,
-            type:'POST',
+            type:ty,
             data:requestData,
             contentType:contentType,
             beforeSend:function(){
-                load=layer.load(1);
+               layer.load(1);
             },
             traditional:traditional,
             success:function (data) {
                 if(data.code==0){
-                    layer.close(load);
                     layer.msg(data.msg,{
                         icon:1,
                         time:1000
@@ -167,12 +169,13 @@ layui.define(['layer','table','zTree','form'],function (e) {
                         }
                     });
                 }else{
-                    layer.close(load);
                     layer.msg(data.msg,{icon:2})
                 }
             },
+            complete:function(){
+                layer.closeAll('loading');
+            },
             error:function (data) {
-                layer.close(load);
                 var msg="";
                 if(data && data.responseJSON && data.responseJSON.msg){
                     msg=data.responseJSON.msg;
@@ -190,8 +193,8 @@ layui.define(['layer','table','zTree','form'],function (e) {
      * @param url
      * @param requestData
      */
-    function saveOrUpdate(url,requestData,json) {
-        save(url,requestData,json,saveAfter);
+    function saveOrUpdate(url,requestData,type,json) {
+        save(url,requestData,saveAfter,type,json);
     }
 
     /**

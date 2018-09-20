@@ -27,34 +27,32 @@
         <div class="x-body">
 
             <form class="layui-form  layui-form-pane" action="" >
-                <div class="layui-form-item">
 
                     <div class="layui-row">
-                        <div class="layui-col-xs6 layui-col-md4 layui-col-lg3">
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6 layui-col-lg3">
                             <label class="layui-form-label">品牌名称：</label>
                             <div class="layui-input-inline">
                                 <input class="layui-input" name="brandName" >
                             </div>
                         </div>
-                        <div class="layui-col-xs6  layui-col-md4 layui-col-lg3">
+                        <div class="layui-col-xs6 layui-col-sm6  layui-col-md6 layui-col-lg3">
                             <label class="layui-form-label">英文名称：</label>
                             <div class="layui-input-inline">
                                 <input class="layui-input" name="englishName" >
                             </div>
                         </div>
-                        <div class="layui-col-xs6  layui-col-md4 layui-col-lg3">
+                        <div class="layui-col-xs6 layui-col-sm6  layui-col-md6 layui-col-lg3">
                             <label class="layui-form-label">首字母：</label>
                             <div class="layui-input-inline">
                                 <input class="layui-input" name="firstLetter" >
                             </div>
                         </div>
-                        <div class="layui-col-xs6  layui-col-md4 layui-col-lg3">
+                        <div class="layui-col-xs6 layui-col-sm6  layui-col-md6 layui-col-lg3">
                             <div class="layui-input-inline" style="width:80px">
                                 <button class="layui-btn" lay-submit id="formSearch" lay-filter="formSearch"><i class="layui-icon">&#xe615;</i></button>
                             </div>
                         </div>
                     </div>
-                </div>
             </form>
             <table id="brand"  class="layui-hide"  lay-filter="brand">
             </table>
@@ -84,7 +82,7 @@
                 var form=layui.form;
                 var curd=layui.curd;
 
-                curd.initPage('brand','/brand/list',buildColumn());
+                curd.initPage('brand','/brand/page',buildColumn());
 
                 //头工具栏事件
                 table.on('toolbar(brand)', function(obj){

@@ -32,7 +32,7 @@ public interface ProductTypeService extends IService<ProductType> {
     /**
      * 更新或保存
      */
-    void saveOrUpdate(ProductType type);
+    List<ProductType> saveOrUpdate(ProductType type);
 
     /**
      * 获取子代元素
@@ -44,7 +44,7 @@ public interface ProductTypeService extends IService<ProductType> {
      * 删除节点以及后代节点
      * @param id
      */
-    void batchDelete(Long id);
+    List<ProductType> batchDelete(Long id);
 
     /**
      * 设置品牌
@@ -59,4 +59,5 @@ public interface ProductTypeService extends IService<ProductType> {
      */
     List<ProductType> selectByParam(List<Long> typeIds);
 
+    List<ProductType> ztree(long pid);
 }

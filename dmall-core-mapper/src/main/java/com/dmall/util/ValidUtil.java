@@ -38,9 +38,11 @@ public class ValidUtil{
                 return true;
             }else {
                 Field idField = t.getClass().getDeclaredField("id");
+                idField.setAccessible(true);
                 Object id = idField.get(t);
                 T t2 = list.get(0);
                 Field listField = t2.getClass().getDeclaredField("id");
+                listField.setAccessible(true);
                 Object id2=listField.get(t2);
                 if(id!=null && id.equals(id2)){
                     return true;
@@ -48,7 +50,7 @@ public class ValidUtil{
             }
         }catch (Exception e){
             e.printStackTrace();
-            throw new BusinessException(ResultEnum.SERVER_ERROR,"校验出现异常:");
+            throw new BusinessException(ResultEnum.SERVER_ERROR,"校验唯一性出现异常:");
         }
 
         return false;

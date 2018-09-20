@@ -59,8 +59,8 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
     @Override
     @CachePut(key = "'dict:'+#root.args[0].dictType")
     public List<Dict> saveOrUpdate(Dict dict) {
-        if(!ValidUtil.valid(dict,"dictServiceImpl","dict_code")){
-            throw new BusinessException(ResultEnum.BAD_REQUEST,"字典码code必须唯一");
+        if(!ValidUtil.valid(dict,"dictServiceImpl","dictType","dictCode")){
+            throw new BusinessException(ResultEnum.BAD_REQUEST,"同一字典类型下字典码code必须唯一");
         }
         if(dict.getId()!=null){
             this.updateById(dict);

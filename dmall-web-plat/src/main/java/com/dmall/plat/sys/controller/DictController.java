@@ -42,6 +42,7 @@ public class DictController {
      */
     @RequestMapping("list")
     @ResponseBody
+    @TransBean
     public ReturnResult list(Dict dict, Page page){
         page=dictService.pageList(dict,page);
         return ResultUtil.buildResult(ResultEnum.SUCC,page.getTotal(),page.getRecords());
@@ -57,7 +58,7 @@ public class DictController {
             if(dict==null){
                 throw new BusinessException(ResultEnum.BAD_REQUEST,"该数据字典不存在,请刷新列表");
             }
-            request.setAttribute("bean", JsonUtil.toJson(dict));
+            request.setAttribute("bean", dict);
         }
         return "/sys/dict/edit";
     }

@@ -17,7 +17,6 @@
 
 <body>
     <form class="layui-form" id="props-form" action="">
-
         <div class="layui-form-item" style="padding-top: 5px">
             <label class="layui-form-label">属性名称</label>
             <div class="layui-input-block">
@@ -27,7 +26,6 @@
                        class="layui-input">
             </div>
         </div>
-
         <div class="layui-form-item" style="padding-top: 5px">
             <label class="layui-form-label">属性值</label>
             <div class="layui-input-block">
@@ -35,21 +33,19 @@
                        class="layui-input">
             </div>
         </div>
-
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">备注</label>
             <div class="layui-input-block">
                 <textarea name="remark"  placeholder="请输入内容" class="layui-textarea"></textarea>
             </div>
         </div>
-
         <div class="layui-form-item">
             <div class="layui-input-block">
                 <button type="button" class="layui-btn" lay-submit="" id="submit" lay-filter="submit">立即提交</button>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
             </div>
         </div>
-</form>
+    </form>
 
     <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
     <script th:src="@{/js/jquery-3.3.1.min.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
