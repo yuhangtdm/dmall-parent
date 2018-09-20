@@ -9,6 +9,7 @@ import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotations.Version;
 
+import com.dmall.common.annotation.ChangeColumn;
 import com.dmall.common.annotation.SelectKey;
 import com.dmall.common.annotation.SelectValue;
 import lombok.Data;
@@ -61,7 +62,8 @@ public class Dict implements Serializable {
      * 是否可用
      */
     @TableField("status")
-    private String status;
+    @ChangeColumn(value = "statusName",dictType = "_status")
+    private Integer status;
 
     /**
      * 创建时间
@@ -74,6 +76,8 @@ public class Dict implements Serializable {
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Long updateTime;
 
+    @TableField(exist = false)
+    private String statusName;
 
 
 }

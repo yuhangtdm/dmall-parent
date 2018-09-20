@@ -48,11 +48,10 @@ public class BrandController {
     private ProductTypeBrandService productTypeBrandService;
 
     /**
-     *品牌列表
+     *品牌分页列表
      */
     @RequestMapping("list")
     @ResponseBody
-    @TransBean
     public ReturnResult list(Brand brand, Page page){
         page=brandService.pageList(brand,page);
         return ResultUtil.buildResult(ResultEnum.SUCC,page.getTotal(),page.getRecords());
@@ -78,7 +77,7 @@ public class BrandController {
     }
 
     /**
-     * 保存或更新品牌
+     * 保存或更新品牌 且维护和商品分类的关系
      */
     @RequestMapping("save")
     @ResponseBody
@@ -99,7 +98,6 @@ public class BrandController {
         brandService.deleteById(id);
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
-
 
 }
 

@@ -41,4 +41,14 @@ public interface DictService extends IService<Dict> {
      * 根据id删除字典
      */
     List<Dict>  deleteById(Long id);
+
+    /**
+     * 启用字典
+     */
+    List<Dict> active(Long id);
+
+    /**
+     * 停用字典
+     */
+    List<Dict> invalid(Long id);
 }

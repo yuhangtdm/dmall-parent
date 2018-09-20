@@ -17,20 +17,32 @@ public @interface ChangeColumn {
     String value() default "";
 
     /**
-     * 数据源在spring工厂中的名称
+     * 数据字典时需要传入数据字典key
+     * @return
+     */
+    String dictType()default "";
+
+
+    /**
+     * 查询的bean名称
      * @return
      */
     String beanName()default "";
 
     /**
-     * 查询数据源的方法名称
+     * 查询的方法名称 默认查询集合
      */
-    String methodName()default "selectById";
+    String methodName()default "selectList";
 
     /**
-     * 数据字典时需要传入数据字典key
+     * 查询对象的id
+     */
+    String key()default "id";
+    /**
+     * 展示的字段名
      * @return
      */
-    String dictType()default "";
+    String display()default "dictName";
+
 
 }

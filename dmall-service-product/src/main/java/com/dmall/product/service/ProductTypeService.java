@@ -18,7 +18,6 @@ import java.util.Map;
  */
 public interface ProductTypeService extends IService<ProductType> {
 
-
     /**
      * 加载树
      * @return
@@ -40,11 +39,6 @@ public interface ProductTypeService extends IService<ProductType> {
      */
     List<ProductType> getSun(Long pid);
 
-    /**
-     * 修改数据
-     * @param pid
-     */
-    void updateSort(Long pid);
 
     /**
      * 删除节点以及后代节点
@@ -52,15 +46,17 @@ public interface ProductTypeService extends IService<ProductType> {
      */
     void batchDelete(Long id);
 
-
     /**
      * 设置品牌
      * @param build
      */
     void setBrand(Map<String,List<Long>> build);
 
-
+    /**
+     * 根据分类id查询分类列表
+     * @param typeIds
+     * @return
+     */
     List<ProductType> selectByParam(List<Long> typeIds);
 
-    String selectTypeName(String typeId);
 }

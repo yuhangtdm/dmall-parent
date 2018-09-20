@@ -42,7 +42,7 @@ public class Props implements Serializable {
     @TableField("group_id")
     private Long groupId;
     /**
-     * 商品分类
+     * 商品分类 一级/二级/三级
      */
     @TableField("product_type")
     private String productType;

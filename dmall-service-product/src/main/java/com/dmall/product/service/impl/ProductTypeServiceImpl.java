@@ -136,13 +136,6 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
         return  this.selectList(wrapper);
     }
 
-    @Override
-    public void updateSort(Long pid) {
-        List<ProductType> tree = tree(pid, null, null);
-        update(tree);
-
-
-    }
 
     @Override
     @Transactional
@@ -195,34 +188,9 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
         return productTypes;
     }
 
-    @Override
-    public String selectTypeName(String typeId) {
-        StringBuilder sb=new StringBuilder();
-        String[] split = typeId.split("/");
-        for (String s : split) {
-            ProductType productType = this.selectById(Long.parseLong(s));
-            sb.append(productType.getName()).append("/");
-        }
-
-        return sb.substring(0,sb.length()-1);
-    }
-
-
-    private void update(List<ProductType> tree) {
-        for (int i=0;i<tree.size();i++) {
-            ProductType productType = tree.get(i);
-            productType.setSortIndex((i+1));
-            this.updateById(productType);
-            if(productType.getChildren().size()>0){
-                update(productType.getChildren());
-            }
-        }
-    }
-
 
     /**
-     * 保存路径
-     * @param type
+     * 设置path
      */
     private void savePath(ProductType type) {
         //一级分类

@@ -24,7 +24,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * <p>
- * 字典目录 前端控制器
+ * 数据字典 前端控制器
  * </p>
  *
  * @author yuhang
@@ -33,16 +33,19 @@ import javax.validation.constraints.NotNull;
 @Controller
 @RequestMapping("/dict")
 public class DictController {
+
     @Autowired
     private DictService dictService;
 
+    /**
+     * 数据字典分页
+     */
     @RequestMapping("list")
     @ResponseBody
     public ReturnResult list(Dict dict, Page page){
         page=dictService.pageList(dict,page);
         return ResultUtil.buildResult(ResultEnum.SUCC,page.getTotal(),page.getRecords());
     }
-
 
     /**
      * 跳转到字典编辑页面
@@ -72,12 +75,22 @@ public class DictController {
     }
 
     /**
-     * 删除字典
+     * 启用字典
      */
-    @RequestMapping("delete")
+    @RequestMapping("active")
     @ResponseBody
     public ReturnResult delete(@NotNull(message = "id不能为空") Long id){
-        dictService.deleteById(id);
+        dictService.active(id);
+        return ResultUtil.buildResult(ResultEnum.SUCC);
+    }
+
+    /**
+     * 停用字典
+     */
+    @RequestMapping("invalid")
+    @ResponseBody
+    public ReturnResult invalid(@NotNull(message = "id不能为空") Long id){
+        dictService.invalid(id);
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
 

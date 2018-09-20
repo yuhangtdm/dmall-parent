@@ -56,7 +56,6 @@ public class Brand implements Serializable {
     /**
      * 品牌简介
      */
-    @ChangeColumn("productTypeCn")
     private String description;
 
     /**

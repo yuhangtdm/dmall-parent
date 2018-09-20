@@ -47,7 +47,9 @@ public class ProductTypeController {
     @Autowired
     private ProductTypeBrandService productTypeBrandService;
 
-
+    /**
+     * 商品分类的树数据
+     */
     @RequestMapping("tree")
     @ResponseBody
     public ReturnResult tree2(Integer level,String flag){
@@ -55,6 +57,9 @@ public class ProductTypeController {
         return ResultUtil.buildResult(ResultEnum.SUCC,"success",result);
     }
 
+    /**
+     * 商品分类保存
+     */
     @RequestMapping("save")
     @ResponseBody
     public ReturnResult save(@Valid ProductTypeDto dto){
@@ -67,16 +72,19 @@ public class ProductTypeController {
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
 
+    /**
+     * 商品分类删除
+     */
     @RequestMapping("delete")
     @ResponseBody
     public ReturnResult delete(@NotNull(message = "id不能为空") Long id){
-        //todo 类型下维护了商品 不可删除
+        //todo 类型下维护了商品 维护了属性 不可删除
         productTypeService.batchDelete(id);
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
 
     /**
-     * 设置品牌
+     * 前往设置品牌编辑页面
      */
     @GetMapping("/setBrand")
     public String setBrand(Long typeId, HttpServletRequest request){
@@ -90,6 +98,9 @@ public class ProductTypeController {
         return "commodity/type/setBrand";
     }
 
+    /**
+     * 设置品牌
+     */
     @PostMapping("setBrand")
     @ResponseBody
     public ReturnResult setBrand(@Valid TypeBrandDTO typeBrandDTO){

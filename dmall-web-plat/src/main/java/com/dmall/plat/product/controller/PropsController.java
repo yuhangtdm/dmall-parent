@@ -118,7 +118,7 @@ public class PropsController {
     }
 
     /**
-     * 给属性组设置属性
+     * 属性组设置属性页面
      */
     @RequestMapping("group/setProp")
     public String setProp(@NotNull(message = "属性组id不能为空") Long groupId, HttpServletRequest request){
@@ -139,15 +139,13 @@ public class PropsController {
             List<String> collect = optionList.stream().map(PropsOption::getOptionValue).collect(Collectors.toList());
             String values = StringUtil.join(collect,",");
             request.setAttribute("values",values);
-           // props.setOptionValues(values);
             request.setAttribute("bean",props);
-
         }
         return "commodity/props/edit";
     }
 
     /**
-     * 属性组保存
+     * 属性保存 包含属性值
      */
     @RequestMapping("save")
     @ResponseBody
@@ -159,7 +157,7 @@ public class PropsController {
     }
 
     /**
-     *属性列表
+     *属性分页列表
      */
     @RequestMapping("list")
     @ResponseBody
@@ -169,15 +167,16 @@ public class PropsController {
         return ResultUtil.buildResult(ResultEnum.SUCC,page.getTotal(),page.getRecords());
     }
 
-
     /**
      * 删除属性
      */
     @RequestMapping("delete")
     @ResponseBody
     public ReturnResult delete(@NotNull(message = "id不能为空") Long id){
-        propsService.deleteById(id);
+        //todo 属性组维护了商品 不可删除 属性维护了商品 不可删除
+        //propsService.deleteById(id);
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
+
 }
 

@@ -72,7 +72,12 @@
 
             <script type="text/html" id="barDemo">
                 <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                {{# if (d.status=='1') { }}
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="invalid">停用</a>
+                {{# } else { }}
+                    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="active">启用</a>
+                {{# } }}
+
             </script>
         </div>
         <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
@@ -101,14 +106,20 @@
                 //监听行工具事件
                 table.on('tool(brand)', function(obj){
                     var data = obj.data;
-                    if(obj.event === 'del'){
-                        layer.confirm('确定删除该字典?', {icon: 3, title:'提示'}, function(index){
-                            curd.deleteById('/dict/delete?id='+data.id,function () {
+                    if(obj.event === 'invalid'){
+                        layer.confirm('确定停用该字典?', {icon: 3, title:'提示'}, function(index){
+                            curd.deleteById('/dict/invalid?id='+data.id,function () {
                                 $("#formSearch").click();
                             });
                         });
-
-                    } else if(obj.event === 'edit'){
+                    } else if(obj.event=='active'){
+                        layer.confirm('确定启用该字典?', {icon: 3, title:'提示'}, function(index){
+                            curd.deleteById('/dict/active?id='+data.id,function () {
+                                $("#formSearch").click();
+                            });
+                        });
+                    }
+                    else if(obj.event === 'edit'){
                         curd.openForm('/dict/add?id='+data.id,'修改字典','600px', '500px');
                     }
                 });
@@ -131,6 +142,7 @@
                             {field:'code', title: '字典代码', sort: true},
                             {field:'value',  title: '字典值'},
                             {field:'sortIndex',  title: '排序'},
+                            {field:'statusName',  title: '是否有效'},
                             {field:'updateTime',  title: '更新时间', sort: true,templet: function (d) {
                                     if(d.updateTime){
                                         return layui.util.toDateString(d.updateTime);

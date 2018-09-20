@@ -3,6 +3,7 @@ package com.dmall.plat.sys.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.dmall.common.Constants;
 import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.exception.BusinessException;
 import com.dmall.plat.sys.service.DictService;
@@ -29,7 +30,6 @@ import java.util.List;
 @CacheConfig(cacheNames = "dictCache")
 public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements DictService {
 
-
     @Override
     public Page pageList(Dict dict, Page page) {
         EntityWrapper wrapper=new EntityWrapper();
@@ -39,9 +39,6 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         return page;
     }
 
-    /**
-     * 先从redis查询 在查数据库
-     */
     @Override
     @Cacheable(key = "'dict:'+#root.args[0]")
     public List<Dict> queryDictByType(String dictType) {
@@ -82,6 +79,24 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         return result;
     }
 
+    @Override
+    public  List<Dict> active(Long id) {
+        Dict dict = this.selectById(id);
+        dict.setStatus(Constants.YES);
+        this.updateById(dict);
+        List<Dict> result=this.queryDictByType(dict.getDictType());
+        return result;
+    }
+
+    @Override
+    public List<Dict> invalid(Long id) {
+        Dict dict = this.selectById(id);
+        dict.setStatus(Constants.NO);
+        this.updateById(dict);
+        List<Dict> result=this.queryDictByType(dict.getDictType());
+        return result;
+    }
+
     /**
      * 校验字典code是否唯一
      */
@@ -98,6 +113,5 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         }
         return false;
     }
-
 
 }
