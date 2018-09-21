@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>
-        品牌管理
+        商品分类管理
     </title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -13,14 +13,9 @@
     <meta name="format-detection" content="telephone=no">
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}" href="./css/admin.css" media="all">
     <link rel="stylesheet" th:href="@{/admin/css/admin.css}" href="./css/admin.css" media="all">
-    <link rel="stylesheet" th:href="@{/layui/css/treeSelect.css}" href="./css/admin.css" media="all">
-
-    <link rel="stylesheet" th:href="@{/zTree/css/zTreeStyle/zTreeStyle.css}" href="zTreeStyle/zTreeStyle.css"
-          type="text/css">
-    <link rel="stylesheet" th:href="@{/zTree/css/metroStyle/metroStyle.css}" href="zTreeStyle/zTreeStyle.css"
-          type="text/css">
+    <link rel="stylesheet" th:href="@{/zTree/css/zTreeStyle/zTreeStyle.css}" href="zTreeStyle/zTreeStyle.css" type="text/css">
+    <link rel="stylesheet" th:href="@{/zTree/css/metroStyle/metroStyle.css}" href="zTreeStyle/zTreeStyle.css" type="text/css">
     <link rel="stylesheet" th:href="@{/layui/css/formSelects-v4.css}" href="./css/admin.css" media="all">
-
     <style type="text/css">
         div#rMenu {
             position: absolute;
@@ -45,17 +40,8 @@
     </style>
 </head>
 <body>
-<div class="x-nav">
-            <span class="layui-breadcrumb">
-              <a><cite>首页</cite></a>
-              <a><cite>商品信息管理</cite></a>
-              <a><cite>商品类型管理</cite></a>
-            </span>
-</div>
-
-<div class="x-body">
-    <div class="layui-row">
-        <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
+    <div class="x-body">
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">
             <div class="layui-row" style="margin-bottom: 20px;padding-left: 20px;">
                 <button id="editType" class="layui-btn layui-btn-primary layui-btn-sm">编辑</button>
                 <button id="setBrand" class="layui-btn layui-btn layui-btn-sm">设置品牌</button>
@@ -64,11 +50,10 @@
                 <ul id="typeTree" class="ztree"></ul>
             </div>
         </div>
-
-        <div class="layui-col-xs6 layui-col-sm6  layui-col-md4">
-            <div class="layui-card">
-                <div class="layui-card-header">编辑商品类型</div>
-                <div class="layui-card-body">
+        <div class="layui-col-xs6 layui-col-sm6  layui-col-md8 layui-col-lg8">
+            <fieldset class="layui-elem-field">
+                <legend>编辑商品类型</legend>
+                <div class="layui-field-box">
                     <form id="typeForm" class="layui-form layui-form-pane" action="">
 
                         <div class="layui-form-item" style="padding-top: 5px">
@@ -140,15 +125,10 @@
                         </div>
                     </form>
                 </div>
-            </div>
+            </fieldset>
         </div>
-
-        <div class="layui-col-xs6 layui-col-sm6 layui-col-md1">
-        </div>
-    </div>
 </div>
-
-<div id="rMenu">
+    <div id="rMenu">
     <a href="#" id="add">新增</a><br/>
     <a href="#" id="edit">编辑</a><br/>
     <a href="#" id="delete">删除</a><br/>
@@ -156,7 +136,6 @@
 </div>
 
 <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
-
 
 <script th:inline="javascript">
     layui.config({

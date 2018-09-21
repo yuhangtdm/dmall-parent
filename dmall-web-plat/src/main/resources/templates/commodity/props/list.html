@@ -22,23 +22,21 @@
               <a><cite>商品信息管理</cite></a>
               <a><cite>属性组管理</cite></a>
             </span>
-            <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon" style="line-height:30px">ဂ</i></a>
+            <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+            <button class="layui-btn layui-btn-small" style="line-height:1.6em;margin:3px;float:right" lay-submit id="formSearch" lay-filter="formSearch" title="搜索"><i class="layui-icon layui-icon-search"></i></button>
         </div>
 
         <div class="x-body">
-
-            <form class="layui-form  layui-form-pane" action="" >
+            <form class="layui-form " action="" >
                 <div class="layui-form-item">
-
-                    <div class="layui-row">
-                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
-                            <label class="layui-form-label">属性组名称：</label>
+                    <div class="layui-row layui-col-space10">
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                            <label class="layui-form-label">属性组名称</label>
                             <div class="layui-input-inline">
                                 <input class="layui-input" name="groupName" >
                             </div>
                         </div>
-
-                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6 layui-col-lg6">
                             <label class="layui-form-label">商品分类</label>
                             <div class="layui-input-block">
                                 <select loadData="linkage" url="/type/tree" xm-select-search="" name="productType" xm-select="productType"
@@ -46,15 +44,7 @@
                                 </select>
                             </div>
                         </div>
-
-                        <div class="layui-col-xs4 layui-col-sm12 layui-col-md3">
-                            <div class="layui-input-inline" style="width:80px">
-                                <button class="layui-btn" lay-submit id="formSearch" lay-filter="formSearch"><i class="layui-icon">&#xe615;</i></button>
-                            </div>
-                        </div>
                     </div>
-
-
                 </div>
             </form>
             <table id="propGroup"  class="layui-hide"  lay-filter="propGroup">
