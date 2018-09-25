@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -97,6 +98,18 @@ public class BrandController {
         //todo 品牌维护了商品不能删除 维护了类型 则删除关联数据
         brandService.deleteById(id);
         return ResultUtil.buildResult(ResultEnum.SUCC);
+    }
+
+    @RequestMapping("listAll")
+    @ResponseBody
+    public ReturnResult listAll(Long productTypeId){
+        List<Brand> result=null;
+        if(productTypeId==null){
+            result=brandService.list();
+        }else{
+            result=brandService.list(productTypeId);
+        }
+        return ResultUtil.buildResult(ResultEnum.SUCC,result);
     }
 
 }

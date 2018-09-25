@@ -9,7 +9,6 @@
         <result column="english_name" property="englishName" />
         <result column="first_letter" property="firstLetter" />
         <result column="description" property="description" />
-        <result column="product_type" property="productType" />
         <result column="logo" property="logo" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
@@ -17,7 +16,20 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, brand_name, english_name, first_letter, description, product_type, logo, create_time, update_time
+        p.id, p.brand_name,p.english_name, p.first_letter, p.description, p.logo, p.create_time, p.update_time
     </sql>
+
+    <select id="listAll" resultType="com.dmall.product.entity.Brand">
+        select
+        <include refid="Base_Column_List"></include>
+        from p_brand p
+        inner join p_product_type_brand  ppb on p.id=ppb.brand_id
+        <where>
+            <if test="productTypeId!=null">
+                and ppb.product_type_id =#{productTypeId}
+            </if>
+        </where>
+
+    </select>
 
 </mapper>

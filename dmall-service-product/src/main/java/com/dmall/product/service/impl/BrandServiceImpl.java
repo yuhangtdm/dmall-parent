@@ -42,6 +42,9 @@ import java.util.stream.Collectors;
 public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements BrandService {
 
     @Autowired
+    private BrandMapper brandMapper;
+
+    @Autowired
     private ProductTypeBrandService productTypeBrandService;
 
     @Autowired
@@ -103,6 +106,11 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     public List<Brand> list() {
         EntityWrapper<Brand> wrapper=new EntityWrapper<>();
         return super.selectList(wrapper);
+    }
+
+    @Override
+    public List<Brand> list(Long productType) {
+        return brandMapper.listAll(productType);
     }
 
     @Override

@@ -20,50 +20,142 @@
 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
     <legend>商品信息维护</legend>
 </fieldset>
-
+<button type="button" class="layui-btn" style="float: right">保存</button>
 <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
     <ul class="layui-tab-title">
         <li class="layui-this">基本信息</li>
-        <li>图片信息</li>
         <li>扩展信息</li>
+        <li>图片信息</li>
     </ul>
     <div class="layui-tab-content" style="height: 100px;">
         <div class="layui-tab-item layui-show">
             <form class="layui-form" id="product-form" action="">
-                <div class="layui-form-item" style="padding-top: 5px">
-                    <label class="layui-form-label">商品编码</label>
-                    <div class="layui-input-block">
-                        <input type="hidden" name="id" />
-                        <input type="text" name="productCode" lay-verify="required" autocomplete="off"
-                               class="layui-input" readonly >
+                <div class="layui-row" >
+                    <div class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <label class="layui-form-label">商品编码</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="productCode" lay-verify="required" autocomplete="off"
+                                   class="layui-input" readonly >
+                        </div>
+                    </div>
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <label class="layui-form-label">商品状态</label>
+                        <div class="layui-input-inline">
+                            <select loadData="normal"  name="state" dict="_product_state">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <label class="layui-form-label">上架时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input date" id="onSaleTime" name="onSaleTime">
+                        </div>
                     </div>
                 </div>
-                <div class="layui-form-item" style="padding-top: 5px">
-                    <label class="layui-form-label">商品名称</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="name" class="layui-input">
+                <div class="layui-row" style="margin-top: 10px">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <label class="layui-form-label">商品名称</label>
+                        <div class="layui-input-inline">
+                            <input type="hidden" name="id" />
+                            <input type="text" name="product.name" class="layui-input">
+                        </div>
+                    </div>
+                    <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <label class="layui-form-label">最高价</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="product.maxPrice"  autocomplete="off"
+                                   class="layui-input" disabled="disabled" >
+                        </div>
+                    </div>
+                    <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <label class="layui-form-label">最低价</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="product.minPrice"  autocomplete="off"
+                                   class="layui-input" disabled="disabled" >
+                        </div>
                     </div>
                 </div>
-                <div class="layui-form-item layui-form-text">
-                    <label class="layui-form-label">商品副名称</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="subName" class="layui-input">
+                <div class="layui-row" style="margin-top: 10px">
+                    <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <label class="layui-form-label">商品副名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="subName" class="layui-input">
+                        </div>
+                    </div>
+                    <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <label class="layui-form-label">销量</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="saleCount" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+                    <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <label class="layui-form-label">浏览量</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="viewCount" class="layui-input" disabled="disabled">
+                        </div>
                     </div>
                 </div>
-                <div class="layui-form-item layui-form-text">
-                    <label class="layui-form-label">商品分类</label>
-                    <div class="layui-input-block">
-                        <select loadData="linkage" url="/type/tree" xm-select-search="" name="productType" xm-select="productType"
-                                linkageWidth="140" lay-verify="required" xm-select-radio="">
-                        </select>
+                <div class="layui-row" style="margin-top: 10px" >
+                    <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <label class="layui-form-label">评论数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="product.commentCount" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+                    <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <label class="layui-form-label">评分</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="product.commentScore" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+                    <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <label class="layui-form-label">好评率</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="product.goodRate" class="layui-input" disabled="disabled">
+                        </div>
                     </div>
                 </div>
-                <div class="layui-form-item layui-form-text">
-                    <label class="layui-form-label">品牌</label>
-                    <div class="layui-input-block">
-                        <select loadData="normal" xm-select-search="" name="productType" xm-select="productType"
-                                linkageWidth="140" lay-verify="required" xm-select-radio="">
-                        </select>
+                <div class="layui-row" style="margin-top: 10px" >
+                    <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <label class="layui-form-label">好评数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="product.goodCommentCount" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+                    <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <label class="layui-form-label">中评数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="product.middleCommentCount" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+                    <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <label class="layui-form-label">差评数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="product.badCommentCount" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row" style="margin-top: 10px">
+                    <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <label class="layui-form-label">商品分类</label>
+                        <div class="layui-input-block">
+                            <select loadData="linkage" url="/type/tree" xm-select-search=""
+                                    name="product.productType" xm-select="productType"
+                                    linkage="true" linkageWidth="140" xm-select-radio="" >
+                            </select>
+                        </div>
+                    </div>
+                    <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <label class="layui-form-label">品牌</label>
+                        <div class="layui-input-inline">
+                            <select id="brand" lay-filter="brand" loadData="normal" url="/brand/listAll"  name="product.brandId">
+                            </select>
+                        </div>
+                    </div>
+                    <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn" id="addProps">添加属性组</button>
+                        </div>
                     </div>
                 </div>
 
@@ -81,10 +173,41 @@
         layui.config({
             base: '/controller/'
         }).use(['element','form', 'transfer','curd'], function () {
+            var $=layui.$;
             var form = layui.form;
             var transfer = layui.transfer;
             var curd=layui.curd;
             var element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+            var formSelects = layui.formSelects;
+
+            formSelects.on('select1', function(id, vals, val, isAdd, isDisabled){
+                //id:           点击select的id
+                //vals:         当前select已选中的值
+                //val:          当前select点击的值
+                //isAdd:        当前操作选中or取消
+                //isDisabled:   当前选项是否是disabled
+                console.log(id);
+                var split=id.split("/");
+                $("#brand").attr("url","/brand/listAll?productTypeId="+split[split.length-1]);
+                form.render('select', 'brand');
+            });
+            $("#addProps").click(function () {
+                var id=formSelects.value('productType');
+                var productType='';
+                if(id){
+                    var  split=id.split("/");
+                    productType=split[split.length-1];
+                }
+                var html='<div class="layui-row" style="margin-top: 10px">'
+                    + '<select loadData="normal" url="/props/group/listAll?productTypeId="+productType  name="product.brandId">'
+                    +' </select>'
+                    + '<input type="hidden" name="" class="layui-input">'
+                    + '</div>'
+
+                var tag = new Tag("tagValue");
+                tag.tagValue=[[${values}]];
+                tag.initView();
+            });
         });
 </script>
 

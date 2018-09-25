@@ -35,6 +35,12 @@ public interface BrandService extends IService<Brand> {
     List<Brand> list();
 
     /**
+     * 根据商品分类获取品牌
+     * @param productType
+     * @return
+     */
+    List<Brand> list(Long productType);
+    /**
      * 删除品牌
      * @param id
      * @return

@@ -59,5 +59,10 @@ public interface ProductTypeService extends IService<ProductType> {
      */
     List<ProductType> selectByParam(List<Long> typeIds);
 
+    /**
+     * ztree
+     * @param pid
+     * @return
+     */
     List<ProductType> ztree(long pid);
 }
