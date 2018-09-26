@@ -40,9 +40,9 @@ public class Brand implements Serializable {
     /**
      * 品牌名
      */
-    @TableField("brand_name")
+    @TableField("name")
     @SelectValue
-    private String brandName;
+    private String name;
     /**
      * 英文名
      */

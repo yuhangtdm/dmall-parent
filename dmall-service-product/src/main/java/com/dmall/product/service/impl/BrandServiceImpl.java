@@ -63,7 +63,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     @Transactional
     @CachePut(value = "brandCache",key = "'select:com.dmall.product.service.impl.BrandServiceImpl.list()'")
     public List<Brand> saveOrUpdate(Brand brand) {
-        if(!ValidUtil.valid(brand,"brandServiceImpl","brandName")){
+        if(!ValidUtil.valid(brand,"brandServiceImpl","name")){
             throw new BusinessException(ResultEnum.BAD_REQUEST,"品牌名称必须唯一");
         }
         List<Long> typeIds=buildTypeIds(brand);
@@ -71,7 +71,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
         if(StringUtil.isNotEmptyObj(valid)){
             throw new BusinessException(ResultEnum.BAD_REQUEST,"只可以设置三级商品类型");
         }
-        brand.setFirstLetter(ChineseCharToEnUtil.getFirstLetter(brand.getBrandName()));
+        brand.setFirstLetter(ChineseCharToEnUtil.getFirstLetter(brand.getName()));
         if (brand.getId()!=null){
             this.updateById(brand);
             List<ProductTypeBrand> productTypeBrands = productTypeBrandService.queryByBrandId(brand.getId());

@@ -2,6 +2,7 @@ package com.dmall.product.mapper;
 
 import com.dmall.product.entity.Brand;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,5 +16,5 @@ import java.util.List;
  */
 public interface BrandMapper extends BaseMapper<Brand> {
 
-    List<Brand> listAll(Long productType);
+    List<Brand> listAll(@Param("productType") Long productType);
 }

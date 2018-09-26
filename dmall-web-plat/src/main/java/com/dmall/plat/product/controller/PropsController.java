@@ -65,9 +65,9 @@ public class PropsController {
     /**
      *属性组列表
      */
-    @RequestMapping("group/list")
+    @RequestMapping("group/page")
     @ResponseBody
-    public ReturnResult groupList(PropsGroup group, Page page){
+    public ReturnResult groupPage(PropsGroup group, Page page){
         page=propsGroupService.pageList(group,page);
         return ResultUtil.buildResult(ResultEnum.SUCC,page.getTotal(),page.getRecords());
     }
@@ -172,10 +172,10 @@ public class PropsController {
     /**
      *属性分页列表
      */
-    @RequestMapping("list")
+    @RequestMapping("page")
     @ResponseBody
     @TransBean
-    public ReturnResult list(Props props, Page page){
+    public ReturnResult page(Props props, Page page){
         page=propsService.pageList(props,page);
         return ResultUtil.buildResult(ResultEnum.SUCC,page.getTotal(),page.getRecords());
     }

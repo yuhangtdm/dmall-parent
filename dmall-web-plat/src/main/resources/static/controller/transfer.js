@@ -34,11 +34,11 @@ layui.extend({
                     dataType: 'json'
                 });
             }
-            initSelect();
+            initSelect(null);
             initDate(formId);
         },
-        initSelect:function () {
-            initSelect();
+        initSelect:function (id) {
+            initSelect(id);
         },
         initDate : function(formId){
             initDate(formId);
@@ -51,116 +51,126 @@ layui.extend({
     /**
      * 初始化下拉框 包括单选 多选 联动选择  树
      */
-    function initSelect() {
-        $("select[loadData]").each(function(){
-            var sel = $(this);
-            // sel.empty();
-            sel.append("<option value=''>请选择</option>");
-            var value = sel.attr("value");
-            var dict=sel.attr("dict")||'';//数据字典的key
-            var bean=sel.attr("bean")||'';//查询下拉框的对象bean
-            var method=sel.attr("method")||'';//查询的方法
-            var linkageWidth=sel.attr("linkageWidth") || 100;
-            if(typeof linkageWidth==="string"){
-                linkageWidth=parseInt(linkageWidth);
-            }
-            var url=sel.attr("url")||'';//查询的路径
-            var xm=sel.attr("xm-select");
-            var xmValue=$("input[name='"+xm+"']").val();
-            var xmVals=[];
-            var type=sel.attr("loadData");
-            var query=sel.attr("query");
-            if(xm && xmValue){
-                if(type=='normal' || type=='tree'){
-                    var xms=xmValue.split(",");
-                    for(var i=0;i<xms.length;i++){
-                        xmVals.push(parseInt(xms[i]));
-                    }
-                }else if(type=='linkage' || type=='region'){
-                    var xms=xmValue.split(",");
-                    for(var i=0;i<xms.length;i++){
-                        xmVals.push(xms[i]);
-                    }
-                }
-            }
-            if(xm && type){
-                if(type=='normal'){
-                    if(url){
-                        formSelects.data(xm, 'server', {
-                            url: url,
-                            success:function () {
-                                formSelects.value(xm,xmVals);
-                            }
-                        });
-                    }else {
-                        formSelects.data(xm, 'server', {
-                            url: '/common/select?dict='+dict+"&bean="+bean+"&methodName="+method,
-                            success:function () {
-                                formSelects.value(xm,xmVals);
-                            }
-                        });
-                    }
+    function initSelect(id) {
+        if(id){
+            select($("#"+id));
+        }else{
+            $("select[loadData]").each(function(){
+                select($(this));
+            });
+        }
 
-                } else if(type=='region'){
-                    initRegion(xm,xmValue);
-                } else if(type=='tree'){
-                    formSelects.data(xm, 'server', {
-                        url: url,
-                        success:function () {
-                            formSelects.value(xm,xmVals);
-                        }
-                    });
-
-                } else if(type=='linkage'){
-                    formSelects.data(xm, 'server', {
-                        url: url,
-                        linkage: true,
-                        linkageWidth: linkageWidth,
-                        success:function () {
-                            formSelects.value(xm,xmVals);
-                        }
-                    });
-                }
-            }else {
-                if(url){
-                    $.ajax({
-                        url : url,
-                        type : "post",
-                        async: false,
-                        success : function(result){
-                            if(result.code==0){
-                                for (var i=0; i<result.data.length; i++){
-                                    sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
-                                }
-                                if(value){
-                                    sel.val(value);
-                                }
-                            }
-                        }
-                    });
-                }else{
-                    $.ajax({
-                        url : "/common/select",
-                        type : "post",
-                        data : {"dict":dict,"bean":bean,"methodName":method,"query":query},
-                        async: false,
-                        success : function(result){
-                            if(result.code==0){
-                                for (var i=0; i<result.data.length; i++){
-                                    sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
-                                }
-                                if(value){
-                                    sel.val(value);
-                                }
-                            }
-                        }
-                    });
-                }
-
-            }
-            form.render();
-        });
     }
+
+    function select(sel) {
+        sel.empty();
+        sel.append("<option value=''>请选择</option>");
+        var value = sel.attr("value");
+        var dict=sel.attr("dict")||'';//数据字典的key
+        var bean=sel.attr("bean")||'';//查询下拉框的对象bean
+        var method=sel.attr("method")||'';//查询的方法
+        var linkageWidth=sel.attr("linkageWidth") || 100;
+        if(typeof linkageWidth==="string"){
+            linkageWidth=parseInt(linkageWidth);
+        }
+        var url=sel.attr("url")||'';//查询的路径
+        var xm=sel.attr("xm-select");
+        var xmValue=$("input[name='"+xm+"']").val();
+        var xmVals=[];
+        var type=sel.attr("loadData");
+        var query=sel.attr("query");
+        if(xm && xmValue){
+            if(type=='normal' || type=='tree'){
+                var xms=xmValue.split(",");
+                for(var i=0;i<xms.length;i++){
+                    xmVals.push(parseInt(xms[i]));
+                }
+            }else if(type=='linkage' || type=='region'){
+                var xms=xmValue.split(",");
+                for(var i=0;i<xms.length;i++){
+                    xmVals.push(xms[i]);
+                }
+            }
+        }
+        if(xm && type){
+            if(type=='normal'){
+                debugger
+                if(url){
+                    formSelects.data(xm, 'server', {
+                        url: url,
+                        success:function () {
+                            formSelects.value(xm,xmVals);
+                        }
+                    });
+                }else {
+                    formSelects.data(xm, 'server', {
+                        url: '/common/select?dict='+dict+"&bean="+bean+"&methodName="+method,
+                        success:function () {
+                            formSelects.value(xm,xmVals);
+                        }
+                    });
+                }
+
+            } else if(type=='region'){
+                initRegion(xm,xmValue);
+            } else if(type=='tree'){
+                formSelects.data(xm, 'server', {
+                    url: url,
+                    success:function () {
+                        formSelects.value(xm,xmVals);
+                    }
+                });
+
+            } else if(type=='linkage'){
+                formSelects.data(xm, 'server', {
+                    url: url,
+                    linkage: true,
+                    linkageWidth: linkageWidth,
+                    success:function () {
+                        formSelects.value(xm,xmVals);
+                    }
+                });
+            }
+        }else {
+            if(url){
+                $.ajax({
+                    url : url,
+                    type : "post",
+                    async: false,
+                    success : function(result){
+                        if(result.code==0){
+                            for (var i=0; i<result.data.length; i++){
+                                sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
+                            }
+                            if(value){
+                                sel.val(value);
+                            }
+                        }
+                    }
+                });
+            }else{
+                $.ajax({
+                    url : "/common/select",
+                    type : "post",
+                    data : {"dict":dict,"bean":bean,"methodName":method,"query":query},
+                    async: false,
+                    success : function(result){
+                        if(result.code==0){
+                            for (var i=0; i<result.data.length; i++){
+                                sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
+                            }
+                            if(value){
+                                sel.val(value);
+                            }
+                        }
+                    }
+                });
+            }
+
+        }
+        form.render();
+    }
+
 
     /**
      * 省市区的加载

@@ -22,7 +22,6 @@
                             <label class="layui-form-label">属性名称：</label>
                             <div class="layui-input-inline">
                                 <input class="layui-input" name="name" >
-                                <input type="hidden" name="groupId" th:value="${param.groupId}" >
                             </div>
                         </div>
                         <div class="layui-col-xs4 layui-col-sm12 layui-col-md3">
@@ -59,13 +58,13 @@
                 var groupId=[[${param.groupId}]];
                 console.log(groupId,typeof groupId);
 
-                curd.initPage('props','/props/list',buildColumn());
+                curd.initPage('props','/props/page?groupId='+groupId[0],buildColumn());
 
                 //头工具栏事件
                 table.on('toolbar(props)', function(obj){
                     switch(obj.event){
                         case 'add':
-                            curd.openForm('/props/edit?groupId='+groupId,'添加属性','800px', '600px');
+                            curd.openForm('/props/edit?groupId='+groupId[0],'添加属性','800px', '600px');
                             break;
                     };
                 });

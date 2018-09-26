@@ -21,7 +21,7 @@ public class BrandDTO implements Serializable {
      * 品牌名
      */
     @NotBlank(message = "品牌名称不能为空")
-    private String brandName;
+    private String name;
     /**
      * 英文名
      */

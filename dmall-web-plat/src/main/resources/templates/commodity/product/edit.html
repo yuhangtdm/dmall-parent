@@ -140,7 +140,7 @@
                         <label class="layui-form-label">商品分类</label>
                         <div class="layui-input-block">
                             <select loadData="linkage" url="/type/tree" xm-select-search=""
-                                    name="product.productType" xm-select="productType"
+                                    name="product.productType" xm-select="product.productType"
                                     linkage="true" linkageWidth="140" xm-select-radio="" >
                             </select>
                         </div>
@@ -179,44 +179,58 @@
             var element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
             var formSelects = layui.formSelects;
             var layer= layui.layer;
+            var i=0;
+            transfer.initSelect();
             // 商品分类选择事件
-            formSelects.on('productType', function(id, vals, val, isAdd, isDisabled){
+            formSelects.on('product.productType', function(id, vals, val, isAdd, isDisabled){
                 //id:           点击select的id
                 //vals:         当前select已选中的值
                 //val:          当前select点击的值
                 //isAdd:        当前操作选中or取消
                 //isDisabled:   当前选项是否是disabled
-                console.log(val);
-                var split=val.split("/");
+                var split=val.value.split("/");
                 $("#brand").attr("url","/brand/listAll?productTypeId="+split[split.length-1]);
-                form.render('select', 'brand');
+                transfer.initSelect('brand');
+                $("#addProps").parents(".layui-row").nextAll().remove();
+                i=0;
             });
-            var i=0;
             $("#addProps").click(function () {
-                var productTypeId=formSelects.value('productType');
-                var productType='';
-                if(productTypeId){
-                    var split=productTypeId.split("/");
-                    productType=split[split.length-1];
+                var productType=formSelects.value('product.productType');
+                var productTypeId='';
+                if(productType && productType[0]){
+                    productTypeId=productType[0].value;
                 }
                 var html='<div class="layui-row" style="margin-top: 10px">'
-                    + '<select loadData="normal" lay-filter="group" id=""+i url="/props/group/listAll?productTypeId="+productTypeId>'
-                    +' </select>'
-                    + '<select loadData="normal" xm-select-search="" id="props"+i xm-select="props"+i url="/props/listAll?productTypeId="+productType>'
+                    +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">'
+                    +'<label class="layui-form-label">属性组</label> <div class="layui-input-block">'
+                    + '<select loadData="normal"  lay-filter="group" id='+i+' url="/props/group/listAll?productTypeId='+productTypeId+'">'
+                    +' </select></div></div>'
+                    +'<div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">'
+                    +'<label class="layui-form-label">属性</label> <div class="layui-input-block">'
+                    + '<select loadData="normal" xm-select-search="" id="props'+i+'" xm-select="props'+i+'" url="/props/listAll?productTypeId='+productTypeId+'">'
+                    +' </select></div></div>'
+                    +'<div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">'
+                    +'<label class="layui-form-label">是否销售属性</label> <div class="layui-input-block">'
                     + '<input type="checkbox" name="isSale" lay-skin="switch" lay-text="是|否">'
-                    + '<i class="layui-icon  layui-icon-delete" id="delete"+i ></i>'
+                    + '<i class="layui-icon  layui-icon-delete" id="delete"'+i+' ></i>'
+                    +'</div></div>'
                     + '</div>'
                 $(this).parents(".layui-row").after(html);
-                transfer.initSelect();
+                transfer.initSelect(i+'');
+                transfer.initSelect('props'+i);
+                i++;
             });
 
             // 监听属性组
             form.on('select(group)',function (data) {
-                var productTypeId=formSelects.value('productType');
-                console.log(data.elem);
+                var productType=formSelects.value('product.productType');
+                var productTypeId='';
+                if(productType && productType[0]){
+                    productTypeId=productType[0].value;
+                }
                 var id=$(data.elem).attr("id");
                 $("#props"+id).attr("url","/props/listAll?productTypeId="+productTypeId+"&groupId="+data.value);
-                transfer.initSelect();
+                transfer.initSelect('props'+id);
             })
             $(".layui-icon-delete").hover(function () {
                 $(this).addClass("font:red");

@@ -5,7 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.dmall.product.entity.Brand">
         <id column="id" property="id" />
-        <result column="brand_name" property="brandName" />
+        <result column="name" property="name" />
         <result column="english_name" property="englishName" />
         <result column="first_letter" property="firstLetter" />
         <result column="description" property="description" />
@@ -16,7 +16,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        p.id, p.brand_name,p.english_name, p.first_letter, p.description, p.logo, p.create_time, p.update_time
+        p.id, p.name,p.english_name, p.first_letter, p.description, p.logo, p.create_time, p.update_time
     </sql>
 
     <select id="listAll" resultType="com.dmall.product.entity.Brand">
@@ -25,8 +25,8 @@
         from p_brand p
         inner join p_product_type_brand  ppb on p.id=ppb.brand_id
         <where>
-            <if test="productTypeId!=null">
-                and ppb.product_type_id =#{productTypeId}
+            <if test="productType!=null">
+                and ppb.product_type_id=#{productType}
             </if>
         </where>
 
