@@ -54,6 +54,7 @@ layui.extend({
     function initSelect() {
         $("select[loadData]").each(function(){
             var sel = $(this);
+            // sel.empty();
             sel.append("<option value=''>请选择</option>");
             var value = sel.attr("value");
             var dict=sel.attr("dict")||'';//数据字典的key
@@ -84,12 +85,22 @@ layui.extend({
             }
             if(xm && type){
                 if(type=='normal'){
-                    formSelects.data(xm, 'server', {
-                        url: '/common/select?dict='+dict+"&bean="+bean+"&methodName="+method,
-                        success:function () {
-                            formSelects.value(xm,xmVals);
-                        }
-                    });
+                    if(url){
+                        formSelects.data(xm, 'server', {
+                            url: url,
+                            success:function () {
+                                formSelects.value(xm,xmVals);
+                            }
+                        });
+                    }else {
+                        formSelects.data(xm, 'server', {
+                            url: '/common/select?dict='+dict+"&bean="+bean+"&methodName="+method,
+                            success:function () {
+                                formSelects.value(xm,xmVals);
+                            }
+                        });
+                    }
+
                 } else if(type=='region'){
                     initRegion(xm,xmValue);
                 } else if(type=='tree'){

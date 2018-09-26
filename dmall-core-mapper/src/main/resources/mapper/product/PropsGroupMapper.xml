@@ -5,7 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.dmall.product.entity.PropsGroup">
         <result column="id" property="id" />
-        <result column="group_name" property="groupName" />
+        <result column="name" property="name" />
         <result column="product_type" property="productType" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
@@ -13,13 +13,13 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, group_name, product_type, create_time, update_time
+        id, name, product_type, create_time, update_time
     </sql>
 
     <select id="pageList" resultType="map" >
        SELECT
         ppg.id id,
-        ppg.group_name groupName,
+        ppg.name name,
         ppg.product_type productType,
         ppg.create_time createTime,
         ppg.update_time updateTime,
@@ -29,8 +29,8 @@
 	    p_props_group ppg
         INNER JOIN p_product_type ppt ON substring_index(ppg.product_type, '/' ,- 1) = ppt.id
         <where>
-            <if test="group.groupName!=null and group.groupName!=''">
-                and ppg.group_name like '%${group.groupName}%'
+            <if test="group.name!=null and group.name!=''">
+                and ppg.name like '%${group.name}%'
             </if>
             <if test="group.productType!=null and group.productType!=''">
                 and ppg.product_type = #{group.productType}

@@ -19,7 +19,7 @@ public class PropsDTO implements Serializable {
      * 属性名称
      */
     @NotBlank(message = "属性名称不能为空")
-    private String propName;
+    private String name;
 
     private Long groupId;
 

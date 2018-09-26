@@ -15,7 +15,7 @@ public class PropsGroupDTO implements Serializable {
     private Long id;
 
     @NotBlank(message = "属性组名称不可为空")
-    private String groupName;
+    private String name;
 
     @NotBlank(message = "商品类型不可为空")
     private String productType;

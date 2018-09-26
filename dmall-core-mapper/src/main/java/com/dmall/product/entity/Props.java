@@ -34,8 +34,8 @@ public class Props implements Serializable {
     /**
      * 属性名称
      */
-    @TableField("prop_name")
-    private String propName;
+    @TableField("name")
+    private String name;
     /**
      * 组id
      */

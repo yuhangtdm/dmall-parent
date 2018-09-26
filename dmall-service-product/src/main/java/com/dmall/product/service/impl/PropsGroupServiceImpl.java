@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.exception.BusinessException;
+import com.dmall.common.utils.StringUtil;
 import com.dmall.product.entity.PropsGroup;
 import com.dmall.product.mapper.PropsGroupMapper;
 import com.dmall.product.service.PropsGroupService;
@@ -38,7 +39,7 @@ public class PropsGroupServiceImpl extends ServiceImpl<PropsGroupMapper, PropsGr
 
     @Override
     public void saveOrUpdate(PropsGroup group) {
-        if(!ValidUtil.valid(group,"propsGroupServiceImpl","groupName","productType")){
+        if(!ValidUtil.valid(group,"propsGroupServiceImpl","name","productType")){
             throw new BusinessException(ResultEnum.BAD_REQUEST,"商品类型下的组名称必须唯一");
         }
         if(group.getId()!=null){
@@ -46,5 +47,14 @@ public class PropsGroupServiceImpl extends ServiceImpl<PropsGroupMapper, PropsGr
         }else {
             this.insert(group);
         }
+    }
+
+    @Override
+    public List<PropsGroup> listAll(String productTypeId) {
+        EntityWrapper<PropsGroup> wrapper=new EntityWrapper();
+        if(StringUtil.isNotBlank(productTypeId)){
+            wrapper.eq("product_type",productTypeId);
+        }
+        return this.selectList(wrapper);
     }
 }

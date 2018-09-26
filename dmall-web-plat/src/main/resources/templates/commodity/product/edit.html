@@ -154,11 +154,10 @@
                     </div>
                     <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                         <div class="layui-input-inline">
-                            <button type="button" class="layui-btn" id="addProps">添加属性组</button>
+                            <button type="button" class="layui-btn" id="addProps"><i class="layui-icon layui-icon-add-circle-fine"></i>添加属性组</button>
                         </div>
                     </div>
                 </div>
-
             </form>
         </div>
         <div class="layui-tab-item">内容2</div>
@@ -172,41 +171,62 @@
     <script th:inline="javascript">
         layui.config({
             base: '/controller/'
-        }).use(['element','form', 'transfer','curd'], function () {
+        }).use(['element','form', 'transfer','curd','layer'], function () {
             var $=layui.$;
             var form = layui.form;
             var transfer = layui.transfer;
             var curd=layui.curd;
             var element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
             var formSelects = layui.formSelects;
-
-            formSelects.on('select1', function(id, vals, val, isAdd, isDisabled){
+            var layer= layui.layer;
+            // 商品分类选择事件
+            formSelects.on('productType', function(id, vals, val, isAdd, isDisabled){
                 //id:           点击select的id
                 //vals:         当前select已选中的值
                 //val:          当前select点击的值
                 //isAdd:        当前操作选中or取消
                 //isDisabled:   当前选项是否是disabled
-                console.log(id);
-                var split=id.split("/");
+                console.log(val);
+                var split=val.split("/");
                 $("#brand").attr("url","/brand/listAll?productTypeId="+split[split.length-1]);
                 form.render('select', 'brand');
             });
+            var i=0;
             $("#addProps").click(function () {
-                var id=formSelects.value('productType');
+                var productTypeId=formSelects.value('productType');
                 var productType='';
-                if(id){
-                    var  split=id.split("/");
+                if(productTypeId){
+                    var split=productTypeId.split("/");
                     productType=split[split.length-1];
                 }
                 var html='<div class="layui-row" style="margin-top: 10px">'
-                    + '<select loadData="normal" url="/props/group/listAll?productTypeId="+productType  name="product.brandId">'
+                    + '<select loadData="normal" lay-filter="group" id=""+i url="/props/group/listAll?productTypeId="+productTypeId>'
                     +' </select>'
-                    + '<input type="hidden" name="" class="layui-input">'
+                    + '<select loadData="normal" xm-select-search="" id="props"+i xm-select="props"+i url="/props/listAll?productTypeId="+productType>'
+                    + '<input type="checkbox" name="isSale" lay-skin="switch" lay-text="是|否">'
+                    + '<i class="layui-icon  layui-icon-delete" id="delete"+i ></i>'
                     + '</div>'
+                $(this).parents(".layui-row").after(html);
+                transfer.initSelect();
+            });
 
-                var tag = new Tag("tagValue");
-                tag.tagValue=[[${values}]];
-                tag.initView();
+            // 监听属性组
+            form.on('select(group)',function (data) {
+                var productTypeId=formSelects.value('productType');
+                console.log(data.elem);
+                var id=$(data.elem).attr("id");
+                $("#props"+id).attr("url","/props/listAll?productTypeId="+productTypeId+"&groupId="+data.value);
+                transfer.initSelect();
+            })
+            $(".layui-icon-delete").hover(function () {
+                $(this).addClass("font:red");
+            },function () {
+                $(this).removeClass("font:red");
+            });
+            $(".layui-icon-delete").click(function () {
+                layer.confirm('确定删除该属性组以及属性?', {icon: 3, title:'提示'}, function(index){
+                   $(this).parents(".layui-row").remove();
+                });
             });
         });
 </script>

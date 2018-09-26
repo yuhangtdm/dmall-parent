@@ -33,7 +33,7 @@
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">属性组名称</label>
                             <div class="layui-input-inline">
-                                <input class="layui-input" name="groupName" >
+                                <input class="layui-input" name="name" >
                             </div>
                         </div>
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6 layui-col-lg6">
@@ -113,7 +113,7 @@
                         [
                             {type: 'checkbox', fixed: 'left'},
                             {field:'id',  title: 'ID', sort: true},
-                            {field:'groupName',  title: '属性组名称'},
+                            {field:'name',  title: '属性组名称'},
                             {field:'productTypeName',  title: '商品分类'},
                             {field:'updateTime',  title: '更新时间', sort: true,templet: function (d) {
                                     if(d.updateTime){

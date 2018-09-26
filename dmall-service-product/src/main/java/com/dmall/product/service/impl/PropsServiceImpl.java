@@ -87,6 +87,19 @@ public class PropsServiceImpl extends ServiceImpl<PropsMapper, Props> implements
 
     }
 
+    @Override
+    public List<Props> listAll(String productTypeId, Long groupId) {
+        EntityWrapper<Props> wrapper=new EntityWrapper<>();
+        if(StringUtil.isNotBlank(productTypeId)){
+            wrapper.eq("product_type",productTypeId);
+        }
+
+        if(groupId!=null){
+            wrapper.eq("group_id",groupId);
+        }
+        return this.selectList(wrapper);
+    }
+
     private void batchInsert(Props props,List<String> propValues){
         for (String propValue : propValues) {
             PropsOption propsOption=new PropsOption();

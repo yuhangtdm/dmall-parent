@@ -145,6 +145,19 @@ public class PropsController {
     }
 
     /**
+     * 属性组列表
+     * @param productTypeId
+     * @return
+     */
+    @RequestMapping("group/listAll")
+    @ResponseBody
+    public ReturnResult listAll(String productTypeId){
+        List<PropsGroup> result=propsGroupService.listAll(productTypeId);
+        return ResultUtil.buildResult(ResultEnum.SUCC,result);
+    }
+
+
+    /**
      * 属性保存 包含属性值
      */
     @RequestMapping("save")
@@ -176,6 +189,13 @@ public class PropsController {
         //todo 属性组维护了商品 不可删除 属性维护了商品 不可删除
         //propsService.deleteById(id);
         return ResultUtil.buildResult(ResultEnum.SUCC);
+    }
+
+    @RequestMapping("listAll")
+    @ResponseBody
+    public ReturnResult propsListAll(String productTypeId,Long groupId){
+        List<Props> result=propsService.listAll(productTypeId,groupId);
+        return ResultUtil.buildResult(ResultEnum.SUCC,result);
     }
 
 }

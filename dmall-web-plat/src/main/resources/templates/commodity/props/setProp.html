@@ -21,7 +21,7 @@
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
                             <label class="layui-form-label">属性名称：</label>
                             <div class="layui-input-inline">
-                                <input class="layui-input" name="propName" >
+                                <input class="layui-input" name="name" >
                                 <input type="hidden" name="groupId" th:value="${param.groupId}" >
                             </div>
                         </div>
@@ -97,7 +97,7 @@
                         [
                             {type: 'checkbox', fixed: 'left'},
                             {field:'id',  title: 'ID', sort: true},
-                            {field:'propName',  title: '属性名称'},
+                            {field:'name',  title: '属性名称'},
                             {field:'updateTime',  title: '更新时间', sort: true,templet: function (d) {
                                 if(d.updateTime){
                                     return layui.util.toDateString(d.updateTime);

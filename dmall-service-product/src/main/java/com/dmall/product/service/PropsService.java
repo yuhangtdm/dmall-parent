@@ -3,6 +3,7 @@ package com.dmall.product.service;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.dmall.product.entity.Props;
 import com.baomidou.mybatisplus.service.IService;
+import com.dmall.product.entity.PropsGroup;
 
 import java.util.List;
 
@@ -16,8 +17,9 @@ import java.util.List;
  */
 public interface PropsService extends IService<Props> {
 
-    
     Page pageList(Props props, Page page);
 
     void saveOrUpdate(Props props, List<String> propValues);
+
+    List<Props> listAll(String productTypeId, Long groupId);
 }

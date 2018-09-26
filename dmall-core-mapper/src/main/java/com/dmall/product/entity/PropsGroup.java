@@ -31,8 +31,8 @@ public class PropsGroup implements Serializable {
     /**
      * 组名称
      */
-    @TableField("group_name")
-    private String groupName;
+    @TableField("name")
+    private String name;
     /**
      * 商品分类id 一级/二级/三级
      */
