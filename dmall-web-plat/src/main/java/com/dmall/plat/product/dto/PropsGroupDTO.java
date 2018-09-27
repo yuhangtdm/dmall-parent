@@ -1,9 +1,12 @@
 package com.dmall.plat.product.dto;
 
+import com.dmall.product.entity.Props;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author:yuhang
@@ -22,6 +25,9 @@ public class PropsGroupDTO implements Serializable {
 
     private String remark;
 
+    private Integer isSale;
+
+    private List<Props> propsList=new ArrayList<>();
 
 
 }

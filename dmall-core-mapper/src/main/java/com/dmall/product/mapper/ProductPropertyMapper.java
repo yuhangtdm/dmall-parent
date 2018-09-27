@@ -3,6 +3,9 @@ package com.dmall.product.mapper;
 import com.dmall.product.entity.ProductProperty;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  * 商品属性集 Mapper 接口
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface ProductPropertyMapper extends BaseMapper<ProductProperty> {
 
+    List<Map<String,Object>> queryByParam(Long productId);
 }

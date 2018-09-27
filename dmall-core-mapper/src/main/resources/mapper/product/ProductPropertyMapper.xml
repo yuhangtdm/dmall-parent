@@ -17,4 +17,20 @@
         id, product_id, property_id, is_sale, create_time, update_time
     </sql>
 
+    <select id="queryByParam" resultType="map">
+        SELECT
+            pg.id groupId,
+            pg.name groupName,
+            ps.id propsId,
+            ps.name propsName,
+            pp.product_type productType,
+            pp.is_sale isSale
+         from p_product_property pp INNER JOIN p_props_group pg on pp.group_id=pg.id INNER JOIN p_props ps on pp.property_id=ps.id
+          <where>
+              <if test="productId!=null and productId!=''">
+                  where pp.product_id=#{productId}
+              </if>
+          </where>
+    </select>
+
 </mapper>

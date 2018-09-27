@@ -40,6 +40,11 @@ public class ProductProperty implements Serializable {
     @TableField("product_id")
     private Long productId;
     /**
+     * 组id
+     */
+    @TableField("group_id")
+    private Long groupId;
+    /**
      * 属性id
      */
     @TableField("property_id")

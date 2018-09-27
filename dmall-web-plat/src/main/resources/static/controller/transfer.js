@@ -94,7 +94,6 @@ layui.extend({
         }
         if(xm && type){
             if(type=='normal'){
-                debugger
                 if(url){
                     formSelects.data(xm, 'server', {
                         url: url,
