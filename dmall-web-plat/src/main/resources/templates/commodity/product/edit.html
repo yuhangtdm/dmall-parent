@@ -34,8 +34,8 @@
         <li>图片信息</li>
     </ul>
     <div class="layui-tab-content" style="height: 100px;">
-        <form class="layui-form" id="product-form" action="">
             <div class="layui-tab-item layui-show">
+                <form class="layui-form" id="product-form" action="">
                     <div class="layui-row" th:if="${productVo!=null}" >
                         <div class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">商品编码</label>
@@ -171,12 +171,15 @@
                             </div>
                         </div>
                     </div>
+                </form>
             </div>
             <div class="layui-tab-item">
-
+                <form class="layui-form" id="ext-form" action="">
+                    <h3>图文详情</h3>
+                    <textarea id="demo" style="display: none;"></textarea>
+                </form>
             </div>
             <div class="layui-tab-item">内容3</div>
-        </form>
 
     </div>
 </div>
@@ -185,7 +188,7 @@
 <script th:inline="javascript">
         layui.config({
             base: '/controller/'
-        }).use(['element','form', 'transfer','curd','layer'], function () {
+        }).use(['element','form', 'transfer','curd','layer','layedit'], function () {
             var $=layui.$;
             var form = layui.form;
             var transfer = layui.transfer;
@@ -194,13 +197,17 @@
             var formSelects = layui.formSelects;
             var layer= layui.layer;
             var i=0;
-            var propsVoList=[[${productVo.propsVoList}]];
-            var ue = UE.getEditor('editor');
+            var productVo=[[${productVo}]];
+            var layedit = layui.layedit;
+            layedit.build('demo',{
+                height: 1000 //设置编辑器高度
+            }); //建立编辑器
             transfer.initSelect();
             transfer.init([[${productVo}]],null,'product-form');
-            if(propsVoList){
+            if(productVo){
+                var propsVoList=productVo.propsVoList;
                 var k=0;
-                for(;i<propsVoList.length;k++){
+                for(;k<propsVoList.length;k++){
                     var propsVo=propsVoList[0];
                     var productTypeId=propsVo.productType;
                     var group=propsVo.id;
@@ -216,16 +223,16 @@
                          html='<div class="layui-row" style="margin-top: 10px">'
                             +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">'
                             +'<label class="layui-form-label">属性组</label> <div class="layui-input-block">'
-                            + '<select loadData="normal" lay-filter="group" id='+i+' url="/props/group/listAll">'
+                            + '<select loadData="normal" lay-filter="group" id='+k+' url="/props/group/listAll">'
                             +' </select></div></div>'
                             +'<div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">'
                             +'<label class="layui-form-label">属性</label> <div class="layui-input-block">'
-                            + '<select loadData="normal" value="'+props+'" xm-select-search="" id="props'+i+'" xm-select="props'+i+'" url="/props/listAll?productTypeId='+productTypeId+'">'
+                            + '<select loadData="normal" value="'+props+'" xm-select-search="" id="props'+k+'" xm-select="props'+k+'" url="/props/listAll?productTypeId='+productTypeId+'">'
                             +' </select></div></div>'
                             +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">'
                             +'<label class="layui-form-label">销售属性</label><div class="layui-input-block">'
                             + '<input type="checkbox" name="isSale" checked lay-skin="switch" lay-text="是|否">&nbsp;&nbsp;'
-                            + '<i class="layui-icon layui-icon-delete size" id="delete'+i+'" ></i>'
+                            + '<i class="layui-icon layui-icon-delete size" id="delete'+k+'" ></i>'
                             +'</div></div>'
                             + '</div>';
                     }else {
@@ -236,7 +243,7 @@
                             +' </select></div></div>'
                             +'<div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">'
                             +'<label class="layui-form-label">属性</label> <div class="layui-input-block">'
-                            + '<select loadData="normal" value="'+props+'" xm-select-search="" id="props'+i+'" xm-select="props'+k+'" url="/props/listAll?productTypeId='+productTypeId+'&groupId'+group+'">'
+                            + '<select loadData="normal" value="'+props+'" xm-select-search="" id="props'+k+'" xm-select="props'+k+'" url="/props/listAll?productTypeId='+productTypeId+'&groupId'+group+'">'
                             +' </select></div></div>'
                             +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">'
                             +'<label class="layui-form-label">销售属性</label><div class="layui-input-block">'
