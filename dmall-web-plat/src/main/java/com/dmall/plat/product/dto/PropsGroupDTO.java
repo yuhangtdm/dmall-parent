@@ -17,10 +17,10 @@ public class PropsGroupDTO implements Serializable {
 
     private Long id;
 
-    @NotBlank(message = "属性组名称不可为空")
+    @NotBlank(message = "属性组名称不可为空",groups = {SaveProps.class})
     private String name;
 
-    @NotBlank(message = "商品类型不可为空")
+    @NotBlank(message = "商品类型不可为空",groups = {SaveProps.class})
     private String productType;
 
     private String remark;
@@ -29,5 +29,6 @@ public class PropsGroupDTO implements Serializable {
 
     private List<Props> propsList=new ArrayList<>();
 
+    public interface SaveProps{}
 
 }

@@ -50,8 +50,8 @@ public class ProductExt implements Serializable {
     /**
      * 商品ID
      */
-    @TableField("product_id")
-    private Long productId;
+    @TableField("product_code")
+    private String productCode;
     /**
      * 创建时间
      */

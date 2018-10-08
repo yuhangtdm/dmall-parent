@@ -16,5 +16,5 @@ import java.util.Map;
  */
 public interface ProductPropertyMapper extends BaseMapper<ProductProperty> {
 
-    List<Map<String,Object>> queryByParam(Long productId);
+    List<Map<String,Object>> queryByParam(String productCode);
 }

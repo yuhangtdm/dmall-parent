@@ -33,4 +33,9 @@
         id, product_code, name, sub_name, product_type, state, on_sale_time, off_sale_time, max_price, min_price, sale_count, view_count, comment_count, comment_score, good_rate, good_comment_count, middle_comment_count, bad_comment_count, brand_id, main_image, create_time, update_time
     </sql>
 
+    <select id="genProductCode" resultType="string">
+        SELECT  *
+        from
+    </select>
+
 </mapper>

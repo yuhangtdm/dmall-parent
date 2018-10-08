@@ -53,23 +53,9 @@ public class Product implements Serializable {
      * 商品类型
      */
     @TableField("product_type")
-    @ChangeColumn(beanName = "productTypeServiceImpl",methodName = "selectTypeName")
+//    @ChangeColumn(beanName = "productTypeServiceImpl",methodName = "selectTypeName")
     private String productType;
-    /**
-     * 状态 0 上架 1 下架
-     */
-    @ChangeColumn(value = "stateName",dictType = "product_state")
-    private Integer state;
-    /**
-     * 上架时间
-     */
-    @TableField("on_sale_time")
-    private Long onSaleTime;
-    /**
-     * 下架时间
-     */
-    @TableField("off_sale_time")
-    private Long offSaleTime;
+
     /**
      * 最高价
      */
@@ -140,11 +126,5 @@ public class Product implements Serializable {
      */
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Long updateTime;
-
-    @TableField(exist = false)
-    private String stateName;
-
-    @TableField(exist = false)
-    private String productTypeName;
 
 }

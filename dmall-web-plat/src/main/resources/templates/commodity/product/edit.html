@@ -12,7 +12,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}" href="./css/admin.css" media="all">
-    <link rel="stylesheet" th:href="@{/css/tag.css}" href="./css/admin.css" media="all">
     <link rel="stylesheet" th:href="@{/layui/css/formSelects-v4.css}" href="./css/admin.css" media="all">
     <style>
         .size{
@@ -21,102 +20,89 @@
         }
     </style>
 </head>
-
 <body>
-<fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
-    <legend>商品信息维护</legend>
-</fieldset>
-<button type="button" class="layui-btn" style="float: right">保存</button>
-<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
-    <ul class="layui-tab-title">
-        <li class="layui-this">基本信息</li>
-        <li>扩展信息</li>
-        <li>图片信息</li>
-    </ul>
-    <div class="layui-tab-content" style="height: 100px;">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>商品信息维护</legend>
+    </fieldset>
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">基本信息</li>
+            <li>扩展信息</li>
+            <li>图片信息</li>
+        </ul>
+        <div class="layui-tab-content" style="height: 100px;">
+            <button  id="saveProduct" type="button"  class="layui-btn" style="float: right">保存</button>
             <div class="layui-tab-item layui-show">
                 <form class="layui-form" id="product-form" action="">
                     <div class="layui-row" th:if="${productVo!=null}" >
                         <div class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">商品编码</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="productCode" lay-verify="required" autocomplete="off"
+                            <div class="layui-input-block">
+                                <input type="text" name="product.productCode" lay-verify="required" autocomplete="off"
                                        class="layui-input" readonly >
                             </div>
-                        </div>
-                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
-                            <label class="layui-form-label">商品状态</label>
-                            <div class="layui-input-inline">
-                                <select loadData="normal"  name="state" dict="_product_state">
-                                </select>
+                            <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                                <label class="layui-form-label">最高价</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="product.maxPrice"  autocomplete="off"
+                                           class="layui-input" disabled="disabled" >
+                                </div>
                             </div>
-                        </div>
-                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
-                            <label class="layui-form-label">上架时间</label>
-                            <div class="layui-input-inline">
-                                <input type="text" class="layui-input date" id="onSaleTime" name="onSaleTime">
+                            <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                                <label class="layui-form-label">最低价</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="product.minPrice"  autocomplete="off"
+                                           class="layui-input" disabled="disabled" >
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="layui-row" style="margin-top: 10px">
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">商品名称</label>
-                            <div class="layui-input-inline">
-                                <input type="hidden" name="id" />
-                                <input type="text" name="product.name" class="layui-input">
+                            <div class="layui-input-block">
+                                <input type="hidden" name="product.id" />
+                                <input type="text" name="product.name" lay-verify="required" class="layui-input">
                             </div>
                         </div>
-                        <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4" th:if="${productVo!=null}">
-                            <label class="layui-form-label">最高价</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="product.maxPrice"  autocomplete="off"
-                                       class="layui-input" disabled="disabled" >
-                            </div>
-                        </div>
-                        <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4" th:if="${productVo!=null}">
-                            <label class="layui-form-label">最低价</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="product.minPrice"  autocomplete="off"
-                                       class="layui-input" disabled="disabled" >
-                            </div>
-                        </div>
+
                     </div>
                     <div class="layui-row" style="margin-top: 10px" >
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">商品副名称</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="subName" class="layui-input">
+                            <div class="layui-input-block">
+                                <input type="text" name="product.subName" lay-verify="required" class="layui-input">
                             </div>
                         </div>
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4" th:if="${productVo!=null}">
                             <label class="layui-form-label">销量</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="saleCount" class="layui-input" disabled="disabled">
+                            <div class="layui-input-block">
+                                <input type="text" name="product.saleCount" class="layui-input" disabled="disabled">
                             </div>
                         </div>
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4" th:if="${productVo!=null}">
                             <label class="layui-form-label">浏览量</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="viewCount" class="layui-input" disabled="disabled">
+                            <div class="layui-input-block">
+                                <input type="text" name="product.viewCount" class="layui-input" disabled="disabled">
                             </div>
                         </div>
                     </div>
                     <div class="layui-row" style="margin-top: 10px" th:if="${productVo!=null}" >
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">评论数</label>
-                            <div class="layui-input-inline">
+                            <div class="layui-input-block">
                                 <input type="text" name="product.commentCount" class="layui-input" disabled="disabled">
                             </div>
                         </div>
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">评分</label>
-                            <div class="layui-input-inline">
+                            <div class="layui-input-block">
                                 <input type="text" name="product.commentScore" class="layui-input" disabled="disabled">
                             </div>
                         </div>
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">好评率</label>
-                            <div class="layui-input-inline">
+                            <div class="layui-input-block">
                                 <input type="text" name="product.goodRate" class="layui-input" disabled="disabled">
                             </div>
                         </div>
@@ -124,68 +110,80 @@
                     <div class="layui-row" style="margin-top: 10px" th:if="${productVo!=null}" >
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">好评数</label>
-                            <div class="layui-input-inline">
+                            <div class="layui-input-block">
                                 <input type="text" name="product.goodCommentCount" class="layui-input" disabled="disabled">
                             </div>
                         </div>
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">中评数</label>
-                            <div class="layui-input-inline">
+                            <div class="layui-input-block">
                                 <input type="text" name="product.middleCommentCount" class="layui-input" disabled="disabled">
                             </div>
                         </div>
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">差评数</label>
-                            <div class="layui-input-inline">
+                            <div class="layui-input-block">
                                 <input type="text" name="product.badCommentCount" class="layui-input" disabled="disabled">
                             </div>
                         </div>
                     </div>
-                    <div class="layui-row">
+                    <div class="layui-row" style="margin-top: 10px">
                         <label class="layui-form-label">商品简介</label>
                         <div class="layui-input-block">
-                            <textarea name="productExt.description"  placeholder="请输入内容" class="layui-textarea"></textarea>
-
+                            <textarea name="productExt.description" lay-verify="required"  placeholder="请输入内容" class="layui-textarea"></textarea>
                         </div>
                     </div>
                     <div class="layui-row" style="margin-top: 10px">
-                        <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6 layui-col-lg6">
+                            <label class="layui-form-label">上市时间</label>
+                            <div class="layui-input-block">
+                                <input type="text" class="layui-input date"  name="product.onCityTime">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6 layui-col-lg6">
                             <label class="layui-form-label">商品分类</label>
                             <div class="layui-input-block">
                                 <select loadData="linkage" url="/type/tree" xm-select-search=""
                                         name="product.productType" xm-select="product.productType"
-                                        linkage="true" linkageWidth="140" xm-select-radio="" >
+                                        linkage="true" linkageWidth="140" xm-select-radio="" lay-verify="required"   >
                                 </select>
                             </div>
                         </div>
-                        <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+
+                    </div>
+                    <div class="layui-row" style="margin-top: 10px">
+                        <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md6 layui-col-lg6">
                             <label class="layui-form-label">品牌</label>
-                            <div class="layui-input-inline">
-                                <select id="brand" lay-filter="brand" loadData="normal" url="/brand/listAll"  name="product.brandId">
+                            <div class="layui-input-block">
+                                <select id="brand" lay-filter="brand" lay-verify="required"  loadData="normal" url="/brand/listAll"  name="product.brandId">
                                 </select>
                             </div>
                         </div>
-                        <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
-                            <div class="layui-input-inline">
+                        <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md6 layui-col-lg6">
+                            <div class="layui-input-block">
                                 <button type="button" class="layui-btn" id="addProps"><i class="layui-icon layui-icon-add-circle-fine"></i>添加属性组</button>
                             </div>
                         </div>
+                        <button type="button" class="layui-btn" lay-submit="" style="display: none" id="submit"  lay-filter="submit">立即提交</button>
+                    </div>
+                    <div style="text-align: center;height: 100px;background-color: #eee; color: #666; font-weight: 300;margin-top: 20px;line-height: 100px;width: 100%">
+                        <p>
+                            地猫商城后台管理系统 版权所有 仿冒必究
+                        </p>
                     </div>
                 </form>
             </div>
             <div class="layui-tab-item">
                 <form class="layui-form" id="ext-form" action="">
                     <h3>图文详情</h3>
-                    <textarea id="demo" style="display: none;"></textarea>
+                    <textarea id="richContent" name="richContent" style="display: none;"></textarea>
                 </form>
             </div>
             <div class="layui-tab-item">内容3</div>
-
+        </div>
     </div>
-</div>
     <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
-
-<script th:inline="javascript">
+    <script th:inline="javascript">
         layui.config({
             base: '/controller/'
         }).use(['element','form', 'transfer','curd','layer','layedit'], function () {
@@ -199,11 +197,14 @@
             var i=0;
             var productVo=[[${productVo}]];
             var layedit = layui.layedit;
-            layedit.build('demo',{
+            // 建立编辑器
+            layedit.build('richContent',{
                 height: 1000 //设置编辑器高度
-            }); //建立编辑器
+            });
             transfer.initSelect();
             transfer.init([[${productVo}]],null,'product-form');
+            transfer.init([[${productVo}]],null,'ext-form');
+            transfer.initDate('product-form','yyyy-MM-dd')
             if(productVo){
                 var propsVoList=productVo.propsVoList;
                 var k=0;
@@ -269,9 +270,11 @@
                 var split=val.value.split("/");
                 $("#brand").attr("url","/brand/listAll?productTypeId="+split[split.length-1]);
                 transfer.initSelect('brand');
-                $("#addProps").parents(".layui-row").nextAll().remove();
+                $("#addProps").parents(".layui-row").nextAll(".layui-row").remove();
                 i=0;
             });
+
+            // 添加属性组点击事件
             $("#addProps").click(function () {
                 var productType=formSelects.value('product.productType');
                 var productTypeId='';
@@ -289,7 +292,7 @@
                     +' </select></div></div>'
                     +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">'
                     +'<label class="layui-form-label">销售属性</label><div class="layui-input-block">'
-                    + '<input type="checkbox" name="isSale" lay-skin="switch" lay-text="是|否">&nbsp;&nbsp;'
+                    + '<input type="checkbox" id="sale'+i+'" name="isSale" lay-skin="switch" lay-text="是|否">&nbsp;&nbsp;'
                     + '<i class="layui-icon layui-icon-delete size" id="delete'+i+'" ></i>'
                     +'</div></div>'
                     + '</div>'
@@ -311,14 +314,7 @@
                 transfer.initSelect('props'+id);
             })
 
-            $(document).on('mouseenter','.layui-icon-delete',function () {
-                $(this).attr('style','color:red;cursor:pointer');
-            })
-
-            $(document).on('mouseout','.layui-icon-delete',function () {
-                $(this).removeAttr('style');
-            })
-
+            // 删除属性组
             $(document).on('click','.layui-icon-delete',function () {
                 var sel=$(this);
                 layer.confirm('确定删除该属性组以及属性?', {icon: 3, title:'提示'}, function(index){
@@ -326,8 +322,72 @@
                     sel.parents(".layui-row").remove();
                 });
             })
+
+            // 保存按钮点击事件
+            $("#saveProduct").click(function () {
+               $("#submit").click();
+                var product=curd.toJson('product-form');
+                var ext=curd.toJson('ext-form');
+                var productDTO={};
+                productDTO.procuct=product;
+                productDTO.productExt=ext;
+                var flag=0;
+                var propsVoList=[];
+                for(var o=0;o<i;o++){
+                    var propsVo={}
+                    var groupId=$("#"+o).val();
+                    if(groupId){
+                        propsVo.id=groupId;
+                    }
+                    var props=formSelects.value('props'+o);
+                    if(props){
+                        var propsList=[];
+                        for(var d=0;d<props.length;d++){
+                            var propObj={};
+                            var propId=props[d].value;
+                            if(propId){
+                                propObj.id=propId;
+                            }
+                            propsList.push(propObj);
+                        }
+                        propsVo.propsList=propsList;
+                    }
+                    var isSale=$("#sale"+o).is(":checked");
+                    if(isSale){
+                        propsVo.isSale=1;
+                        flag++;
+                    }else{
+                        propsVo.isSale=0;
+
+                        if(!groupId){
+                            layer.msg("非销售属性必须添加属性组",{icon:2});
+                            return false;
+                        }
+                    }
+                    propsVoList.push(propsVo);
+                }
+                if(flag>1){
+                    layer.msg("只可增加一个销售属性",{icon:2});
+                    return false;
+                }
+                productDTO.propsVoList=propsVoList;
+                console.log(productDTO);
+                return false;
+                curd.saveOrUpdate('/product/save',productDTO);
+            })
+
+            $(document).on('mouseenter','#saveProduct',function () {
+                $(this).attr('style','cursor:pointer;float: right');
+            })
+
+            $(document).on('mouseenter','.layui-icon-delete',function () {
+                $(this).attr('style','color:red;cursor:pointer');
+            })
+
+            $(document).on('mouseout','.layui-icon-delete',function () {
+                $(this).removeAttr('style');
+            })
         });
 </script>
-
 </body>
 </html>

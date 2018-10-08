@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @date: 2018/9/8
  */
 @Data
-public class ProductTypeDto implements Serializable {
+public class ProductTypeDTO implements Serializable {
 
     private static final long serialVersionUID = 7937211498799083802L;
     /**

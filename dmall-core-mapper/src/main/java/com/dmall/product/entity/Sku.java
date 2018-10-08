@@ -132,6 +132,22 @@ public class Sku implements Serializable {
      */
     @TableField("brand_id")
     private Long brandId;
+
+    /**
+     * 状态 0 下架 1 上架
+     */
+    private Integer state;
+    /**
+     * 上架时间
+     */
+    @TableField("on_sale_time")
+    private Long onSaleTime;
+    /**
+     * 下架时间
+     */
+    @TableField("off_sale_time")
+    private Long offSaleTime;
+
     /**
      * 是否启用 0 否 1 是
      */

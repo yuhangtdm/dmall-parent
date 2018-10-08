@@ -35,13 +35,13 @@ layui.extend({
                 });
             }
             initSelect(null);
-            initDate(formId);
+            // initDate(formId);
         },
         initSelect:function (id) {
             initSelect(id);
         },
-        initDate : function(formId){
-            initDate(formId);
+        initDate : function(formId,format){
+            initDate(formId,format);
         },
         initSelectTree:function (url,id) {
             initSelectTree(url,id);
@@ -202,13 +202,16 @@ layui.extend({
      * 初始化日期控件
      * @param formId
      */
-    function initDate(formId) {
+    function initDate(formId,format) {
+        if(!format){
+            format='yyyy-MM-dd HH:mm:ss';
+        }
         if(formId){
             $("#"+formId).find(".date").each(function () {
                 laydate.render({
                     elem: '#'+$(this).attr("id"),
                     type:'datetime',
-                    format:'yyyy-MM-dd HH:mm:ss'
+                    format:format
                 });
             })
         }

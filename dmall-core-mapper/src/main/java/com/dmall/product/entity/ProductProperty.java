@@ -37,8 +37,8 @@ public class ProductProperty implements Serializable {
     /**
      * 商品id
      */
-    @TableField("product_id")
-    private Long productId;
+    @TableField("product_code")
+    private String productCode;
     /**
      * 组id
      */

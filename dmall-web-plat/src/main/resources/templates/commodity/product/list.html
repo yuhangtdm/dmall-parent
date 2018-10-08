@@ -53,7 +53,7 @@
                     </div>
 
                     <div class="layui-row layui-col-space10" style="margin-top: 5px;">
-                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6 layui-col-lg6">
                             <label class="layui-form-label">商品分类：</label>
                             <div class="layui-input-block">
                                 <select loadData="linkage" url="/type/tree" xm-select-search="" name="productType" xm-select="productType"
@@ -96,7 +96,7 @@
                     var checkStatus = table.checkStatus(obj.config.id);
                     switch(obj.event){
                         case 'add':
-                             curd.openForm('/product/edit','添加商品','800px', '800px',true);
+                             curd.openForm('/product/edit','添加商品','1000px', '1000px',true);
                             break;
                     };
                 });
@@ -112,7 +112,7 @@
                         });
 
                     } else if(obj.event === 'edit'){
-                        curd.openForm('/product/edit?id='+data.id,'修改商品','800px', '800px',true);
+                        curd.openForm('/product/edit?id='+data.id,'修改商品','1000px', '1000px',true);
                     }
                 });
 

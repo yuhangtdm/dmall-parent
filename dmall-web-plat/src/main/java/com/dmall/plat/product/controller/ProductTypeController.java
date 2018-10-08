@@ -3,7 +3,7 @@ package com.dmall.plat.product.controller;
 
 import com.dmall.common.entity.Tree;
 import com.dmall.common.enums.ResultEnum;
-import com.dmall.plat.product.dto.ProductTypeDto;
+import com.dmall.plat.product.dto.ProductTypeDTO;
 import com.dmall.plat.product.dto.TypeBrandDTO;
 import com.dmall.product.entity.ProductType;
 import com.dmall.product.entity.ProductTypeBrand;
@@ -69,7 +69,7 @@ public class ProductTypeController {
      */
     @RequestMapping("save")
     @ResponseBody
-    public ReturnResult save(@Valid ProductTypeDto dto){
+    public ReturnResult save(@Valid ProductTypeDTO dto){
         ProductType type=new ProductType();
         BeanUtils.copyProperties(dto,type);
         if(type.getPid()==null){

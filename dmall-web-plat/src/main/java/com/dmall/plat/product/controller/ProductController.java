@@ -1,9 +1,13 @@
 package com.dmall.plat.product.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.dmall.common.annotation.TransBean;
 import com.dmall.common.enums.ResultEnum;
+import com.dmall.common.exception.BusinessException;
+import com.dmall.plat.product.dto.FullProductDTO;
 import com.dmall.plat.product.dto.PropsDTO;
 import com.dmall.plat.product.dto.PropsGroupDTO;
 import com.dmall.plat.product.vo.ProductVo;
@@ -16,7 +20,9 @@ import com.dmall.product.service.ProductPropertyService;
 import com.dmall.product.service.ProductService;
 import com.dmall.web.common.result.ReturnResult;
 import com.dmall.web.common.utils.ResultUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
@@ -68,8 +74,14 @@ public class ProductController {
     public String edit(Long id, HttpServletRequest request){
         if(id!=null){
             Product product = productService.selectById(id);
+            if(product==null){
+                throw new BusinessException(ResultEnum.SERVER_ERROR,"商品信息不存在");
+            }
             ProductExt productExt = productExtService.selectByProductId(id);
-            List<PropsGroupDTO> propsDTOList= getProps(id);
+            if(productExt==null){
+                throw new BusinessException(ResultEnum.SERVER_ERROR,"商品扩展信息不存在");
+            }
+            List<PropsGroupDTO> propsDTOList= getProps(product.getProductCode());
             ProductVo productVo=new ProductVo();
             productVo.setProduct(product);
             productVo.setProductExt(productExt);
@@ -79,9 +91,37 @@ public class ProductController {
         return "commodity/product/edit";
     }
 
-    private List<PropsGroupDTO> getProps(Long productId) {
+
+    @RequestMapping("save")
+    @ResponseBody
+    public ReturnResult save(@Validated FullProductDTO fullProductDTO){
+        Product product=new Product();
+        BeanUtils.copyProperties(fullProductDTO.getProduct(),product);
+        ProductExt ext=new ProductExt();
+        ext.setId(fullProductDTO.getProductExt().getId());
+        ext.setDescription(fullProductDTO.getProduct().getDescription());
+        ext.setRichContent(fullProductDTO.getProductExt().getRichContent());
+        List<PropsGroupDTO> propsVoList = fullProductDTO.getPropsVoList();
+        JSONArray propsGroupArray=new JSONArray();
+        for (PropsGroupDTO propsGroupDTO : propsVoList) {
+            JSONObject propsGroup=new JSONObject();
+            propsGroup.put("groupId",propsGroupDTO.getId());
+            propsGroup.put("isSale",propsGroupDTO.getIsSale());
+            JSONArray propsArray=new JSONArray();
+            for (Props props : propsGroupDTO.getPropsList()) {
+                propsArray.add(props.getId());
+            }
+            propsGroup.put("props",propsArray);
+            propsGroupArray.add(propsGroup);
+        }
+        productService.saveFullProduct(product,ext,propsGroupArray);
+
+        return ResultUtil.buildResult(ResultEnum.SUCC);
+    }
+
+    private List<PropsGroupDTO> getProps(String productCode) {
         List<PropsGroupDTO> propsDTOList=new ArrayList<>();
-        List<Map<String,Object>> list= productPropertyService.queryByParam(productId);
+        List<Map<String,Object>> list= productPropertyService.queryByParam(productCode);
         Map<Long,Map<String,Object>> map=new HashMap<>();
         for (Map<String,Object> stringObjectMap : list) {
             map.put((Long) stringObjectMap.get("groupId"),stringObjectMap);

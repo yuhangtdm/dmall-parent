@@ -297,7 +297,6 @@ layui.define(['layer','table','zTree','form'],function (e) {
         var o={};
         var form=$("#"+formId);
         var data=form.serializeArray();
-        console.log(data);
         $.each(data,function () {
             var name=this.name;
             var value=this.value;

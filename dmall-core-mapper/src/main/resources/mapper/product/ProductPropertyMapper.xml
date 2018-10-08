@@ -27,8 +27,8 @@
             pp.is_sale isSale
          from p_product_property pp INNER JOIN p_props_group pg on pp.group_id=pg.id INNER JOIN p_props ps on pp.property_id=ps.id
           <where>
-              <if test="productId!=null and productId!=''">
-                  where pp.product_id=#{productId}
+              <if test="productCode!=null and productCode!=''">
+                  where pp.product_code=#{productCode}
               </if>
           </where>
     </select>

@@ -92,7 +92,7 @@ public class PropsController {
      */
     @RequestMapping("group/save")
     @ResponseBody
-    public ReturnResult groupSave(@Validated PropsGroupDTO groupDTO){
+    public ReturnResult groupSave(@Validated(PropsGroupDTO.SaveProps.class) PropsGroupDTO groupDTO){
         validGroup(groupDTO);
         PropsGroup group=new PropsGroup();
         BeanUtils.copyProperties(groupDTO,group);
