@@ -102,7 +102,7 @@
                 });
 
                 //监听行工具事件
-                table.on('tool(brand)', function(obj){
+                table.on('tool(product)', function(obj){
                     var data = obj.data;
                     if(obj.event === 'del'){
                         layer.confirm('确定删除该品牌?', {icon: 3, title:'提示'}, function(index){
@@ -128,31 +128,22 @@
                     var cols=[
                         [
                             {type: 'checkbox', fixed: 'left'},
-                            {field:'id',  title: 'ID', sort: true},
-                            {field:'productCode',  title: '商品编码'},
+                            {field:'productCode', width:150,  title: '商品编码'},
                             {field:'mainImage',  title: '主图'},
                             {field:'name', title: '商品名称'},
-                            {field:'productType', title: '商品分类'},
-                            {field:'state', title: '状态'},
-                            {field:'onSaleTime', title: '上架时间', sort: true,templet: function (d) {
-                                    if(d.onSaleTime){
-                                        return layui.util.toDateString(d.onSaleTime);
+                            {field:'productTypeName', title: '商品分类'},
+                            {field:'brandName', title: '品牌'},
+                            {field:'onCityTime', title: '上市时间', sort: true,templet: function (d) {
+                                    if(d.onCityTime){
+                                        return layui.util.toDateString(d.onCityTime,'yyyy-MM-dd');
                                     }else {
                                         return '';
                                     }
                                 }
                             },
-                            {field:'offSaleTime', title: '下架时间', sort: true,templet: function (d) {
-                                    if(d.offSaleTime){
-                                        return layui.util.toDateString(d.offSaleTime);
-                                    }else {
-                                        return '';
-                                    }
-                                }},
                             {field:'maxPrice', title: '最高价', sort: true},
                             {field:'minPrice', title: '最低价', sort: true},
                             {field:'saleCount', title: '销量', sort: true},
-                            {field:'brandId', title: '品牌'},
                             {field:'updateTime',  title: '更新时间', sort: true,templet: function (d) {
                                 if(d.updateTime){
                                     return layui.util.toDateString(d.updateTime);
@@ -161,7 +152,6 @@
                                 }
                             }},
                             {fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
-
                         ]
 
                     ];

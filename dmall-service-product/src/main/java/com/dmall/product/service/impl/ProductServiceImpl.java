@@ -72,10 +72,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                 if(Constants.NO.equals(isSale) && groupId==null){
                     throw new BusinessException(ResultEnum.BAD_REQUEST,"非销售属性必须选中属性组");
                 }
-                saleMap.put(groupId,isSale);
                 // 新增非销售属性
                 if(Constants.NO.equals(isSale)){
-                    insertProductProperty(group,product.getProductCode());
+                    insertProductProperty(group,product.getProductCode(),saleMap,isSale);
                 }
             }
         }else{
@@ -85,7 +84,6 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             String productCode=product.getProductCode();
             // 查询该商品的属性集合
             List<ProductProperty> productProperties = productPropertyService.queryByProductCode(productCode);
-
             for (int i=0;i<propsGroupArray.size();i++) {
                 JSONObject group = propsGroupArray.getJSONObject(i);
                 Long groupId = group.getLong("groupId");
@@ -93,7 +91,6 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                 if(Constants.NO.equals(isSale) && groupId==null){
                     throw new BusinessException(ResultEnum.BAD_REQUEST,"非销售属性必须选中属性组");
                 }
-                saleMap.put(groupId,isSale);
                 if(Constants.NO.equals(isSale)){
                     Set<Long> oldProps=new HashSet<>();
                     Set<Long> insertProps=new HashSet<>();
@@ -113,11 +110,12 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                     productPropertyService.deleteByPropertyId(product.getProductCode(),deleteProps);
                     for (Long insertProp : insertProps) {
                         ProductProperty productProperty=new ProductProperty();
-                        productProperty.setProductCode(product.getProductCode());
+                        productProperty.setProductCode(productCode);
                         productProperty.setGroupId(groupId);
                         productProperty.setPropertyId(insertProp);
                         productProperty.setIsSale(Constants.NO);
                         productPropertyService.insert(productProperty);
+                        saleMap.put(insertProp,isSale);
                     }
                 }
             }
@@ -125,7 +123,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         // 修改是销售属性的数据
         List<ProductProperty> productPropertyList = productPropertyService.queryByProductCode(product.getProductCode());
         for (ProductProperty productProperty : productPropertyList) {
-            Integer isSale = saleMap.get(productProperty.getGroupId());
+            Integer isSale = saleMap.get(productProperty.getPropertyId());
             if(Constants.YES.equals(isSale)){
                 productProperty.setIsSale(isSale);
                 productPropertyService.updateById(productProperty);
@@ -133,7 +131,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         }
     }
 
-    private void insertProductProperty(JSONObject jsonGroup,String productCode) {
+    private void insertProductProperty(JSONObject jsonGroup,String productCode,Map<Long,Integer> saleMap,Integer isSale) {
         Long groupId=jsonGroup.getLong("groupId");
         JSONArray props=jsonGroup.getJSONArray("props");
         for(int j=0;j<props.size();j++){
@@ -144,6 +142,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             productProperty.setPropertyId(propertyId);
             productProperty.setIsSale(Constants.NO);
             productPropertyService.insert(productProperty);
+            saleMap.put(propertyId,isSale);
         }
     }
 

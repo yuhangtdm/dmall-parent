@@ -22,9 +22,9 @@ import java.util.List;
 public class ProductExtServiceImpl extends ServiceImpl<ProductExtMapper, ProductExt> implements ProductExtService {
 
     @Override
-    public ProductExt selectByProductId(Long productId) {
+    public ProductExt selectByProductCode(String productCode) {
         EntityWrapper<ProductExt> wrapper=new EntityWrapper<>();
-        wrapper.eq("product_id",productId);
+        wrapper.eq("product_code",productCode);
         List<ProductExt> productExts = this.selectList(wrapper);
         if(StringUtil.isNotEmptyObj(productExts)){
             return productExts.get(0);

@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author: yuhang
@@ -45,6 +46,12 @@ public class ProductDTO implements Serializable {
      */
     @NotNull(message = "品牌不能为空")
     private Long brandId;
+    /**
+     * 上市时间
+     */
+    private Date onCityTime;
+
+    private String productCode;
 
 
 }

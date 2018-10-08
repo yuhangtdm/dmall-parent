@@ -35,25 +35,25 @@
             <div class="layui-tab-item layui-show">
                 <form class="layui-form" id="product-form" action="">
                     <div class="layui-row" th:if="${productVo!=null}" >
-                        <div class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">商品编码</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="product.productCode" lay-verify="required" autocomplete="off"
+                            <div class="layui-input-inline">
+                                <input type="text" name="productCode" lay-verify="required" autocomplete="off"
                                        class="layui-input" readonly >
                             </div>
-                            <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
-                                <label class="layui-form-label">最高价</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" name="product.maxPrice"  autocomplete="off"
-                                           class="layui-input" disabled="disabled" >
-                                </div>
+                        </div>
+                        <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                            <label class="layui-form-label">最高价</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="maxPrice"  autocomplete="off"
+                                       class="layui-input" disabled="disabled" >
                             </div>
-                            <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
-                                <label class="layui-form-label">最低价</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" name="product.minPrice"  autocomplete="off"
-                                           class="layui-input" disabled="disabled" >
-                                </div>
+                        </div>
+                        <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                            <label class="layui-form-label">最低价</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="minPrice"  autocomplete="off"
+                                       class="layui-input" disabled="disabled" >
                             </div>
                         </div>
                     </div>
@@ -61,8 +61,8 @@
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">商品名称</label>
                             <div class="layui-input-block">
-                                <input type="hidden" name="product.id" />
-                                <input type="text" name="product.name" lay-verify="required" class="layui-input">
+                                <input type="hidden" name="id" />
+                                <input type="text" name="name" lay-verify="required" class="layui-input">
                             </div>
                         </div>
 
@@ -71,19 +71,19 @@
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">商品副名称</label>
                             <div class="layui-input-block">
-                                <input type="text" name="product.subName" lay-verify="required" class="layui-input">
+                                <input type="text" name="subName" lay-verify="required" class="layui-input">
                             </div>
                         </div>
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4" th:if="${productVo!=null}">
                             <label class="layui-form-label">销量</label>
                             <div class="layui-input-block">
-                                <input type="text" name="product.saleCount" class="layui-input" disabled="disabled">
+                                <input type="text" name="saleCount" class="layui-input" disabled="disabled">
                             </div>
                         </div>
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4" th:if="${productVo!=null}">
                             <label class="layui-form-label">浏览量</label>
                             <div class="layui-input-block">
-                                <input type="text" name="product.viewCount" class="layui-input" disabled="disabled">
+                                <input type="text" name="viewCount" class="layui-input" disabled="disabled">
                             </div>
                         </div>
                     </div>
@@ -91,19 +91,19 @@
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">评论数</label>
                             <div class="layui-input-block">
-                                <input type="text" name="product.commentCount" class="layui-input" disabled="disabled">
+                                <input type="text" name="commentCount" class="layui-input" disabled="disabled">
                             </div>
                         </div>
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">评分</label>
                             <div class="layui-input-block">
-                                <input type="text" name="product.commentScore" class="layui-input" disabled="disabled">
+                                <input type="text" name="commentScore" class="layui-input" disabled="disabled">
                             </div>
                         </div>
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">好评率</label>
                             <div class="layui-input-block">
-                                <input type="text" name="product.goodRate" class="layui-input" disabled="disabled">
+                                <input type="text" name="goodRate" class="layui-input" disabled="disabled">
                             </div>
                         </div>
                     </div>
@@ -111,40 +111,40 @@
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">好评数</label>
                             <div class="layui-input-block">
-                                <input type="text" name="product.goodCommentCount" class="layui-input" disabled="disabled">
+                                <input type="text" name="goodCommentCount" class="layui-input" disabled="disabled">
                             </div>
                         </div>
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">中评数</label>
                             <div class="layui-input-block">
-                                <input type="text" name="product.middleCommentCount" class="layui-input" disabled="disabled">
+                                <input type="text" name="middleCommentCount" class="layui-input" disabled="disabled">
                             </div>
                         </div>
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">差评数</label>
                             <div class="layui-input-block">
-                                <input type="text" name="product.badCommentCount" class="layui-input" disabled="disabled">
+                                <input type="text" name="badCommentCount" class="layui-input" disabled="disabled">
                             </div>
                         </div>
                     </div>
                     <div class="layui-row" style="margin-top: 10px">
                         <label class="layui-form-label">商品简介</label>
                         <div class="layui-input-block">
-                            <textarea name="productExt.description" lay-verify="required"  placeholder="请输入内容" class="layui-textarea"></textarea>
+                            <textarea name="description" lay-verify="required"  placeholder="请输入内容" class="layui-textarea"></textarea>
                         </div>
                     </div>
                     <div class="layui-row" style="margin-top: 10px">
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6 layui-col-lg6">
                             <label class="layui-form-label">上市时间</label>
-                            <div class="layui-input-block">
-                                <input type="text" class="layui-input date"  name="product.onCityTime">
+                            <div class="layui-input-inline">
+                                <input type="text" id="onCityTime" class="layui-input date"  name="onCityTime" placeholder="yyyy-MM-dd">
                             </div>
                         </div>
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6 layui-col-lg6">
                             <label class="layui-form-label">商品分类</label>
                             <div class="layui-input-block">
                                 <select loadData="linkage" url="/type/tree" xm-select-search=""
-                                        name="product.productType" xm-select="product.productType"
+                                        id="productType" name="productType" xm-select="productType"
                                         linkage="true" linkageWidth="140" xm-select-radio="" lay-verify="required"   >
                                 </select>
                             </div>
@@ -155,7 +155,7 @@
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md6 layui-col-lg6">
                             <label class="layui-form-label">品牌</label>
                             <div class="layui-input-block">
-                                <select id="brand" lay-filter="brand" lay-verify="required"  loadData="normal" url="/brand/listAll"  name="product.brandId">
+                                <select id="brandId" name="brandId" lay-filter="brandId" lay-verify="required"  loadData="normal" url="/brand/listAll"  >
                                 </select>
                             </div>
                         </div>
@@ -166,16 +166,19 @@
                         </div>
                         <button type="button" class="layui-btn" lay-submit="" style="display: none" id="submit"  lay-filter="submit">立即提交</button>
                     </div>
-                    <div style="text-align: center;height: 100px;background-color: #eee; color: #666; font-weight: 300;margin-top: 20px;line-height: 100px;width: 100%">
+                    <!--<div  style="text-align: center;height: 100px;background-color: #eee; color: #666; font-weight: 300;padding-bottom: 0px;line-height: 100px;width: 100%">
                         <p>
                             地猫商城后台管理系统 版权所有 仿冒必究
                         </p>
-                    </div>
+                    </div>-->
                 </form>
+
             </div>
             <div class="layui-tab-item">
                 <form class="layui-form" id="ext-form" action="">
                     <h3>图文详情</h3>
+                    <input type="hidden" name="productCode">
+                    <input type="hidden" name="id">
                     <textarea id="richContent" name="richContent" style="display: none;"></textarea>
                 </form>
             </div>
@@ -201,30 +204,46 @@
             layedit.build('richContent',{
                 height: 1000 //设置编辑器高度
             });
-            transfer.initSelect();
+
             transfer.init([[${productVo}]],null,'product-form');
             transfer.init([[${productVo}]],null,'ext-form');
-            transfer.initDate('product-form','yyyy-MM-dd')
+            transfer.initDate('product-form','yyyy-MM-dd');
+
+
+            // 商品分类选择事件
+            formSelects.on('productType', function(id, vals, val, isAdd, isDisabled){
+                //id:           点击select的id
+                //vals:         当前select已选中的值
+                //val:          当前select点击的值
+                //isAdd:        当前操作选中or取消
+                //isDisabled:   当前选项是否是disabled
+                var split=val.value.split("/");
+                $("#brandId").attr("url","/brand/listAll?productTypeId="+split[split.length-1]);
+                transfer.initSelect('brandId');
+                $("#addProps").parents(".layui-row").nextAll(".layui-row").remove();
+                i=0;
+            });
+
             if(productVo){
                 var propsVoList=productVo.propsVoList;
                 var k=0;
                 for(;k<propsVoList.length;k++){
-                    var propsVo=propsVoList[0];
+                    var propsVo=propsVoList[k];
                     var productTypeId=propsVo.productType;
                     var group=propsVo.id;
                     var propsList= propsVo.propsList;
                     var props=''
-                    for(var j=0;j<propsList;i++){
+                    for(var j=0;j<propsList.length;j++){
                         props+=propsList[j].id+',';
                     }
                     props=props.substring(0,props.length-1);
                     var isSale=propsVo.isSale;
                     var html='';
                     if(isSale==1){
-                         html='<div class="layui-row" style="margin-top: 10px">'
+                        html='<div class="layui-row" style="margin-top: 10px">'
                             +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">'
                             +'<label class="layui-form-label">属性组</label> <div class="layui-input-block">'
-                            + '<select loadData="normal" lay-filter="group" id='+k+' url="/props/group/listAll">'
+                            + '<select loadData="normal" lay-filter="group" id='+k+' url="/props/group/listAll?productTypeId='+productTypeId+'">'
                             +' </select></div></div>'
                             +'<div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">'
                             +'<label class="layui-form-label">属性</label> <div class="layui-input-block">'
@@ -232,23 +251,23 @@
                             +' </select></div></div>'
                             +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">'
                             +'<label class="layui-form-label">销售属性</label><div class="layui-input-block">'
-                            + '<input type="checkbox" name="isSale" checked lay-skin="switch" lay-text="是|否">&nbsp;&nbsp;'
+                            + '<input type="checkbox"  id="sale'+k+'" checked lay-skin="switch" lay-text="是|否">&nbsp;&nbsp;'
                             + '<i class="layui-icon layui-icon-delete size" id="delete'+k+'" ></i>'
                             +'</div></div>'
                             + '</div>';
                     }else {
-                         html='<div class="layui-row" style="margin-top: 10px">'
+                        html='<div class="layui-row" style="margin-top: 10px">'
                             +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">'
                             +'<label class="layui-form-label">属性组</label> <div class="layui-input-block">'
                             + '<select loadData="normal" value="'+group+'"  lay-filter="group" id='+k+' url="/props/group/listAll?productTypeId='+productTypeId+'">'
                             +' </select></div></div>'
                             +'<div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">'
                             +'<label class="layui-form-label">属性</label> <div class="layui-input-block">'
-                            + '<select loadData="normal" value="'+props+'" xm-select-search="" id="props'+k+'" xm-select="props'+k+'" url="/props/listAll?productTypeId='+productTypeId+'&groupId'+group+'">'
+                            + '<select loadData="normal" value="'+props+'" xm-select-search="" id="props'+k+'" xm-select="props'+k+'" url="/props/listAll?productTypeId='+productTypeId+'&groupId='+group+'">'
                             +' </select></div></div>'
                             +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">'
                             +'<label class="layui-form-label">销售属性</label><div class="layui-input-block">'
-                            + '<input type="checkbox" name="isSale" lay-skin="switch" lay-text="是|否">&nbsp;&nbsp;'
+                            + '<input type="checkbox" id="sale'+k+'" lay-skin="switch" lay-text="是|否">&nbsp;&nbsp;'
                             + '<i class="layui-icon layui-icon-delete size" id="delete'+k+'" ></i>'
                             +'</div></div>'
                             + '</div>';
@@ -257,26 +276,11 @@
                     transfer.initSelect(k+'');
                     transfer.initSelect('props'+k);
                 }
-                i=k+1;
+                i=k;
             }
-
-            // 商品分类选择事件
-            formSelects.on('product.productType', function(id, vals, val, isAdd, isDisabled){
-                //id:           点击select的id
-                //vals:         当前select已选中的值
-                //val:          当前select点击的值
-                //isAdd:        当前操作选中or取消
-                //isDisabled:   当前选项是否是disabled
-                var split=val.value.split("/");
-                $("#brand").attr("url","/brand/listAll?productTypeId="+split[split.length-1]);
-                transfer.initSelect('brand');
-                $("#addProps").parents(".layui-row").nextAll(".layui-row").remove();
-                i=0;
-            });
-
             // 添加属性组点击事件
             $("#addProps").click(function () {
-                var productType=formSelects.value('product.productType');
+                var productType=formSelects.value('productType');
                 var productTypeId='';
                 if(productType && productType[0]){
                     productTypeId=productType[0].value;
@@ -292,7 +296,7 @@
                     +' </select></div></div>'
                     +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">'
                     +'<label class="layui-form-label">销售属性</label><div class="layui-input-block">'
-                    + '<input type="checkbox" id="sale'+i+'" name="isSale" lay-skin="switch" lay-text="是|否">&nbsp;&nbsp;'
+                    + '<input type="checkbox" id="sale'+i+'"  lay-skin="switch" lay-text="是|否">&nbsp;&nbsp;'
                     + '<i class="layui-icon layui-icon-delete size" id="delete'+i+'" ></i>'
                     +'</div></div>'
                     + '</div>'
@@ -304,7 +308,7 @@
 
             // 监听属性组
             form.on('select(group)',function (data) {
-                var productType=formSelects.value('product.productType');
+                var productType=formSelects.value('productType');
                 var productTypeId='';
                 if(productType && productType[0]){
                     productTypeId=productType[0].value;
@@ -329,7 +333,7 @@
                 var product=curd.toJson('product-form');
                 var ext=curd.toJson('ext-form');
                 var productDTO={};
-                productDTO.procuct=product;
+                productDTO.product=product;
                 productDTO.productExt=ext;
                 var flag=0;
                 var propsVoList=[];
@@ -372,8 +376,7 @@
                 }
                 productDTO.propsVoList=propsVoList;
                 console.log(productDTO);
-                return false;
-                curd.saveOrUpdate('/product/save',productDTO);
+                curd.saveOrUpdate('/product/save',productDTO,'POST',true);
             })
 
             $(document).on('mouseenter','#saveProduct',function () {

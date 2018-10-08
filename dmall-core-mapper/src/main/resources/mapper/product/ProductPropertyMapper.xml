@@ -23,12 +23,13 @@
             pg.name groupName,
             ps.id propsId,
             ps.name propsName,
-            pp.product_type productType,
-            pp.is_sale isSale
-         from p_product_property pp INNER JOIN p_props_group pg on pp.group_id=pg.id INNER JOIN p_props ps on pp.property_id=ps.id
+            pp.is_sale isSale,
+            p.product_type productType
+          from p_product_property pp INNER JOIN p_props_group pg on pp.group_id=pg.id INNER JOIN p_props ps on pp.property_id=ps.id
+          inner join p_product p on p.product_code=pp.product_code
           <where>
               <if test="productCode!=null and productCode!=''">
-                  where pp.product_code=#{productCode}
+                  and  pp.product_code=#{productCode}
               </if>
           </where>
     </select>

@@ -53,7 +53,7 @@ public class Product implements Serializable {
      * 商品类型
      */
     @TableField("product_type")
-//    @ChangeColumn(beanName = "productTypeServiceImpl",methodName = "selectTypeName")
+    @ChangeColumn(value = "productTypeName",beanName = "productTypeServiceImpl",key = "id",display = "name",productType=true)
     private String productType;
 
     /**
@@ -110,12 +110,21 @@ public class Product implements Serializable {
      * 品牌
      */
     @TableField("brand_id")
+    @ChangeColumn(value = "brandName",beanName = "brandServiceImpl",methodName = "list",key = "id",display = "name")
     private Long brandId;
     /**
      * 主图
      */
     @TableField("main_image")
     private String mainImage;
+    /**
+     * 简介
+     */
+    private String description;
+
+    @TableField("on_city_time")
+    private Long onCityTime;
+    /**
     /**
      * 创建时间
      */
@@ -126,5 +135,11 @@ public class Product implements Serializable {
      */
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Long updateTime;
+
+    @TableField(exist = false)
+    private String brandName;
+
+    @TableField(exist = false)
+    private String productTypeName;
 
 }

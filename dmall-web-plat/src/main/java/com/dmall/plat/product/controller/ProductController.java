@@ -4,6 +4,7 @@ package com.dmall.plat.product.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.dmall.common.Constants;
 import com.dmall.common.annotation.TransBean;
 import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.exception.BusinessException;
@@ -23,6 +24,7 @@ import com.dmall.web.common.utils.ResultUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
@@ -77,7 +79,7 @@ public class ProductController {
             if(product==null){
                 throw new BusinessException(ResultEnum.SERVER_ERROR,"商品信息不存在");
             }
-            ProductExt productExt = productExtService.selectByProductId(id);
+            ProductExt productExt = productExtService.selectByProductCode(product.getProductCode());
             if(productExt==null){
                 throw new BusinessException(ResultEnum.SERVER_ERROR,"商品扩展信息不存在");
             }
@@ -94,12 +96,12 @@ public class ProductController {
 
     @RequestMapping("save")
     @ResponseBody
-    public ReturnResult save(@Validated FullProductDTO fullProductDTO){
+    public ReturnResult save(@Validated @RequestBody FullProductDTO fullProductDTO){
         Product product=new Product();
         BeanUtils.copyProperties(fullProductDTO.getProduct(),product);
+        product.setOnCityTime(fullProductDTO.getProduct().getOnCityTime().getTime());
         ProductExt ext=new ProductExt();
         ext.setId(fullProductDTO.getProductExt().getId());
-        ext.setDescription(fullProductDTO.getProduct().getDescription());
         ext.setRichContent(fullProductDTO.getProductExt().getRichContent());
         List<PropsGroupDTO> propsVoList = fullProductDTO.getPropsVoList();
         JSONArray propsGroupArray=new JSONArray();
@@ -122,27 +124,42 @@ public class ProductController {
     private List<PropsGroupDTO> getProps(String productCode) {
         List<PropsGroupDTO> propsDTOList=new ArrayList<>();
         List<Map<String,Object>> list= productPropertyService.queryByParam(productCode);
-        Map<Long,Map<String,Object>> map=new HashMap<>();
+        Map<Long,List<Map<String,Object>>> map=new HashMap<>();
         for (Map<String,Object> stringObjectMap : list) {
-            map.put((Long) stringObjectMap.get("groupId"),stringObjectMap);
+            Long groupId=(Long) stringObjectMap.get("groupId");
+            if(map.containsKey(groupId)){
+                map.get(groupId).add(stringObjectMap);
+            }else {
+                List<Map<String,Object>> mapList=new ArrayList<>();
+                mapList.add(stringObjectMap);
+                map.put(groupId,mapList);
+            }
         }
-        for (Map<String, Object> obj : list) {
+        PropsGroupDTO saleDTO=new PropsGroupDTO();
+        for (Map.Entry<Long, List<Map<String, Object>>> longListEntry : map.entrySet()) {
+            Long groupId=longListEntry.getKey();
             PropsGroupDTO groupDTO=new PropsGroupDTO();
-            groupDTO.setId((Long) obj.get("groupId"));
-            groupDTO.setName((String) obj.get("groupName"));
-            groupDTO.setIsSale((Integer) obj.get("isSale"));
-            groupDTO.setProductType((String) obj.get("productType"));
-            for(Map.Entry<Long,Map<String,Object>> entry:map.entrySet()){
-                if(entry.getKey().equals(obj.get("groupId"))){
-                    Map<String,Object> value = entry.getValue();
-                    Props props=new Props();
-                    props.setId((Long) value.get("propsId"));
-                    props.setName((String) value.get("propsName"));
-                    groupDTO.getPropsList().add(props);
+            groupDTO.setId(groupId);
+            List<Map<String, Object>> value = longListEntry.getValue();
+            for (Map<String, Object> stringObjectMap : value) {
+                groupDTO.setName((String) stringObjectMap.get("groupName"));
+                groupDTO.setIsSale(Constants.NO);
+                groupDTO.setProductType((String) stringObjectMap.get("productType"));
+                Props props=new Props();
+                props.setId((Long) stringObjectMap.get("propsId"));
+                props.setName((String) stringObjectMap.get("propsName"));
+                groupDTO.getPropsList().add(props);
+                Integer isSale= (Integer) stringObjectMap.get("isSale");
+                if(Constants.YES.equals(isSale)){
+                    saleDTO.setIsSale(Constants.YES);
+                    saleDTO.setProductType((String) stringObjectMap.get("productType"));
+                    saleDTO.getPropsList().add(props);
                 }
             }
             propsDTOList.add(groupDTO);
         }
+        propsDTOList.add(saleDTO);
+
         return propsDTOList;
     }
 }

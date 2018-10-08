@@ -44,5 +44,6 @@ public @interface ChangeColumn {
      */
     String display()default "dictValue";
 
+    boolean productType() default false;
 
 }

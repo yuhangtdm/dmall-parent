@@ -303,20 +303,23 @@ layui.define(['layer','table','zTree','form'],function (e) {
             var paths=name.split(".");
             var len=paths.length;
             var obj=o;
-            $.each(paths,function (i,e) {
-                if(i==len-1){
-                    if(obj[e]){
-                        obj[e]=obj[e]+","+value;
+            if(name && name!="undefined"){
+                $.each(paths,function (i,e) {
+                    if(i==len-1){
+                        if(obj[e]){
+                            obj[e]=obj[e]+","+value;
+                        }else {
+                            obj[e]=value || '';
+                        }
                     }else {
-                        obj[e]=value || '';
+                        if(!obj[e]){
+                            obj[e]={};
+                        }
                     }
-                }else {
-                    if(!obj[e]){
-                        obj[e]={};
-                    }
-                }
-                obj=o[e];
-            })
+                    obj=o[e];
+                })
+            }
+
         });
         return o;
     }

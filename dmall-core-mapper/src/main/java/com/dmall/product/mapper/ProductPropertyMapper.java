@@ -2,6 +2,7 @@ package com.dmall.product.mapper;
 
 import com.dmall.product.entity.ProductProperty;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -16,5 +17,5 @@ import java.util.Map;
  */
 public interface ProductPropertyMapper extends BaseMapper<ProductProperty> {
 
-    List<Map<String,Object>> queryByParam(String productCode);
+    List<Map<String,Object>> queryByParam(@Param("productCode") String productCode);
 }

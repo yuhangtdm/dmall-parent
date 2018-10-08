@@ -73,8 +73,15 @@ public class ChangeAspect {
                             map.put(declaredField.getName(),dicts);
                         }else if(StringUtil.isNotEmptyObj(changeColumn.beanName())){
                             Object bean=SpringContextUtil.getBean(changeColumn.beanName());
-                            Method method = bean.getClass().getMethod(changeColumn.methodName(), Wrapper.class);
-                            Object invoke = method.invoke(obj, new EntityWrapper());
+                            Object invoke =null;
+                            if("selectList".equals(changeColumn.methodName())){
+                                Method method = bean.getClass().getMethod(changeColumn.methodName(), Wrapper.class);
+                                invoke = method.invoke(bean, new EntityWrapper());
+                            }else{
+                                Method method = bean.getClass().getMethod(changeColumn.methodName());
+                                invoke = method.invoke(bean);
+                            }
+
                             map.put(declaredField.getName(),(List)invoke);
                         }
                     }
@@ -87,6 +94,10 @@ public class ChangeAspect {
                     ChangeColumn changeColumn = declaredField.getAnnotation(ChangeColumn.class);
                     if(changeColumn!=null){
                         Object key=declaredField.get(datum);
+                        if(changeColumn.productType()){
+                            String keyValue=String.valueOf(key);
+                            key=keyValue.substring(keyValue.lastIndexOf("/")+1);
+                        }
                         String value = changeColumn.value();
                         Field changeField = datum.getClass().getDeclaredField(value);
                         changeField.setAccessible(true);
@@ -96,7 +107,7 @@ public class ChangeAspect {
                             keyField.setAccessible(true);
                             Field displayField = o.getClass().getDeclaredField(changeColumn.display());
                             displayField.setAccessible(true);
-                            if(String.valueOf(key).equals(keyField.get(o))){
+                            if(String.valueOf(key).equals(String.valueOf(keyField.get(o)))){
                                 changeField.set(datum,displayField.get(o));
                                 break;
                             }

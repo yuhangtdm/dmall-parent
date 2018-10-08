@@ -83,8 +83,6 @@ public class PropsServiceImpl extends ServiceImpl<PropsMapper, Props> implements
             this.insert(props);
             batchInsert(props,propValues);
         }
-
-
     }
 
     @Override

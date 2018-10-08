@@ -34,10 +34,7 @@ public class ProductExt implements Serializable {
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
-    /**
-     * 简介
-     */
-    private String description;
+
     /**
      * 图文内容
      */
@@ -48,7 +45,7 @@ public class ProductExt implements Serializable {
      */
     private String standard;
     /**
-     * 商品ID
+     * 商品编码
      */
     @TableField("product_code")
     private String productCode;

@@ -34,8 +34,8 @@ layui.extend({
                     dataType: 'json'
                 });
             }
-            initSelect(null);
-            // initDate(formId);
+            initSelect(null,formId);
+            form.render();
         },
         initSelect:function (id) {
             initSelect(id);
@@ -51,11 +51,11 @@ layui.extend({
     /**
      * 初始化下拉框 包括单选 多选 联动选择  树
      */
-    function initSelect(id) {
+    function initSelect(id,formId) {
         if(id){
             select($("#"+id));
         }else{
-            $("select[loadData]").each(function(){
+            $("#"+formId+ " select[loadData]").each(function(){
                 select($(this));
             });
         }
@@ -63,9 +63,10 @@ layui.extend({
     }
 
     function select(sel) {
+        var value = sel.val() || sel.attr("value");
         sel.empty();
         sel.append("<option value=''>请选择</option>");
-        var value = sel.attr("value");
+        //var value = sel.attr("value");
         var dict=sel.attr("dict")||'';//数据字典的key
         var bean=sel.attr("bean")||'';//查询下拉框的对象bean
         var method=sel.attr("method")||'';//查询的方法
@@ -75,7 +76,7 @@ layui.extend({
         }
         var url=sel.attr("url")||'';//查询的路径
         var xm=sel.attr("xm-select");
-        var xmValue=$("input[name='"+xm+"']").val();
+        var xmValue=$("input[name='"+xm+"']").val() || value;
         var xmVals=[];
         var type=sel.attr("loadData");
         var query=sel.attr("query");
@@ -206,17 +207,23 @@ layui.extend({
         if(!format){
             format='yyyy-MM-dd HH:mm:ss';
         }
-        if(formId){
-            $("#"+formId).find(".date").each(function () {
-                laydate.render({
-                    elem: '#'+$(this).attr("id"),
-                    type:'datetime',
-                    format:format
-                });
+        if(formId) {
+            $("#" + formId).find(".date").each(function () {
+                var val = $(this).val();
+                if (val) {
+                    laydate.render({
+                        elem: '#' + $(this).attr("id"),
+                        format: format,
+                        value: layui.util.toDateString(parseInt(val), 'yyyy-MM-dd') //参数即为：2018-08-20 20:08:08 的时间戳
+                    });
+                } else {
+                    laydate.render({
+                        elem: '#' + $(this).attr("id"),
+                        format: format
+                    });
+                }
             })
         }
-
-
     }
 
     /**
@@ -233,9 +240,8 @@ layui.extend({
                 initForm(value);
             }
             initData(prop,value);
-
         }
-        form.render();
+
     }
 
     function initData(prop,value){
@@ -262,15 +268,7 @@ layui.extend({
                         }
                     }
                 }else{
-                    if(prop.lastIndexOf("Time")>-1){
-                        laydate.render({
-                            elem: '#'+prop,
-                            format:'yyyy-MM-dd HH:mm:ss',
-                            value: new Date(value) //参数即为：2018-08-20 20:08:08 的时间戳
-                        });
-                    }else {
-                        $(this).val(value);
-                    }
+                    $(this).val(value);
                 }
             }else if(tagName=='img'){
                 $(this).attr('src',value);
@@ -288,7 +286,6 @@ layui.extend({
             }else if(tagName=='TEXTAREA'){
                 $(this).val(value);
             }
-
         });
     }
     
