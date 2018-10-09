@@ -330,6 +330,7 @@
             // 保存按钮点击事件
             $("#saveProduct").click(function () {
                $("#submit").click();
+               debugger
                 var product=curd.toJson('product-form');
                 var ext=curd.toJson('ext-form');
                 var productDTO={};
@@ -340,9 +341,13 @@
                 for(var o=0;o<i;o++){
                     var propsVo={}
                     var groupId=$("#"+o).val();
+                    if(groupId==undefined){
+                        continue;
+                    }
                     if(groupId){
                         propsVo.id=groupId;
                     }
+
                     var props=formSelects.value('props'+o);
                     if(props){
                         var propsList=[];

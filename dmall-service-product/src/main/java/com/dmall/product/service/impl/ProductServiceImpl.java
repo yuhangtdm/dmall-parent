@@ -85,6 +85,15 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             // 查询该商品的属性集合
             for (int i=0;i<propsGroupArray.size();i++) {
                 JSONObject group = propsGroupArray.getJSONObject(i);
+                Integer isSale = group.getInteger("isSale");
+                JSONArray propsArray = group.getJSONArray("props");
+                for (int j=0;j<propsArray.size();j++) {
+                   saleMap.put(propsArray.getLong(j),isSale);
+                }
+            }
+
+            for (int i=0;i<propsGroupArray.size();i++) {
+                JSONObject group = propsGroupArray.getJSONObject(i);
                 Long groupId = group.getLong("groupId");
                 Integer isSale = group.getInteger("isSale");
                 if(Constants.NO.equals(isSale) && groupId==null){
@@ -107,7 +116,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                             insertProps.add(propsArray.getLong(j));
                         }
                     }
-                    productPropertyService.deleteByPropertyId(product.getProductCode(),deleteProps);
+                    if(StringUtil.isNotEmptyObj(deleteProps)){
+                        productPropertyService.deleteByPropertyId(product.getProductCode(),deleteProps);
+                    }
                     for (Long insertProp : insertProps) {
                         ProductProperty productProperty=new ProductProperty();
                         productProperty.setProductCode(productCode);
