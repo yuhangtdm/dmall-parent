@@ -83,7 +83,6 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             extMapper.updateById(ext);
             String productCode=product.getProductCode();
             // 查询该商品的属性集合
-            List<ProductProperty> productProperties = productPropertyService.queryByProductCode(productCode);
             for (int i=0;i<propsGroupArray.size();i++) {
                 JSONObject group = propsGroupArray.getJSONObject(i);
                 Long groupId = group.getLong("groupId");
@@ -91,6 +90,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                 if(Constants.NO.equals(isSale) && groupId==null){
                     throw new BusinessException(ResultEnum.BAD_REQUEST,"非销售属性必须选中属性组");
                 }
+                List<ProductProperty> productProperties = productPropertyService.queryByProductCodeAndGroupId(productCode,groupId);
                 if(Constants.NO.equals(isSale)){
                     Set<Long> oldProps=new HashSet<>();
                     Set<Long> insertProps=new HashSet<>();
