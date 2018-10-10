@@ -12,12 +12,14 @@ import com.dmall.common.utils.StringUtil;
 import com.dmall.product.entity.Product;
 import com.dmall.product.entity.ProductExt;
 import com.dmall.product.entity.ProductProperty;
+import com.dmall.product.entity.Props;
 import com.dmall.product.mapper.ProductExtMapper;
 import com.dmall.product.mapper.ProductMapper;
 import com.dmall.product.mapper.ProductPropertyMapper;
 import com.dmall.product.service.ProductPropertyService;
 import com.dmall.product.service.ProductService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.dmall.product.service.PropsService;
 import com.dmall.util.QueryUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Autowired
     private ProductPropertyService productPropertyService;
 
+    @Autowired
+    private PropsService propsService;
+
     @Override
     public Page pageList(Product product, Page page) {
         EntityWrapper<Product> wrapper=new EntityWrapper<>();
@@ -54,7 +59,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Override
     @Transactional
     public void saveFullProduct(Product product, ProductExt ext, JSONArray propsGroupArray) {
-        // 属性组与是否销售属性的容器
+        // 属性组与是销售属性的容器
         Map<Long,Integer> saleMap=new HashMap<>();
         // 新增商品
         if(product.getId()==null){
@@ -73,61 +78,57 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                     throw new BusinessException(ResultEnum.BAD_REQUEST,"非销售属性必须选中属性组");
                 }
                 // 新增非销售属性
-                if(Constants.NO.equals(isSale)){
-                    insertProductProperty(group,product.getProductCode(),saleMap,isSale);
-                }
+                insertProductProperty(group,product.getProductCode(),saleMap,isSale);
             }
-        }else{
+        }else {
             // 更新商品以及附件信息、属性信息
             this.updateById(product);
             extMapper.updateById(ext);
-            String productCode=product.getProductCode();
-            // 查询该商品的属性集合
-            for (int i=0;i<propsGroupArray.size();i++) {
+            String productCode = product.getProductCode();
+            // 存放前端传递的非销售属性的属性集合
+            JSONArray nowPropsArray = new JSONArray();
+            for (int i = 0; i < propsGroupArray.size(); i++) {
                 JSONObject group = propsGroupArray.getJSONObject(i);
                 Integer isSale = group.getInteger("isSale");
                 JSONArray propsArray = group.getJSONArray("props");
-                for (int j=0;j<propsArray.size();j++) {
-                   saleMap.put(propsArray.getLong(j),isSale);
+                for (int j = 0; j < propsArray.size(); j++) {
+                    if(Constants.NO.equals(isSale)) {
+                        nowPropsArray.add(propsArray.getLong(j));
+                    }else{
+                        // 销售属性
+                        saleMap.put(propsArray.getLong(j), isSale);
+                    }
                 }
             }
+            // 该商品下的所有销售属性
+            List<ProductProperty> productProperties = productPropertyService.queryByProductCode(productCode);
+            Set<Long> oldProps = new HashSet<>();
+            Set<Long> insertProps = new HashSet<>();
+            Set<Long> deleteProps = new HashSet<>();
 
-            for (int i=0;i<propsGroupArray.size();i++) {
-                JSONObject group = propsGroupArray.getJSONObject(i);
-                Long groupId = group.getLong("groupId");
-                Integer isSale = group.getInteger("isSale");
-                if(Constants.NO.equals(isSale) && groupId==null){
-                    throw new BusinessException(ResultEnum.BAD_REQUEST,"非销售属性必须选中属性组");
+            for (ProductProperty productProperty : productProperties) {
+                oldProps.add(productProperty.getPropertyId());
+                if (!nowPropsArray.contains(productProperty.getPropertyId())) {
+                    deleteProps.add(productProperty.getPropertyId());
                 }
-                List<ProductProperty> productProperties = productPropertyService.queryByProductCodeAndGroupId(productCode,groupId);
-                if(Constants.NO.equals(isSale)){
-                    Set<Long> oldProps=new HashSet<>();
-                    Set<Long> insertProps=new HashSet<>();
-                    Set<Long> deleteProps=new HashSet<>();
-                    JSONArray propsArray = group.getJSONArray("props");
-                    for (ProductProperty productProperty : productProperties) {
-                        oldProps.add(productProperty.getPropertyId());
-                        if(!propsArray.contains(productProperty.getPropertyId())){
-                            deleteProps.add(productProperty.getPropertyId());
-                        }
-                    }
-                    for (int j=0;j<propsArray.size();j++) {
-                        if(!oldProps.contains(propsArray.getLong(j))){
-                            insertProps.add(propsArray.getLong(j));
-                        }
-                    }
-                    if(StringUtil.isNotEmptyObj(deleteProps)){
-                        productPropertyService.deleteByPropertyId(product.getProductCode(),deleteProps);
-                    }
-                    for (Long insertProp : insertProps) {
-                        ProductProperty productProperty=new ProductProperty();
-                        productProperty.setProductCode(productCode);
-                        productProperty.setGroupId(groupId);
-                        productProperty.setPropertyId(insertProp);
-                        productProperty.setIsSale(Constants.NO);
-                        productPropertyService.insert(productProperty);
-                        saleMap.put(insertProp,isSale);
-                    }
+            }
+            for (int j = 0; j < nowPropsArray.size(); j++) {
+                if (!oldProps.contains(nowPropsArray.getLong(j))) {
+                    insertProps.add(nowPropsArray.getLong(j));
+                }
+            }
+            if (StringUtil.isNotEmptyObj(deleteProps)) {
+                productPropertyService.deleteByPropertyId(product.getProductCode(), deleteProps);
+            }
+            if(StringUtil.isNotEmptyObj(insertProps)){
+                for (Long insertProp : insertProps) {
+                    Props props = propsService.selectById(insertProp);
+                    ProductProperty productProperty = new ProductProperty();
+                    productProperty.setProductCode(productCode);
+                    productProperty.setGroupId(props.getGroupId());
+                    productProperty.setPropertyId(insertProp);
+                    productProperty.setIsSale(Constants.NO);
+                    productPropertyService.insert(productProperty);
                 }
             }
         }
@@ -147,13 +148,16 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         JSONArray props=jsonGroup.getJSONArray("props");
         for(int j=0;j<props.size();j++){
             Long propertyId=props.getLong(j);
-            ProductProperty productProperty=new ProductProperty();
-            productProperty.setProductCode(productCode);
-            productProperty.setGroupId(groupId);
-            productProperty.setPropertyId(propertyId);
-            productProperty.setIsSale(Constants.NO);
-            productPropertyService.insert(productProperty);
-            saleMap.put(propertyId,isSale);
+            if(Constants.NO.equals(isSale)){
+                ProductProperty productProperty=new ProductProperty();
+                productProperty.setProductCode(productCode);
+                productProperty.setGroupId(groupId);
+                productProperty.setPropertyId(propertyId);
+                productProperty.setIsSale(Constants.NO);
+                productPropertyService.insert(productProperty);
+            }else{
+                saleMap.put(propertyId,isSale);
+            }
         }
     }
 
