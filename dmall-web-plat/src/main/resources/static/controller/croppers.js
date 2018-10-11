@@ -2,12 +2,10 @@
  * Cropper v3.0.0
  */
 
-layui.config({
-    base: '/static/cropper/' //layui自定义layui组件目录
-}).define(['jquery','layer','cropper'],function (exports) {
+layui.define(['jquery','layer','cropper'],function (exports) {
     var $ = layui.jquery
         ,layer = layui.layer;
-    var html = "<link rel=\"stylesheet\" href=\"/static/cropper/cropper.css\">\n" +
+    var html = "<link rel=\"stylesheet\"  href=\"/css/cropper.css\">\n" +
         "<div class=\"layui-fluid showImgEdit\" style=\"display: none\">\n" +
         "    <div class=\"layui-form-item\">\n" +
         "        <div class=\"layui-input-inline layui-btn-container\" style=\"width: auto;\">\n" +
@@ -16,7 +14,6 @@ layui.config({
         "            </label>\n" +
         "            <input class=\"layui-upload-file\" id=\"cropper_avatarImgUpload\" type=\"file\" value=\"选择图片\" name=\"file\">\n" +
         "        </div>\n" +
-        "        <div class=\"layui-form-mid layui-word-aux\">头像的尺寸限定150x150px,大小在50kb以内</div>\n" +
         "    </div>\n" +
         "    <div class=\"layui-row layui-col-space15\">\n" +
         "        <div class=\"layui-col-xs9\">\n" +
@@ -37,9 +34,6 @@ layui.config({
         "                    <button type=\"button\" class=\"layui-btn layui-icon layui-icon-right\" cropper-event=\"rotate\" data-option=\"15\" title=\"Rotate 90 degrees\"> 向右旋转</button>\n" +
         "                </div>\n" +
         "                <div class=\"layui-col-xs5\" style=\"text-align: right;\">\n" +
-        "                    <button type=\"button\" class=\"layui-btn\" title=\"移动\"></button>\n" +
-        "                    <button type=\"button\" class=\"layui-btn\" title=\"放大图片\"></button>\n" +
-        "                    <button type=\"button\" class=\"layui-btn\" title=\"缩小图片\"></button>\n" +
         "                    <button type=\"button\" class=\"layui-btn layui-icon layui-icon-refresh\" cropper-event=\"reset\" title=\"重置图片\"></button>\n" +
         "                </div>\n" +
         "            </div>\n" +
@@ -60,19 +54,23 @@ layui.config({
                 mark = e.mark,
                 area = e.area,
                 url = e.url,
+                resizable= e.resizable || true,
+                minContainerHeight=e.minContainerHeight|| 200,
+                minContainerWidth=e.minContainerWidth|| 100,
                 done = e.done;
 
             var content = $('.showImgEdit')
                 ,image = $(".showImgEdit .readyimg img")
                 ,preview = '.showImgEdit .img-preview'
                 ,file = $(".showImgEdit input[name='file']")
-                , options = {aspectRatio: mark,preview: preview,viewMode:1};
+                , options = {aspectRatio: mark,preview: preview,viewMode:1,resizable:resizable,minContainerWidth:minContainerWidth,minContainerHeight:minContainerHeight};
 
             $(elem).on('click',function () {
                 layer.open({
                     type: 1
                     , content: content
                     , area: area
+                    , shadeClose:true
                     , success: function () {
                         image.cropper(options);
                     }
@@ -81,6 +79,7 @@ layui.config({
                         image.cropper('destroy');
                     }
                 });
+                return false;
             });
             $(".layui-btn").on('click',function () {
                 var event = $(this).attr("cropper-event");
@@ -102,7 +101,7 @@ layui.config({
                                 if(result.code == 0){
                                     layer.msg(result.msg,{icon: 1});
                                     layer.closeAll('page');
-                                    return done(result.data.src);
+                                    return done(result);
                                 }else if(result.code == -1){
                                     layer.alert(result.msg,{icon: 2});
                                 }

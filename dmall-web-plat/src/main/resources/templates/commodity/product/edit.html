@@ -183,14 +183,26 @@
                 </form>
             </div>
             <div class="layui-tab-item">
-                添加商品图片
-                <div class="layui-upload">
-                    <button type="button" class="layui-btn" id="up">多图片上传</button>
-                    <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
-                        预览图：
-                        <div class="layui-upload-list" id="upList"></div>
-                    </blockquote>
-                </div>
+                <fieldset class="layui-elem-field">
+                    <legend>添加商品图片</legend>
+                    <div class="layui-field-box">
+                        <div class="layui-upload">
+                            <h4>默认第一张为商品主图</h4>
+                            <hr class="layui-bg-green">
+                            <button type="button" class="layui-btn" id="up">多图片上传</button>
+                            <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                                预览图：
+                                <div class="layui-upload-list" id="upList">
+                                    <div id="layer-photos-demo" class="layer-photos-demo">
+                                    </div>
+
+                                </div>
+                            </blockquote>
+                        </div>
+                    </div>
+                </fieldset>
+
+
             </div>
         </div>
     </div>
@@ -198,7 +210,7 @@
     <script th:inline="javascript">
         layui.config({
             base: '/controller/'
-        }).use(['element','form', 'transfer','curd','layer','layedit','upload'], function () {
+        }).use(['element','form', 'transfer','curd','layer','layedit','upload','croppers'], function () {
             var $=layui.$;
             var form = layui.form;
             var transfer = layui.transfer;
@@ -207,6 +219,7 @@
             var formSelects = layui.formSelects;
             var upload = layui.upload;
             var layer= layui.layer;
+            var croppers = layui.croppers;
             var i=0;
             var productVo=[[${productVo}]];
             var layedit = layui.layedit;
@@ -341,7 +354,6 @@
             // 保存按钮点击事件
             $("#saveProduct").click(function () {
                $("#submit").click();
-               debugger
                 var product=curd.toJson('product-form');
                 var ext=curd.toJson('ext-form');
                 var productDTO={};
@@ -391,25 +403,44 @@
                     return false;
                 }
                 productDTO.propsVoList=propsVoList;
-                console.log(productDTO);
                 curd.saveOrUpdate('/product/save',productDTO,'POST',true);
             })
 
             //文件上传
-            upload.render({
+            /*upload.render({
                 elem: '#up'
                 ,url: '/product/upload/'
                 ,multiple: true
                 ,done: function(res, index, upload){
                     //上传完毕
                     if(res.code==0){
-                        console.log(res.data)
-                        debugger
                         $("#upList").append('<img src="'+ res.data.src +'"  class="layui-upload-img">')
                     }else{
                         layer.msg(res.msg,{icon:2});
                     }
                 }
+                                          <img layer-pid="图片id，可以不写" layer-src="大图地址" src="缩略图" alt="图片名">
+
+            });*/
+
+            //文件上传
+            croppers.render({
+                elem: '#up'
+                ,saveW:430     //保存宽度
+                ,saveH:430
+                ,minContainerHeight:430
+                ,minContainerWidth:430
+                ,mark:1/1    //选取比例
+                ,area:'900px'  //弹窗宽度
+                ,url: "/product/upload/"  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
+                ,done: function(res){ //上传完毕回调
+                    $("#layer-photos-demo").append('<img src="'+ res +'" layer-src="大图地址"  class="layui-upload-img">')
+                }
+            });
+
+            layer.photos({
+                photos: '#layer-photos-demo'
+                ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
             });
 
             $(document).on('mouseenter','#saveProduct',function () {

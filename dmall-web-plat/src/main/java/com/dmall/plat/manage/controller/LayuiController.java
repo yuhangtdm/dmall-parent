@@ -55,8 +55,6 @@ public class LayuiController {
     }
 
 
-
-
     @RequestMapping("/setProps")
     public String setProps(){
         return "commodity/type/setProps";
@@ -65,5 +63,10 @@ public class LayuiController {
     @RequestMapping("/product")
     public String product(){
         return "commodity/product/list";
+    }
+
+    @RequestMapping("/edit")
+    public String editTest(){
+        return "commodity/editTest";
     }
 }

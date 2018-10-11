@@ -152,6 +152,7 @@ public class ProductController {
                         DefaultPutRet defaultPutRet = qiniuUtil.uploadFile(file.getInputStream(), null);
                         result.put("key",defaultPutRet.key);
                         result.put("src",qiniuUtil.getDOMAIN()+"/"+defaultPutRet.hash+"?v="+System.currentTimeMillis());
+                        result.put("layerSrc",qiniuUtil.getDOMAIN()+"/"+defaultPutRet.hash+"?v="+System.currentTimeMillis());
                     }
                 }
             }

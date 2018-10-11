@@ -144,4 +144,8 @@ public class QiniuUtil {
     public String getDOMAIN() {
         return DOMAIN;
     }
+
+    public String getUrl(){
+        return null;
+    }
 }
