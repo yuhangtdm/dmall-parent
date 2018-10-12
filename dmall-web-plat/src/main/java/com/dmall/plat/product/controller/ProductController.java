@@ -132,6 +132,11 @@ public class ProductController {
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
 
+    /**
+     * 文件上传
+     * @param request
+     * @return
+     */
     @RequestMapping("/upload")
     @ResponseBody
     public ReturnResult fileUpload(HttpServletRequest request){
@@ -149,10 +154,14 @@ public class ProductController {
                     //取得上传文件
                     MultipartFile file = multiRequest.getFile(iter.next());
                     if (file != null) {
-                        DefaultPutRet defaultPutRet = qiniuUtil.uploadFile(file.getInputStream(), null);
+                        String originalFilename = file.getOriginalFilename();
+                        String fileType=originalFilename.substring(originalFilename.lastIndexOf(".")+1);
+                        DefaultPutRet defaultPutRet = qiniuUtil.uploadFile(file.getInputStream(), qiniuUtil.getKey(fileType));
                         result.put("key",defaultPutRet.key);
-                        result.put("src",qiniuUtil.getDOMAIN()+"/"+defaultPutRet.hash+"?v="+System.currentTimeMillis());
-                        result.put("layerSrc",qiniuUtil.getDOMAIN()+"/"+defaultPutRet.hash+"?v="+System.currentTimeMillis());
+                        //预览图
+                        result.put("src",qiniuUtil.getModelUrl(defaultPutRet.hash,60));
+                        // 大图 原图
+                        result.put("layerSrc",qiniuUtil.getUrl(defaultPutRet.hash));
                     }
                 }
             }
@@ -164,6 +173,8 @@ public class ProductController {
 
         return ResultUtil.buildResult(ResultEnum.SUCC,result);
     }
+
+
 
     private List<PropsGroupDTO> getProps(String productCode) {
         List<PropsGroupDTO> propsDTOList=new ArrayList<>();
