@@ -1,7 +1,10 @@
 package com.dmall.product.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.dmall.product.entity.Sku;
 import com.baomidou.mybatisplus.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,13 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-08-29
  */
 public interface SkuService extends IService<Sku> {
+
+    Page pageList(Sku sku, Page page);
+
+    List<Sku> list(String productCode);
+
+    void saveFullSku(Sku sku, List<String> imgVoArray);
+
+    Sku selectBySkuCode(String skuCode);
 
 }

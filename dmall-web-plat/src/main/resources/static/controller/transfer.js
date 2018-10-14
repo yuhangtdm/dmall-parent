@@ -41,8 +41,8 @@ layui.extend({
         initSelect:function (id) {
             initSelect(id);
         },
-        initDate : function(formId,format){
-            initDate(formId,format);
+        initDate : function(formId,format,domId,type){
+            initDate(formId,format,domId,type);
         },
         initSelectTree:function (url,id) {
             initSelectTree(url,id);
@@ -204,27 +204,50 @@ layui.extend({
      * 初始化日期控件
      * @param formId
      */
-    function initDate(formId,format) {
+    function initDate(formId,format,domId,type) {
         if(!format){
             format='yyyy-MM-dd HH:mm:ss';
         }
-        if(formId) {
-            $("#" + formId).find(".date").each(function () {
-                var val = $(this).val();
-                if (val) {
-                    laydate.render({
-                        elem: '#' + $(this).attr("id"),
-                        format: format,
-                        value: layui.util.toDateString(parseInt(val), 'yyyy-MM-dd') //参数即为：2018-08-20 20:08:08 的时间戳
-                    });
-                } else {
-                    laydate.render({
-                        elem: '#' + $(this).attr("id"),
-                        format: format
-                    });
-                }
-            })
+        if(!type){
+            type='date';
         }
+        if(domId){
+            var val = $("#"+domId).val();
+            if (val) {
+                laydate.render({
+                    elem: '#' + domId,
+                    format: format,
+                    type:type,
+                    value: layui.util.toDateString(parseInt(val), 'yyyy-MM-dd') //参数即为：2018-08-20 20:08:08 的时间戳
+                });
+            } else {
+                laydate.render({
+                    elem: '#' + domId,
+                    format: format,
+                    type:type
+                });
+            }
+
+        }else{
+            if(formId) {
+                $("#" + formId).find(".date").each(function () {
+                    var val = $(this).val();
+                    if (val) {
+                        laydate.render({
+                            elem: '#' + $(this).attr("id"),
+                            format: format,
+                            value: layui.util.toDateString(parseInt(val), 'yyyy-MM-dd') //参数即为：2018-08-20 20:08:08 的时间戳
+                        });
+                    } else {
+                        laydate.render({
+                            elem: '#' + $(this).attr("id"),
+                            format: format
+                        });
+                    }
+                })
+            }
+        }
+
     }
 
     /**

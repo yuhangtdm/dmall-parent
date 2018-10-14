@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dmall.product.mapper.SkuMediaMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.dmall.product.entity.SkuMedia">
+        <id column="id" property="id" />
+        <result column="product_code" property="productCode" />
+        <result column="sku_code" property="skuCode" />
+        <result column="media_type" property="mediaType" />
+        <result column="sort_index" property="sortIndex" />
+        <result column="img_key" property="imgKey" />
+        <result column="img_url" property="imgUrl" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, product_code, sku_code, media_type, sort_index, img_key, img_url, create_time, update_time
+    </sql>
+
+</mapper>

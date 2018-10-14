@@ -9,6 +9,7 @@ import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotations.Version;
 
+import com.dmall.common.annotation.ChangeColumn;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -45,10 +46,10 @@ public class Sku implements Serializable {
     @TableField("sku_name")
     private String skuName;
     /**
-     * 商品ID
+     * 商品编码
      */
-    @TableField("product_id")
-    private Long productId;
+    @TableField("product_code")
+    private String productCode;
     /**
      * 市场价
      */
@@ -136,6 +137,7 @@ public class Sku implements Serializable {
     /**
      * 状态 0 下架 1 上架
      */
+    @ChangeColumn(value = "stateName",dictType = "_product_state")
     private Integer state;
     /**
      * 上架时间
@@ -147,6 +149,18 @@ public class Sku implements Serializable {
      */
     @TableField("off_sale_time")
     private Long offSaleTime;
+
+    /**
+     * sku简介
+     */
+    @TableField("sku_description")
+    private String skuDescription;
+
+    /**
+     * sku图文详情
+     */
+    @TableField("sku_content")
+    private String skuContent;
 
     /**
      * 是否启用 0 否 1 是

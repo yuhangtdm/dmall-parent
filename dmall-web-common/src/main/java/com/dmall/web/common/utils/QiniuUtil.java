@@ -47,6 +47,8 @@ public class QiniuUtil {
     //默认华东
     private static Zone zone=Zone.zone0();
 
+    public static final Integer PREVIEW_SIZE=160;
+
     private static final String THUMB_16="imageView2/2/w/16/h/16";
     private static final String THUMB_32="imageView2/2/w/32/h/32";
     private static final String THUMB_48="imageView2/2/w/48/h/48";
@@ -115,9 +117,9 @@ public class QiniuUtil {
         }
     }
 
-    public   String getKey(String fileType){
+    public   String getKey(String prefix,String fileType){
         String key = UUID.randomUUID().toString().replace("-","")+"."+fileType;//上传资源的token
-        return key;
+        return prefix+"_"+key;
     }
     /**
      * 文件流的文件上传

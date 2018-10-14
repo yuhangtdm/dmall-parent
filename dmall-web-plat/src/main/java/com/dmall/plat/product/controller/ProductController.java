@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.dmall.common.Constants;
 import com.dmall.common.annotation.TransBean;
+import com.dmall.common.enums.ImageTypeEnum;
 import com.dmall.common.enums.MediaEnum;
 import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.exception.BusinessException;
@@ -99,7 +100,6 @@ public class ProductController {
             List<ProductMedia> mediaList=productMediaService.selectByProductCode(product.getProductCode());
             for (ProductMedia productMedia : mediaList) {
                 Map<String,String> map=new HashMap<>();
-                map.put("imgKey",productMedia.getImgKey());
                 map.put("imgSrc",qiniuUtil.getModelUrl(productMedia.getImgKey(),160));
                 map.put("layerSrc",productMedia.getImgUrl());
                 imgUrls.add(map);
@@ -110,6 +110,8 @@ public class ProductController {
             productVo.setPropsVoList(propsDTOList);
             productVo.setImgUrls(imgUrls);
             request.setAttribute("productVo",productVo);
+        }else {
+
         }
         return "commodity/product/edit";
     }
@@ -142,7 +144,7 @@ public class ProductController {
             propsGroupArray.add(propsGroup);
         }
         productService.saveFullProduct(product,ext,propsGroupArray,fullProductDTO.getImgVoArray());
-        return ResultUtil.buildResult(ResultEnum.SUCC);
+        return ResultUtil.buildResult(ResultEnum.SUCC.getCode(),"商品保存成功");
     }
 
     /**
@@ -192,7 +194,7 @@ public class ProductController {
 
             String originalFilename = file.getOriginalFilename();
             String fileType=originalFilename.substring(originalFilename.lastIndexOf(".")+1);
-            DefaultPutRet defaultPutRet = qiniuUtil.uploadFile(file.getInputStream(), qiniuUtil.getKey(fileType));
+            DefaultPutRet defaultPutRet = qiniuUtil.uploadFile(file.getInputStream(), qiniuUtil.getKey(ImageTypeEnum.PRODUCT.getCode(),fileType));
             //预览图
             result.put("src",qiniuUtil.getModelUrl(defaultPutRet.key,PREVIEW_SIZE));
             result.put("key",defaultPutRet.key);
@@ -224,7 +226,7 @@ public class ProductController {
         try {
             String originalFilename = file.getOriginalFilename();
             String fileType=originalFilename.substring(originalFilename.lastIndexOf(".")+1);
-            DefaultPutRet defaultPutRet = qiniuUtil.uploadFile(file.getInputStream(), qiniuUtil.getKey(fileType));
+            DefaultPutRet defaultPutRet = qiniuUtil.uploadFile(file.getInputStream(), qiniuUtil.getKey(ImageTypeEnum.PRODUCT.getCode(),fileType));
             //预览图
             result.put("src",qiniuUtil.getUrl(defaultPutRet.key));
             result.put("title","图片详情");

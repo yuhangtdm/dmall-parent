@@ -27,6 +27,9 @@ layui.define(['layer','table','zTree','form'],function (e) {
         initPage:function (id,url,cols) {
             initPage(id,url,cols);
         },
+        initSimplePage:function (id,url,cols) {
+            initSimplePage(id,url,cols);
+        },
         toJson:function (formId) {
             return toJson(formId);
         }
@@ -256,6 +259,28 @@ layui.define(['layer','table','zTree','form'],function (e) {
             },
             done:function (res, curr, count) {
                 
+            }
+        });
+    }
+
+    function initSimplePage(id,url,cols) {
+
+        table.render({
+            elem: '#'+id,
+            id: id,
+            url:url,
+            text: {
+                none: '暂无相关数据'
+            },
+            cols: cols,
+            page:true,
+            loading:true,
+            request: {
+                pageName: 'current',
+                limitName: 'size'
+            },
+            done:function (res, curr, count) {
+
             }
         });
     }

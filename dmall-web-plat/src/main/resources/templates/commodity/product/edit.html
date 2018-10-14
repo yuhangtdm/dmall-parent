@@ -178,7 +178,8 @@
                     <h3>图文详情</h3>
                     <input type="hidden" name="productCode">
                     <input type="hidden" name="id">
-                    <textarea id="richContent" name="richContent" th:text="${productVo.productExt.richContent}"></textarea>
+                    <textarea id="richContent" name="richContent" th:if="${productVo!=null}" th:text="${productVo.productExt.richContent}"></textarea>
+                    <textarea id="richContent" name="richContent" th:if="${productVo==null}"></textarea>
                 </form>
             </div>
             <div class="layui-tab-item">
@@ -193,10 +194,13 @@
                                 预览图：
                                 <div id="layer-photos-demo" class="layer-photos-demo">
                                     <img src="http://pgdyorkvy.bkt.clouddn.com/ea1e5a77d8494b8c9fb3d517642269d9.jpg?v=1539355305343&amp;imageView2/2/w/160/h/160" layer-src="http://pgdyorkvy.bkt.clouddn.com/ea1e5a77d8494b8c9fb3d517642269d9.jpg?v=1539355305343" alt="示例图片">
-                                    <span th:each="imgObj : ${productVo.imgUrls}">
+                                    <div  th:if="${productVo!=null}">
+                                        <span th:each="imgObj : ${productVo.imgUrls}">
                                         <img  th:src="${imgObj.imgSrc}" th:key="${imgObj.imgKey}" th:layer-src="${imgObj.layerSrc}" alt="商品图片" >
                                         <i class="layui-icon layui-icon-close-fill"  style="color:red;cursor:pointer;" th:imgSrc="${imgObj.imgKey}" ></i>
                                     </span>
+                                    </div>
+
                                 </div>
                             </blockquote>
                         </div>
@@ -233,8 +237,7 @@
             });
 
             // 初始化表单内容
-            transfer.init([[${productVo.product}]],null,'product-form');
-            transfer.init([[${productVo.productExt}]],null,'ext-form');
+
             transfer.initDate('product-form','yyyy-MM-dd');
 
             // 商品分类选择事件
@@ -250,9 +253,12 @@
                 $("#addProps").parents(".layui-row").nextAll(".layui-row").remove();
                 i=0;
             });
-
             // 编辑时初始化数据
             if(productVo){
+
+               // transfer.init([[${productVo.product}]],null,'product-form');
+               // transfer.init([[${productVo.productExt}]],null,'ext-form');
+
                 var product=productVo.product;
                 var split=product.productType.split("/");
                 $("#brandId").attr("url","/brand/listAll?productTypeId="+split[split.length-1]);
@@ -363,14 +369,12 @@
 
             // 保存按钮点击事件
             $("#saveProduct").click(function () {
-                alert($("#richContent").val());
                $("#submit").click();
                 var product=curd.toJson('product-form');
                 layedit.sync(extIndex);
                 var ext=curd.toJson('ext-form');
                 var productDTO={};
                 productDTO.product=product;
-                debugger
                 productDTO.productExt=ext;
                 var flag=0;
                 var propsVoList=[];

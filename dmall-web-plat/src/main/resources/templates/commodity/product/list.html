@@ -63,13 +63,12 @@
                 {{# if (d.mainImage!=null || d.mainImage!='') { }}
                  <img src="http://pgdyorkvy.bkt.clouddn.com/{{d.mainImage }}?imageView2/2/w/30/h/30" />
                 {{# } }}
-
             </script>
-
 
             <script type="text/html" id="toolbarDemo">
                 <div class="layui-btn-container">
-                    <button class="layui-btn layui-btn" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>添加商品</button>
+                    <button class="layui-btn" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>添加商品</button>
+                    <button class="layui-btn layui-btn-normal" lay-event="sku"><i class="layui-icon layui-icon-template-1"></i>SKU管理</button>
                 </div>
             </script>
 
@@ -100,6 +99,9 @@
                         case 'add':
                              curd.openForm('/product/edit','添加商品','1000px', '1000px',true);
                             break;
+                        case 'sku':
+                            SKUManage(checkStatus.data);
+                            break;
                     };
                 });
 
@@ -125,6 +127,16 @@
                     });
                     return false;
                 });
+
+                // SKU 管理
+                function SKUManage(data) {
+                    if(data.length!=1){
+                        layer.msg('请选择一个商品添加SKU');
+                        return false;
+                    }
+                    var productCode=data[0].productCode;
+                    curd.openForm('/sku/edit?productCode='+productCode,'添加SKU','1000px', '1000px',true);
+                }
 
                 function buildColumn() {
                     var cols=[

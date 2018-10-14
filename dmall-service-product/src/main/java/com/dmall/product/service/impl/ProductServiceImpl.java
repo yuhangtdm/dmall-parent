@@ -148,6 +148,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             for (int i=0;i<imgVoArray.size();i++) {
                 String key= imgVoArray.get(i);
                 ProductMedia productMedia=mediaService.selectByKey(key);
+                productMedia.setProductCode(product.getProductCode());
                 if(i==0){
                     productMedia.setMediaType(MediaEnum.MAIN_IMAGE.getCode());
                     //数据库存 key  方便前端根据大小查询
