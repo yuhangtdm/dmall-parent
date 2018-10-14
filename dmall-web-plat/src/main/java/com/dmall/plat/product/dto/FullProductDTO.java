@@ -26,7 +26,9 @@ public class FullProductDTO implements Serializable {
     @NotNull(message = "商品扩展信息不能为空")
     private ProductExtDTO productExt;
 
-
+    // 商品属性信息
     private List<PropsGroupDTO> propsVoList;
 
+    // 商品图片信息
+    private List<String> imgVoArray;
 }

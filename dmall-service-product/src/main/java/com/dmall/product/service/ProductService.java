@@ -6,6 +6,8 @@ import com.dmall.product.entity.Product;
 import com.baomidou.mybatisplus.service.IService;
 import com.dmall.product.entity.ProductExt;
 
+import java.util.List;
+
 /**
  * <p>
  * 商品表 服务类
@@ -28,12 +30,14 @@ public interface ProductService extends IService<Product> {
      * @param ext
      * @param propsGroupArray
      */
-    void saveFullProduct(Product product, ProductExt ext, JSONArray propsGroupArray);
+    void saveFullProduct(Product product, ProductExt ext, JSONArray propsGroupArray, List<String> imgVoArray);
 
     /**
      * 查询今日最近添加的商品
      * @return
      */
     Product queryToday();
+
+    Product selectByProductCode(String productCode);
 
 }

@@ -6,17 +6,16 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.dmall.common.Constants;
 import com.dmall.common.annotation.TransBean;
+import com.dmall.common.enums.MediaEnum;
 import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.exception.BusinessException;
 import com.dmall.plat.product.dto.FullProductDTO;
 import com.dmall.plat.product.dto.PropsDTO;
 import com.dmall.plat.product.dto.PropsGroupDTO;
 import com.dmall.plat.product.vo.ProductVo;
-import com.dmall.product.entity.Product;
-import com.dmall.product.entity.ProductExt;
-import com.dmall.product.entity.ProductProperty;
-import com.dmall.product.entity.Props;
+import com.dmall.product.entity.*;
 import com.dmall.product.service.ProductExtService;
+import com.dmall.product.service.ProductMediaService;
 import com.dmall.product.service.ProductPropertyService;
 import com.dmall.product.service.ProductService;
 import com.dmall.web.common.result.ReturnResult;
@@ -63,7 +62,12 @@ public class ProductController {
     private ProductPropertyService productPropertyService;
 
     @Autowired
+    private ProductMediaService productMediaService;
+
+    @Autowired
     private QiniuUtil qiniuUtil;
+
+    public static final Integer PREVIEW_SIZE=160;
 
     /**
      *商品列表
@@ -91,10 +95,20 @@ public class ProductController {
                 throw new BusinessException(ResultEnum.SERVER_ERROR,"商品扩展信息不存在");
             }
             List<PropsGroupDTO> propsDTOList= getProps(product.getProductCode());
+            List<Map<String,String>> imgUrls=new ArrayList<>();
+            List<ProductMedia> mediaList=productMediaService.selectByProductCode(product.getProductCode());
+            for (ProductMedia productMedia : mediaList) {
+                Map<String,String> map=new HashMap<>();
+                map.put("imgKey",productMedia.getImgKey());
+                map.put("imgSrc",qiniuUtil.getModelUrl(productMedia.getImgKey(),160));
+                map.put("layerSrc",productMedia.getImgUrl());
+                imgUrls.add(map);
+            }
             ProductVo productVo=new ProductVo();
             productVo.setProduct(product);
             productVo.setProductExt(productExt);
             productVo.setPropsVoList(propsDTOList);
+            productVo.setImgUrls(imgUrls);
             request.setAttribute("productVo",productVo);
         }
         return "commodity/product/edit";
@@ -127,17 +141,14 @@ public class ProductController {
             propsGroup.put("props",propsArray);
             propsGroupArray.add(propsGroup);
         }
-        productService.saveFullProduct(product,ext,propsGroupArray);
-
+        productService.saveFullProduct(product,ext,propsGroupArray,fullProductDTO.getImgVoArray());
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
 
     /**
      * 文件上传
-     * @param request
-     * @return
      */
-    @RequestMapping("/upload")
+   /* @RequestMapping("/upload")
     @ResponseBody
     public ReturnResult fileUpload(HttpServletRequest request){
         Map<String,String> result=new HashMap<>();
@@ -157,11 +168,10 @@ public class ProductController {
                         String originalFilename = file.getOriginalFilename();
                         String fileType=originalFilename.substring(originalFilename.lastIndexOf(".")+1);
                         DefaultPutRet defaultPutRet = qiniuUtil.uploadFile(file.getInputStream(), qiniuUtil.getKey(fileType));
-                        result.put("key",defaultPutRet.key);
                         //预览图
-                        result.put("src",qiniuUtil.getModelUrl(defaultPutRet.hash,60));
+                        result.put("src",qiniuUtil.getModelUrl(defaultPutRet.key,160));
                         // 大图 原图
-                        result.put("layerSrc",qiniuUtil.getUrl(defaultPutRet.hash));
+                        result.put("layerSrc",qiniuUtil.getUrl(defaultPutRet.key));
                     }
                 }
             }
@@ -172,8 +182,98 @@ public class ProductController {
         }
 
         return ResultUtil.buildResult(ResultEnum.SUCC,result);
+    }*/
+
+    @RequestMapping("/upload")
+    @ResponseBody
+    public ReturnResult fileUpload(MultipartFile file,String productCode){
+        Map<String,String> result=new HashMap<>();
+        try {
+
+            String originalFilename = file.getOriginalFilename();
+            String fileType=originalFilename.substring(originalFilename.lastIndexOf(".")+1);
+            DefaultPutRet defaultPutRet = qiniuUtil.uploadFile(file.getInputStream(), qiniuUtil.getKey(fileType));
+            //预览图
+            result.put("src",qiniuUtil.getModelUrl(defaultPutRet.key,PREVIEW_SIZE));
+            result.put("key",defaultPutRet.key);
+            // 大图 原图
+            result.put("layerSrc",qiniuUtil.getUrl(defaultPutRet.key));
+            ProductMedia productMedia=new ProductMedia();
+            productMedia.setMediaType(MediaEnum.IMAGE.getCode());
+            productMedia.setProductCode(productCode);
+            productMedia.setImgKey(defaultPutRet.key);
+            //存原图路径
+            productMedia.setImgUrl(qiniuUtil.getUrl(defaultPutRet.key));
+            productMediaService.insert(productMedia);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BusinessException(ResultEnum.SERVER_ERROR,"上传文件失败");
+        }
+
+        return ResultUtil.buildResult(ResultEnum.SUCC,"上传成功",result);
     }
 
+    /**
+     * layEdit 的文件上传
+     * @param file
+     */
+    @RequestMapping("/layEditUpload")
+    @ResponseBody
+    public ReturnResult layEditUpload(MultipartFile file){
+        Map<String,String> result=new HashMap<>();
+        try {
+            String originalFilename = file.getOriginalFilename();
+            String fileType=originalFilename.substring(originalFilename.lastIndexOf(".")+1);
+            DefaultPutRet defaultPutRet = qiniuUtil.uploadFile(file.getInputStream(), qiniuUtil.getKey(fileType));
+            //预览图
+            result.put("src",qiniuUtil.getUrl(defaultPutRet.key));
+            result.put("title","图片详情");
+        } catch (Exception e) {
+            throw new BusinessException(ResultEnum.SERVER_ERROR,"上传文件失败");
+        }
+
+        return ResultUtil.buildResult(ResultEnum.SUCC,"上传成功",result);
+    }
+    /**
+     * 更新文件
+     * @return
+     */
+    @RequestMapping("/updateUpload")
+    @ResponseBody
+    public ReturnResult updateUpload(MultipartFile file,String key){
+        Map<String,String> result=new HashMap<>();
+        try {
+
+            DefaultPutRet defaultPutRet = qiniuUtil.uploadFile(file.getInputStream(), key);
+            //预览图
+            result.put("src",qiniuUtil.getModelUrl(defaultPutRet.key,160));
+            // 大图 原图
+            result.put("layerSrc",qiniuUtil.getUrl(defaultPutRet.key));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BusinessException(ResultEnum.SERVER_ERROR,"上传文件失败");
+        }
+
+        return ResultUtil.buildResult(ResultEnum.SUCC,result);
+    }
+
+    /**
+     * 删除文件
+     */
+    @RequestMapping("/deleteFile")
+    @ResponseBody
+    public ReturnResult deleteFile(String key){
+        qiniuUtil.deleteFile(key);
+        ProductMedia productMedia = productMediaService.selectByKey(key);
+        if(MediaEnum.MAIN_IMAGE.getCode().equals(productMedia.getMediaType())){
+            String productCode = productMedia.getProductCode();
+            Product product = productService.selectByProductCode(productCode);
+            product.setMainImage(null);
+            productService.updateAllColumnById(product);
+        }
+        productMediaService.deleteByKey(key);
+        return ResultUtil.buildResult(ResultEnum.SUCC.getCode(),"删除成功");
+    }
 
 
     private List<PropsGroupDTO> getProps(String productCode) {

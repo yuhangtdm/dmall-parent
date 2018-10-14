@@ -43,13 +43,6 @@
                                 <input class="layui-input" name="name" >
                             </div>
                         </div>
-                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
-                            <label class="layui-form-label">商品状态：</label>
-                            <div class="layui-input-block">
-                                <select loadData="normal"  name="state" dict="_product_state">
-                                </select>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="layui-row layui-col-space10" style="margin-top: 5px;">
@@ -65,6 +58,15 @@
             </form>
             <table id="product"  class="layui-hide"  lay-filter="product">
             </table>
+
+            <script type="text/html" id="image">
+                {{# if (d.mainImage!=null || d.mainImage!='') { }}
+                 <img src="http://pgdyorkvy.bkt.clouddn.com/{{d.mainImage }}?imageView2/2/w/30/h/30" />
+                {{# } }}
+
+            </script>
+
+
             <script type="text/html" id="toolbarDemo">
                 <div class="layui-btn-container">
                     <button class="layui-btn layui-btn" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>添加商品</button>
@@ -129,7 +131,7 @@
                         [
                             {type: 'checkbox', fixed: 'left'},
                             {field:'productCode', width:150,  title: '商品编码'},
-                            {field:'mainImage',  title: '主图'},
+                            {field:'mainImage',  title: '主图',templet:'#image'},
                             {field:'name', title: '商品名称'},
                             {field:'productTypeName', title: '商品分类'},
                             {field:'brandName', title: '品牌'},

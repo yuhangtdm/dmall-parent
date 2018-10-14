@@ -159,6 +159,7 @@ public class QiniuUtil {
             logger.info("删除文件成功,key:{}",key);
         } catch (QiniuException ex) {
             logger.error("删除文件失败，code:{},msg:{}",ex.code(),ex.response.toString());
+            throw new BusinessException(ResultEnum.SERVER_ERROR,"删除文件失败,七牛云出现异常");
         }
     }
 
@@ -172,7 +173,7 @@ public class QiniuUtil {
      * @return
      */
     public  String getUrl(String key){
-        return "http://"+DOMAIN+"/"+key+"?v="+System.currentTimeMillis();
+        return DOMAIN+"/"+key+"?v="+System.currentTimeMillis();
     }
 
     /**
@@ -182,6 +183,6 @@ public class QiniuUtil {
      * @return
      */
     public  String getModelUrl(String key,Integer modelSize){
-        return "http://"+DOMAIN+"/"+key+"?v="+System.currentTimeMillis()+"&"+getThum(modelSize);
+        return DOMAIN+"/"+key+"?v="+System.currentTimeMillis()+"&"+getThum(modelSize);
     }
 }

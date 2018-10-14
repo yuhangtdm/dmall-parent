@@ -1,7 +1,10 @@
 package com.dmall.product.service;
 
+import com.dmall.product.entity.ProductExt;
 import com.dmall.product.entity.ProductMedia;
 import com.baomidou.mybatisplus.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,9 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface ProductMediaService extends IService<ProductMedia> {
 
+    void deleteByKey(String key);
+
+    ProductMedia selectByKey(String key);
+
+    List<ProductMedia> selectByProductCode(String productCode);
 }

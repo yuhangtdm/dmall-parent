@@ -37,8 +37,8 @@ public class ProductMedia implements Serializable {
     /**
      * 商品ID
      */
-    @TableField("product_id")
-    private Long productId;
+    @TableField("product_code")
+    private String productCode;
     /**
      * 媒体类型：0-图片集 1-主图 2-视频
      */
@@ -52,7 +52,14 @@ public class ProductMedia implements Serializable {
     /**
      * 资源地址
      */
-    private String resource;
+    @TableField("img_url")
+    private String imgUrl;
+
+    /**
+     * 资源 key
+     */
+    @TableField("img_key")
+    private String imgKey;
     /**
      * 创建时间
      */

@@ -55,15 +55,13 @@ layui.define(['jquery','layer','cropper'],function (exports) {
                 area = e.area,
                 url = e.url,
                 resizable= e.resizable || true,
-                minContainerHeight=e.minContainerHeight|| 200,
-                minContainerWidth=e.minContainerWidth|| 100,
                 done = e.done;
 
             var content = $('.showImgEdit')
                 ,image = $(".showImgEdit .readyimg img")
                 ,preview = '.showImgEdit .img-preview'
                 ,file = $(".showImgEdit input[name='file']")
-                , options = {aspectRatio: mark,preview: preview,viewMode:1,resizable:resizable,minContainerWidth:minContainerWidth,minContainerHeight:minContainerHeight};
+                , options = {aspectRatio: mark,preview: preview,viewMode:1,resizable:resizable,autoCropArea:1};
 
             $(elem).on('click',function () {
                 layer.open({
@@ -99,11 +97,11 @@ layui.define(['jquery','layer','cropper'],function (exports) {
                             contentType: false,
                             success:function(result){
                                 if(result.code == 0){
-                                    layer.msg(result.msg,{icon: 1});
+                                    layer.msg(result.msg,{icon: 1,time:1000});
                                     layer.closeAll('page');
                                     return done(result);
-                                }else if(result.code == -1){
-                                    layer.alert(result.msg,{icon: 2});
+                                }else{
+                                    layer.alert(result.msg,{icon: 2,time:1000});
                                 }
 
                             }

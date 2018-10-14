@@ -5,17 +5,16 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.dmall.common.Constants;
+import com.dmall.common.enums.MediaEnum;
 import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.exception.BusinessException;
 import com.dmall.common.utils.DateUtil;
 import com.dmall.common.utils.StringUtil;
-import com.dmall.product.entity.Product;
-import com.dmall.product.entity.ProductExt;
-import com.dmall.product.entity.ProductProperty;
-import com.dmall.product.entity.Props;
+import com.dmall.product.entity.*;
 import com.dmall.product.mapper.ProductExtMapper;
 import com.dmall.product.mapper.ProductMapper;
 import com.dmall.product.mapper.ProductPropertyMapper;
+import com.dmall.product.service.ProductMediaService;
 import com.dmall.product.service.ProductPropertyService;
 import com.dmall.product.service.ProductService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -47,6 +46,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Autowired
     private PropsService propsService;
 
+    @Autowired
+    private ProductMediaService mediaService;
+
     @Override
     public Page pageList(Product product, Page page) {
         EntityWrapper<Product> wrapper=new EntityWrapper<>();
@@ -58,7 +60,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
     @Override
     @Transactional
-    public void saveFullProduct(Product product, ProductExt ext, JSONArray propsGroupArray) {
+    public void saveFullProduct(Product product, ProductExt ext, JSONArray propsGroupArray, List<String> imgVoArray) {
         // 属性组与是销售属性的容器
         Map<Long,Integer> saleMap=new HashMap<>();
         // 新增商品
@@ -141,6 +143,22 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                 productPropertyService.updateById(productProperty);
             }
         }
+        // 维护商品图片信息
+        if (StringUtil.isNotEmptyObj(imgVoArray)) {
+            for (int i=0;i<imgVoArray.size();i++) {
+                String key= imgVoArray.get(i);
+                ProductMedia productMedia=mediaService.selectByKey(key);
+                if(i==0){
+                    productMedia.setMediaType(MediaEnum.MAIN_IMAGE.getCode());
+                    //数据库存 key  方便前端根据大小查询
+                    product.setMainImage(key);
+                    this.updateById(product);
+                }
+                productMedia.setSortIndex(i+1);
+                mediaService.updateById(productMedia);
+            }
+        }
+
     }
 
     private void insertProductProperty(JSONObject jsonGroup,String productCode,Map<Long,Integer> saleMap,Integer isSale) {
@@ -198,6 +216,20 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         }else {
             return products.get(0);
         }
+    }
+
+    @Override
+    public Product selectByProductCode(String productCode) {
+        EntityWrapper<Product> wrapper=new EntityWrapper<>();
+        wrapper.like("product_code",productCode);
+        List<Product> products = this.selectList(wrapper);
+        if(StringUtil.isEmptyObj(products)){
+            throw new BusinessException(ResultEnum.SERVER_ERROR.getCode(),"商品编码不存在");
+        }
+        if(products.size()>1){
+            throw new BusinessException(ResultEnum.SERVER_ERROR.getCode(),"商品编码必须唯一");
+        }
+        return products.get(0);
     }
 
 

@@ -18,7 +18,7 @@ layui.extend({
     var obj={
         init:function (bean,url,formId) {
             if(bean){
-                initForm(bean);
+                initForm(bean,formId);
             }
             if(url){
                 $.ajax({
@@ -28,7 +28,7 @@ layui.extend({
                         if (data && data.code && data.code == 0) {
                             initForm(data.data);
                         } else {
-                            layer.msg(data.message, { icon: 5 });
+                            layer.msg(data.msg, { icon: 5 });
                         }
                         form.render();
                     },
@@ -231,22 +231,22 @@ layui.extend({
      * 根据对象给表单赋值
      * @param bean
      */
-    function initForm(bean) {
+    function initForm(bean,formId) {
         for(var prop in bean){
             var value=bean[prop];
             if(Object.prototype.toString.call(value) === "[object Null]"){
                 continue;
             }
             if(Object.prototype.toString.call(value) === "[object Object]"){
-                initForm(value);
+                initForm(value,formId);
             }
-            initData(prop,value);
+            initData(prop,value,formId);
         }
 
     }
 
-    function initData(prop,value){
-        $("[name='"+prop+"'],[name='"+prop+"[]']").each(function () {
+    function initData(prop,value,formId){
+        $("#"+formId).find("[name='"+prop+"'],[name='"+prop+"[]']").each(function () {
             var tagName=$(this)[0].tagName;
             var type=$(this).attr('type');
             if(tagName=='INPUT'){

@@ -31,6 +31,10 @@
             </div>
             <div class="layui-form-mid layui-word-aux">头像的尺寸限定150x150px,大小在50kb以内</div>
         </div>
+
+        <div id="layer-photos-demo" class="layer-photos-demo">
+            <img src="http://pgdyorkvy.bkt.clouddn.com/a304f5ad420044f5a2148a4f762cf585.jpg?v=1539355305343&amp;imageView2/2/w/160/h/160" layer-src="http://pgdyorkvy.bkt.clouddn.com/a304f5ad420044f5a2148a4f762cf585.jpg?v=1539355305343">
+        </div>
     </form>
 
     <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
@@ -42,6 +46,11 @@
                 ,form = layui.form
                 ,croppers = layui.croppers
                 ,layer= layui.layer;
+
+            layer.photos({
+                photos: '#layer-photos-demo'
+                ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+            });
 
             //创建一个头像上传组件
             croppers.render({
