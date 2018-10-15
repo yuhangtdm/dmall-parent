@@ -178,5 +178,8 @@ public class Sku implements Serializable {
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Long updateTime;
 
+    @TableField(exist = false)
+    private String stateName;
+
 
 }

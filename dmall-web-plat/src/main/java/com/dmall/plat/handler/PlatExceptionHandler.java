@@ -114,7 +114,7 @@ public class PlatExceptionHandler  {
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
         StringBuffer sb=new StringBuffer();
         for (FieldError fieldError : fieldErrors) {
-            sb.append(fieldError.getDefaultMessage());
+            sb.append(fieldError.getDefaultMessage()).append("\n");
         }
         map.put("code",ResultEnum.BAD_REQUEST.getCode());
         map.put("msg",sb.toString());

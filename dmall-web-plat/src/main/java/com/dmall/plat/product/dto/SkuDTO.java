@@ -51,6 +51,13 @@ public class SkuDTO implements Serializable {
     private Integer availableStock;
 
     /**
+     * 品牌id
+     */
+    @NotNull(message = "品牌id不能为空")
+    private Integer brandId;
+
+
+    /**
      * 商品状态 0-下架 1-上架
      */
     @NotNull(message = "商品状态不能为空")
@@ -70,6 +77,7 @@ public class SkuDTO implements Serializable {
      * sku图文详情
      */
     private String skuContent;
+
 
 
 }

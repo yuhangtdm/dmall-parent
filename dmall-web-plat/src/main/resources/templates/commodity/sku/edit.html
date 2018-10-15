@@ -113,7 +113,7 @@
                         </div>
                     </div>
                     <div class="layui-row" style="margin-top: 10px">
-                        <label class="layui-form-label">商品简介</label>
+                        <label class="layui-form-label">SKU简介</label>
                         <div class="layui-input-block">
                             <textarea name="skuDescription" lay-verify="required"  placeholder="请输入内容" class="layui-textarea"></textarea>
                         </div>
@@ -232,7 +232,7 @@
                 ,resizable:false
                 ,mark:1/1    //选取比例
                 ,area:'900px'  //弹窗宽度
-                ,url: "/product/upload?productCode="+ $("input[name='productCode']").val() //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
+                ,url: "/sku/upload?productCode="+ $("input[name='productCode']").val() //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
                 ,done: function(res){ //上传完毕回调
                     $("#layer-photos-demo").append('<img src="'+ res.data.src +'" key="'+ res.data.key +'" layer-src="'+ res.data.layerSrc +'" class=".delete" alt="商品图片" >' +
                         '<i class="layui-icon layui-icon-close-fill"  style="color:red;cursor:pointer;" imgSrc="'+ res.data.key +'"></i>')
@@ -242,19 +242,26 @@
             // 保存按钮点击事件
             $("#saveSku").click(function () {
                 $("#submit").click();
-                var sku=curd.toJson('sku-form');
+                if(parseInt($("input[name='costPrice']").val())<0
+                    || parseInt($("input[name='marketPrice']").val())<0
+                    || parseInt($("input[name='price']").val())<0){
+                    layer.msg('金额不能为负数',{icon:2});
+                    return false;
+                }
+                var fullSkuDTO={};
+                var skuDTO=curd.toJson('sku-form');
                 layedit.sync(extIndex);
-                sku.skuContent=$("#skuContent").text();
-                var skuDTO={};
-                skuDTO.sku=sku;
+                skuDTO.skuContent=$("#skuContent").val();
+                fullSkuDTO.skuDTO=skuDTO;
                 var imgVoArray=[];
                 $("#layer-photos-demo").find("img").each(function (index) {
                     if(index!=0){
                         imgVoArray.push($(this).attr("key"));
                     }
                 });
-                skuDTO.imgVoArray=imgVoArray;
-                curd.saveOrUpdate('/sku/save',skuDTO,'POST',true);
+                fullSkuDTO.imgVoArray=imgVoArray;
+                console.log(fullSkuDTO);
+                curd.saveOrUpdate('/sku/save',fullSkuDTO,'POST',true);
             })
 
 
@@ -272,8 +279,8 @@
                 var cols=[
                     [
                         {field:'skuCode', width:150,  title: 'SKU编码'},
-                        {field:'skuMainPic',  title: '主图',templet:'#image'},
-                        {field:'skuName', title: 'SKU名称'},
+                        {field:'skuMainPic',  title: '主图',templet:'#image',width:100},
+                        {field:'skuName', title: 'SKU名称',width:450},
                         {field:'costPrice', title: '成本价', sort: true},
                         {field:'marketPrice', title: '市场价', sort: true},
                         {field:'price', title: '优惠价', sort: true},

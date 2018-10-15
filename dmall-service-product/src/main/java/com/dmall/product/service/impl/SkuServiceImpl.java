@@ -100,14 +100,14 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuSe
      */
     private void initSku(Sku sku) {
         // SKU编码 S201810040001
-        Sku todayProduct=queryToday();
+        Sku todaySku=queryToday();
         String skuCode="";
-        if(todayProduct==null){
+        if(todaySku==null){
             skuCode="S"+DateUtil.formatDate(DateUtil.YYYYMMDD)+"0001";
         }else {
-            String code = todayProduct.getProductCode();
+            String code = todaySku.getSkuCode();
             int i = Integer.parseInt(code.substring(code.length() - 4));
-            skuCode=String.format("%04d",i+1);
+            skuCode="P"+DateUtil.formatDate(DateUtil.YYYYMMDD)+String.format("%04d",i+1);
         }
         sku.setSkuCode(skuCode);
         // 锁定库存

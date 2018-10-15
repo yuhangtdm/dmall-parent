@@ -72,7 +72,9 @@ public class SkuController {
         Integer sortIndex=1;
         if(StringUtil.isNotEmptyObj(list)){
             Sku sku = list.get(0);
-            sortIndex=sku.getSortIndex()+1;
+            if(sku!=null && sku.getSortIndex()!=null){
+                sortIndex=sku.getSortIndex()+1;
+            }
         }
 
         request.setAttribute("productCode",productCode);

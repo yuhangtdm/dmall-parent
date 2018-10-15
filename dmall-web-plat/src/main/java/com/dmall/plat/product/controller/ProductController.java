@@ -102,6 +102,7 @@ public class ProductController {
                 Map<String,String> map=new HashMap<>();
                 map.put("imgSrc",qiniuUtil.getModelUrl(productMedia.getImgKey(),160));
                 map.put("layerSrc",productMedia.getImgUrl());
+                map.put("imgKey",productMedia.getImgKey());
                 imgUrls.add(map);
             }
             ProductVo productVo=new ProductVo();
@@ -111,7 +112,14 @@ public class ProductController {
             productVo.setImgUrls(imgUrls);
             request.setAttribute("productVo",productVo);
         }else {
-
+            ProductVo productVo=new ProductVo();
+            Product product=new Product();
+            ProductExt productExt=new ProductExt();
+            productVo.setProduct(product);
+            productVo.setProductExt(productExt);
+            productVo.setPropsVoList(null);
+            productVo.setImgUrls(null);
+            request.setAttribute("productVo",productVo);
         }
         return "commodity/product/edit";
     }

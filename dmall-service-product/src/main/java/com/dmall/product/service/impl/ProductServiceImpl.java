@@ -189,7 +189,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         }else {
             String code = todayProduct.getProductCode();
             int i = Integer.parseInt(code.substring(code.length() - 4));
-            productCode=String.format("%04d",i+1);
+            productCode="P"+DateUtil.formatDate(DateUtil.YYYYMMDD)+String.format("%04d",i+1);
         }
         product.setProductCode(productCode);
         // 初始化商品最高价和最低价

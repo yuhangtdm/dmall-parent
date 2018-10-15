@@ -34,7 +34,7 @@
             <button  id="saveProduct" type="button"  class="layui-btn" style="float: right">保存</button>
             <div class="layui-tab-item layui-show">
                 <form class="layui-form" id="product-form" action="">
-                    <div class="layui-row" th:if="${productVo!=null}" >
+                    <div class="layui-row" th:if="${productVo.product.id!=null}" >
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">商品编码</label>
                             <div class="layui-input-inline">
@@ -65,13 +65,13 @@
                                 <input type="text" name="name" lay-verify="required" class="layui-input">
                             </div>
                         </div>
-                        <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4" th:if="${productVo!=null}">
+                        <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4" th:if="${productVo.product.id!=null}">
                             <label class="layui-form-label">销量</label>
                             <div class="layui-input-block">
                                 <input type="text" name="saleCount" class="layui-input" disabled="disabled">
                             </div>
                         </div>
-                        <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4" th:if="${productVo!=null}">
+                        <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4" th:if="${productVo.product.id!=null}">
                             <label class="layui-form-label">浏览量</label>
                             <div class="layui-input-block">
                                 <input type="text" name="viewCount" class="layui-input" disabled="disabled">
@@ -87,7 +87,7 @@
                         </div>
 
                     </div>
-                    <div class="layui-row" style="margin-top: 10px" th:if="${productVo!=null}" >
+                    <div class="layui-row" style="margin-top: 10px" th:if="${productVo.product.id!=null}" >
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">评论数</label>
                             <div class="layui-input-block">
@@ -107,7 +107,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="layui-row" style="margin-top: 10px" th:if="${productVo!=null}" >
+                    <div class="layui-row" style="margin-top: 10px" th:if="${productVo.product.id!=null}" >
                         <div  class=" layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">好评数</label>
                             <div class="layui-input-block">
@@ -194,12 +194,10 @@
                                 预览图：
                                 <div id="layer-photos-demo" class="layer-photos-demo">
                                     <img src="http://pgdyorkvy.bkt.clouddn.com/ea1e5a77d8494b8c9fb3d517642269d9.jpg?v=1539355305343&amp;imageView2/2/w/160/h/160" layer-src="http://pgdyorkvy.bkt.clouddn.com/ea1e5a77d8494b8c9fb3d517642269d9.jpg?v=1539355305343" alt="示例图片">
-                                    <div  th:if="${productVo!=null}">
-                                        <span th:each="imgObj : ${productVo.imgUrls}">
+                                    <span th:if="${productVo.product.id!=null}" th:each="imgObj : ${productVo.imgUrls}">
                                         <img  th:src="${imgObj.imgSrc}" th:key="${imgObj.imgKey}" th:layer-src="${imgObj.layerSrc}" alt="商品图片" >
                                         <i class="layui-icon layui-icon-close-fill"  style="color:red;cursor:pointer;" th:imgSrc="${imgObj.imgKey}" ></i>
                                     </span>
-                                    </div>
 
                                 </div>
                             </blockquote>
@@ -237,7 +235,8 @@
             });
 
             // 初始化表单内容
-
+            transfer.init([[${productVo.product}]],null,'product-form');
+            transfer.init([[${productVo.productExt}]],null,'ext-form');
             transfer.initDate('product-form','yyyy-MM-dd');
 
             // 商品分类选择事件
@@ -254,10 +253,7 @@
                 i=0;
             });
             // 编辑时初始化数据
-            if(productVo){
-
-               // transfer.init([[${productVo.product}]],null,'product-form');
-               // transfer.init([[${productVo.productExt}]],null,'ext-form');
+            if(productVo.product.id){
 
                 var product=productVo.product;
                 var split=product.productType.split("/");
