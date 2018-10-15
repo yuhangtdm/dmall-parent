@@ -5,6 +5,7 @@ import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.exception.BusinessException;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.expression.spel.SpelEvaluationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -134,8 +135,8 @@ public class PlatExceptionHandler  {
         return  "forward:/error";
     }
 
-    @ExceptionHandler(SQLException.class)
-    public String sqlException(SQLException ex, HttpServletRequest request){
+    @ExceptionHandler(DataAccessException.class)
+    public String sqlException(DataAccessException ex, HttpServletRequest request){
         Map<String,Object> map=new LinkedHashMap<>();
         map.put("code",ResultEnum.SERVER_ERROR.getCode());
         map.put("msg","数据库异常");
