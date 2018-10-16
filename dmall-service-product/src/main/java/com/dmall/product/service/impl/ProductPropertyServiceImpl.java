@@ -1,5 +1,6 @@
 package com.dmall.product.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.dmall.product.entity.ProductProperty;
 import com.dmall.product.mapper.ProductPropertyMapper;
@@ -31,6 +32,18 @@ public class ProductPropertyServiceImpl extends ServiceImpl<ProductPropertyMappe
         EntityWrapper<ProductProperty> wrapper=new EntityWrapper<>();
         wrapper.eq("product_code",productCode);
         return this.selectList(wrapper);
+    }
+
+    @Override
+    public List<JSONObject> queryGroupByProductCode(String productCode) {
+        List<JSONObject> result=mapper.queryGroupByProductCode(productCode);
+        return result;
+    }
+
+    @Override
+    public List<JSONObject> queryPropsByProductCode(String productCode, String groupId) {
+        List<JSONObject> result=mapper.queryPropsByProductCode(productCode,groupId);
+        return result;
     }
 
     @Override

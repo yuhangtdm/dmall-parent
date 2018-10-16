@@ -20,4 +20,12 @@
         id, sku_id, property_id, property_name, option_id, option_value, sku_image, create_time, update_time
     </sql>
 
+    <insert id="batchInsert">
+        insert into p_sku_property(sku_id, property_id, property_name, option_id, option_value, sku_image)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{skuId},#{propertyId},#{ppropertyName},#{optionId},#{optionValue},#{skuImage})
+        </foreach>
+    </insert>
+
 </mapper>

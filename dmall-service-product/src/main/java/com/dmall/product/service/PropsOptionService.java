@@ -1,5 +1,6 @@
 package com.dmall.product.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dmall.product.entity.PropsOption;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -18,4 +19,6 @@ public interface PropsOptionService extends IService<PropsOption> {
     List<PropsOption> selectByPropId(Long id);
 
     void batchDelete(Long id, List<String> delete);
+
+    List<JSONObject> queryOptionsByPropsId(Long propsId);
 }

@@ -146,32 +146,35 @@
                 </fieldset>
             </div>
             <div class="layui-tab-item">
-                <div class="layui-row" style="margin-top: 10px">
-                    <div class="layui-col-xs3 layui-col-sm3 layui-col-md6 layui-col-lg6">
-                        <label class="layui-form-label">商品分类</label>
-                        <div class="layui-input-block">
-                            <select loadData="linkage" url="/type/tree" xm-select-search=""
-                                    name="productType" xm-select="productType" th:value="${productType}"
-                                    linkage="true" linkageWidth="140" xm-select-radio="" lay-verify="required" disabled="disabled">
-                            </select>
-                        </div>
+                <form class="layui-form"  action="">
+                    <div class="layui-row" style="margin-top: 10px">
+                            <div class="layui-col-xs3 layui-col-sm3 layui-col-md6 layui-col-lg6">
+                                <label class="layui-form-label">商品分类</label>
+                                <div class="layui-input-block">
+                                    <select loadData="linkage" url="/type/tree" xm-select-search=""
+                                            name="productType" xm-select="productType" th:value="${productType}" disabled="disabled"
+                                            linkage="true" linkageWidth="140" xm-select-radio="" lay-verify="required" >
+                                    </select>
+                                </div>
+                            </div>
+                            <div  class=" layui-col-xs3 layui-col-sm3 layui-col-md3 layui-col-lg3">
+                                <label class="layui-form-label">品牌</label>
+                                <div class="layui-input-block">
+                                    <select id="brandId"  name="brandId" lay-filter="brandId" th:value="${brandId}" lay-verify="required"
+                                            disabled="disabled" loadData="normal" url="/brand/listAll">
+                                    </select>
+                                </div>
+                            </div>
+                            <div  class="layui-col-xs3 layui-col-sm3 layui-col-md3 layui-col-lg3">
+                                <div class="layui-input-block">
+                                    <button type="button" class="layui-btn" id="addSkuProp">
+                                        <i class="layui-icon layui-icon-add-circle-fine"></i>添加SKU属性
+                                    </button>
+                                </div>
+                            </div>
                     </div>
-                    <div  class=" layui-col-xs3 layui-col-sm3 layui-col-md3 layui-col-lg3">
-                        <label class="layui-form-label">品牌</label>
-                        <div class="layui-input-block">
-                            <select  name="brandId" lay-filter="brandId" th:value="${brandId}" lay-verify="required"  loadData="normal" url="/brand/listAll"
-                                     disabled="disabled">
-                            </select>
-                        </div>
-                    </div>
-                    <div  class=" layui-col-xs3 layui-col-sm3 layui-col-md3 layui-col-lg3">
-                        <div class="layui-input-block">
-                            <button type="button" class="layui-btn" id="addSkuProp">
-                                <i class="layui-icon layui-icon-add-circle-fine"></i>添加SKU属性
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                </form>
+
             </div>
         </div>
     </div>
@@ -214,7 +217,7 @@
             });
 
             //
-            transfer.initSelect(null);
+            transfer.initSelect();
             // 建立编辑器
             layedit.set({
                 uploadImage: {
@@ -238,7 +241,59 @@
                         '<i class="layui-icon layui-icon-close-fill"  style="color:red;cursor:pointer;" imgSrc="'+ res.data.key +'"></i>')
                 }
             });
+            var i=0;
+            $("#addSkuProp").click(function () {
+                var productCode=$("input[name='productCode']").val();
 
+                var html='<div class="layui-row" style="margin-top: 10px">'
+                    +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">'
+                    +'<label class="layui-form-label">属性组</label> <div class="layui-input-block">'
+                    + '<select loadData="normal"  lay-filter="group" id='+i+' url="/product/getGroup?productCode='+productCode+'">'
+                    +' </select></div></div>'
+                    +'<div  class=" layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">'
+                    +'<label class="layui-form-label">属性</label> <div class="layui-input-block">'
+                    + '<select loadData="normal" lay-filter="props"  id="props'+i+'"  url="/product/getProps?productCode='+productCode+'">'
+                    +' </select></div></div>'
+                    +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">'
+                    +'<label class="layui-form-label">属性值</label><div class="layui-input-block">'
+                    + '<select loadData="normal" lay-filter="values"  id="values_props'+i+'">'
+                    +' </select></div></div>'
+                    +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">'
+                    +'<label class="layui-form-label">是否需要配图</label><div class="layui-input-block">'
+                    +'<input type="checkbox" id="pic'+i+'"  lay-skin="switch" lay-text="是|否">&nbsp;&nbsp;'
+                    + '<i class="layui-icon layui-icon-delete size" id="delete'+i+'" ></i>'
+                    +'</div></div>'
+                    + '</div>'
+                $(this).parents(".layui-row").after(html);
+                transfer.initSelect(i+'');
+                transfer.initSelect('props'+i);
+                i++;
+            });
+
+            // 监听属性组
+            form.on('select(group)',function (data) {
+                var productCode=$("input[name='productCode']").val();
+                var id=$(data.elem).attr("id");
+                $("#props"+id).attr("url","/product/getProps?productCode="+productCode+"&groupId="+data.value);
+                transfer.initSelect('props'+id);
+            });
+
+            // 删除属性值
+            $(document).on('click','.layui-icon-delete',function () {
+                var sel=$(this);
+                layer.confirm('确定删除该属性值?', {icon: 3, title:'提示'}, function(index){
+                    layer.close(index);
+                    sel.parents(".layui-row").remove();
+                });
+            })
+
+            //监听属性
+            form.on('select(props)',function (data) {
+                var id=$(data.elem).attr("id");
+                $("#values_"+id).attr("url","/product/getOptions?propsId="+data.value);
+                transfer.initSelect('values_'+id);
+            })
+            
             // 保存按钮点击事件
             $("#saveSku").click(function () {
                 $("#submit").click();
@@ -260,6 +315,28 @@
                     }
                 });
                 fullSkuDTO.imgVoArray=imgVoArray;
+
+                var optionValueList=[];
+                for(var o=0;o<i;o++){
+                    var optionValue={}
+                    var optionId=$("#values_props"+o).val();
+                    if(optionId==undefined || optionId=='' ){
+                        continue;
+                    }
+                    optionValue.optionId=optionId;
+                    optionValue.optionValue=$("#values_props"+o+" option:selected").text();
+                    optionValue.propertyId=$("#props"+o).val();
+                    optionValue.propertyName=$("#props"+o+" option:selected").text();
+                    optionValue.groupId=$("#"+o).val();
+                    var ch=$("#pic"+o).is(":checked");
+                    if(ch){
+                        optionValue.needPic=1;
+                    }else{
+                        optionValue.needPic=0;
+                    }
+                    optionValueList.push(optionValue);
+                }
+                fullSkuDTO.skuPropertyList=optionValueList;
                 console.log(fullSkuDTO);
                 curd.saveOrUpdate('/sku/save',fullSkuDTO,'POST',true);
             })
@@ -273,6 +350,14 @@
 
             $(document).on('mouseenter','#saveSku',function () {
                 $(this).attr('style','cursor:pointer;float: right');
+            })
+
+            $(document).on('mouseenter','.layui-icon-delete',function () {
+                $(this).attr('style','color:red;cursor:pointer');
+            })
+
+            $(document).on('mouseout','.layui-icon-delete',function () {
+                $(this).removeAttr('style');
             })
 
             function buildColumn() {

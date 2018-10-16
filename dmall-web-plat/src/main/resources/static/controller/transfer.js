@@ -38,8 +38,8 @@ layui.extend({
             initSelect(null,formId);
             form.render();
         },
-        initSelect:function (id) {
-            initSelect(id);
+        initSelect:function (id,formId) {
+            initSelect(id,formId);
         },
         initDate : function(formId,format,domId,type){
             initDate(formId,format,domId,type);
@@ -56,9 +56,16 @@ layui.extend({
         if(id){
             select($("#"+id));
         }else{
-            $("#"+formId+ " select[loadData]").each(function(){
-                select($(this));
-            });
+            if(formId){
+                $("#"+formId).find("select[loadData]").each(function(){
+                    select($(this));
+                });
+            }else{
+                $("select[loadData]").each(function(){
+                    select($(this));
+                });
+            }
+
         }
 
     }

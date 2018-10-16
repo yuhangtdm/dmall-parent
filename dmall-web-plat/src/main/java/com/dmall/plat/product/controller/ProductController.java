@@ -15,14 +15,12 @@ import com.dmall.plat.product.dto.PropsDTO;
 import com.dmall.plat.product.dto.PropsGroupDTO;
 import com.dmall.plat.product.vo.ProductVo;
 import com.dmall.product.entity.*;
-import com.dmall.product.service.ProductExtService;
-import com.dmall.product.service.ProductMediaService;
-import com.dmall.product.service.ProductPropertyService;
-import com.dmall.product.service.ProductService;
+import com.dmall.product.service.*;
 import com.dmall.web.common.result.ReturnResult;
 import com.dmall.web.common.utils.QiniuUtil;
 import com.dmall.web.common.utils.ResultUtil;
 import com.qiniu.storage.model.DefaultPutRet;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -38,6 +36,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.swing.event.ListDataEvent;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.*;
 
@@ -66,9 +65,11 @@ public class ProductController {
     private ProductMediaService productMediaService;
 
     @Autowired
+    private PropsOptionService propsOptionService;
+
+    @Autowired
     private QiniuUtil qiniuUtil;
 
-    public static final Integer PREVIEW_SIZE=160;
 
     /**
      *商品列表
@@ -100,7 +101,7 @@ public class ProductController {
             List<ProductMedia> mediaList=productMediaService.selectByProductCode(product.getProductCode());
             for (ProductMedia productMedia : mediaList) {
                 Map<String,String> map=new HashMap<>();
-                map.put("imgSrc",qiniuUtil.getModelUrl(productMedia.getImgKey(),160));
+                map.put("imgSrc",qiniuUtil.getModelUrl(productMedia.getImgKey(),qiniuUtil.PREVIEW_SIZE));
                 map.put("layerSrc",productMedia.getImgUrl());
                 map.put("imgKey",productMedia.getImgKey());
                 imgUrls.add(map);
@@ -204,7 +205,7 @@ public class ProductController {
             String fileType=originalFilename.substring(originalFilename.lastIndexOf(".")+1);
             DefaultPutRet defaultPutRet = qiniuUtil.uploadFile(file.getInputStream(), qiniuUtil.getKey(ImageTypeEnum.PRODUCT.getCode(),fileType));
             //预览图
-            result.put("src",qiniuUtil.getModelUrl(defaultPutRet.key,PREVIEW_SIZE));
+            result.put("src",qiniuUtil.getModelUrl(defaultPutRet.key,qiniuUtil.PREVIEW_SIZE));
             result.put("key",defaultPutRet.key);
             // 大图 原图
             result.put("layerSrc",qiniuUtil.getUrl(defaultPutRet.key));
@@ -256,7 +257,7 @@ public class ProductController {
 
             DefaultPutRet defaultPutRet = qiniuUtil.uploadFile(file.getInputStream(), key);
             //预览图
-            result.put("src",qiniuUtil.getModelUrl(defaultPutRet.key,160));
+            result.put("src",qiniuUtil.getModelUrl(defaultPutRet.key,qiniuUtil.PREVIEW_SIZE));
             // 大图 原图
             result.put("layerSrc",qiniuUtil.getUrl(defaultPutRet.key));
         } catch (Exception e) {
@@ -283,6 +284,36 @@ public class ProductController {
         }
         productMediaService.deleteByKey(key);
         return ResultUtil.buildResult(ResultEnum.SUCC.getCode(),"删除成功");
+    }
+
+    /**
+     * 获取属性组列表
+     */
+    @RequestMapping("/getGroup")
+    @ResponseBody
+    public ReturnResult getGroup(@NotBlank(message = "商品编码不能为空") String productCode){
+        List<JSONObject> list = productPropertyService.queryGroupByProductCode(productCode);
+        return ResultUtil.buildResult(ResultEnum.SUCC,list);
+    }
+
+    /**
+     * 获取属性列表
+     */
+    @RequestMapping("/getProps")
+    @ResponseBody
+    public ReturnResult getProp(@NotBlank(message = "商品编码不能为空") String productCode,String groupId){
+        List<JSONObject> list = productPropertyService.queryPropsByProductCode(productCode,groupId);
+        return ResultUtil.buildResult(ResultEnum.SUCC,list);
+    }
+
+    /**
+     * 获取属性值列表
+     */
+    @RequestMapping("/getOptions")
+    @ResponseBody
+    public ReturnResult getOptions(@NotNull(message = "属性id不能为空") Long propsId){
+        List<JSONObject> list = propsOptionService.queryOptionsByPropsId(propsId);
+        return ResultUtil.buildResult(ResultEnum.SUCC,list);
     }
 
 

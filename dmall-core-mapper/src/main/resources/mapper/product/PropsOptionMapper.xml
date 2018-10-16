@@ -17,4 +17,10 @@
         id, property_id, option_value, option_pic, create_time, update_time
     </sql>
 
+    <select id="queryOptionsByPropsId" resultType="map">
+       SELECT
+       id id,
+       option_value name
+       from p_props_option where props_id=#{propsId}
+    </select>
 </mapper>

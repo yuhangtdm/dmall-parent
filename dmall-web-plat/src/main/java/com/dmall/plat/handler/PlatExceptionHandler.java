@@ -137,6 +137,7 @@ public class PlatExceptionHandler  {
 
     @ExceptionHandler(DataAccessException.class)
     public String sqlException(DataAccessException ex, HttpServletRequest request){
+        ex.printStackTrace();
         Map<String,Object> map=new LinkedHashMap<>();
         map.put("code",ResultEnum.SERVER_ERROR.getCode());
         map.put("msg","数据库异常");

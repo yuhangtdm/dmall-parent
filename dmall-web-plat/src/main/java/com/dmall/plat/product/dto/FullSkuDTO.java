@@ -18,6 +18,13 @@ public class FullSkuDTO implements Serializable {
     @NotNull(message = "商品sku信息不能为空")
     private SkuDTO skuDTO;
 
-    // 商品图片信息
+    /**
+     * sku图片信息
+     */
     private List<String> imgVoArray;
+
+    /**
+     * sku属性值列表
+     */
+    private List<SkuPropertyDTO> skuPropertyList;
 }

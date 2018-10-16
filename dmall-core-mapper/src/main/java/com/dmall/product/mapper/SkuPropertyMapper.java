@@ -3,6 +3,8 @@ package com.dmall.product.mapper;
 import com.dmall.product.entity.SkuProperty;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
+import java.util.List;
+
 /**
  * <p>
  * SKU属性值 Mapper 接口
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface SkuPropertyMapper extends BaseMapper<SkuProperty> {
 
+    void batchInsert(List<SkuProperty> skuPropertyList);
 }

@@ -10,8 +10,10 @@ import com.dmall.common.utils.DateUtil;
 import com.dmall.common.utils.StringUtil;
 import com.dmall.product.entity.Sku;
 import com.dmall.product.entity.SkuMedia;
+import com.dmall.product.entity.SkuProperty;
 import com.dmall.product.mapper.SkuMapper;
 import com.dmall.product.service.SkuMediaService;
+import com.dmall.product.service.SkuPropertyService;
 import com.dmall.product.service.SkuService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.dmall.util.QueryUtil;
@@ -34,6 +36,9 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuSe
     @Autowired
     private SkuMediaService mediaService;
 
+    @Autowired
+    private SkuPropertyService skuPropertyService;
+
     @Override
     public Page pageList(Sku sku, Page page) {
         EntityWrapper<Sku> wrapper=new EntityWrapper<>();
@@ -52,7 +57,7 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuSe
     }
 
     @Override
-    public void saveFullSku(Sku sku, List<String> imgVoArray) {
+    public void saveFullSku(Sku sku, List<String> imgVoArray,List<SkuProperty> skuPropertyList) {
         if(sku.getId()==null){
             initSku(sku);
             this.insert(sku);
@@ -76,6 +81,15 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuSe
             }
         }
         //todu 定时上架功能
+        if(StringUtil.isNotEmptyObj(skuPropertyList)){
+            for (SkuProperty skuProperty : skuPropertyList) {
+                skuProperty.setSkuId(sku.getId());
+                if("yes".equals(skuProperty.getSkuImage())){
+                    skuProperty.setSkuImage(sku.getSkuMainPic());
+                }
+            }
+            skuPropertyService.batchInsert(skuPropertyList);
+        }
     }
 
     @Override

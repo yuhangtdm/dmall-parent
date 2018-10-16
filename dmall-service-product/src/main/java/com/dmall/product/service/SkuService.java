@@ -3,6 +3,7 @@ package com.dmall.product.service;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.dmall.product.entity.Sku;
 import com.baomidou.mybatisplus.service.IService;
+import com.dmall.product.entity.SkuProperty;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface SkuService extends IService<Sku> {
 
     List<Sku> list(String productCode);
 
-    void saveFullSku(Sku sku, List<String> imgVoArray);
+    void saveFullSku(Sku sku, List<String> imgVoArray,List<SkuProperty> skuPropertyList);
 
     Sku selectBySkuCode(String skuCode);
 

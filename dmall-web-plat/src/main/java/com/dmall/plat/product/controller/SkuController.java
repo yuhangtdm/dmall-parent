@@ -2,6 +2,7 @@ package com.dmall.plat.product.controller;
 
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.dmall.common.Constants;
 import com.dmall.common.annotation.TransBean;
 import com.dmall.common.enums.ImageTypeEnum;
 import com.dmall.common.enums.MediaEnum;
@@ -10,10 +11,8 @@ import com.dmall.common.exception.BusinessException;
 import com.dmall.common.utils.StringUtil;
 import com.dmall.plat.product.dto.FullSkuDTO;
 import com.dmall.plat.product.dto.SkuDTO;
-import com.dmall.product.entity.Product;
-import com.dmall.product.entity.ProductMedia;
-import com.dmall.product.entity.Sku;
-import com.dmall.product.entity.SkuMedia;
+import com.dmall.plat.product.dto.SkuPropertyDTO;
+import com.dmall.product.entity.*;
 import com.dmall.product.service.ProductService;
 import com.dmall.product.service.SkuMediaService;
 import com.dmall.product.service.SkuService;
@@ -33,6 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,8 +105,25 @@ public class SkuController {
         if(skuDTO.getOnSaleTime()!=null){
             sku.setOnSaleTime(skuDTO.getOnSaleTime().getTime());
         }
-        skuService.saveFullSku(sku,fullSkuDTO.getImgVoArray());
+        List<SkuProperty> skuProperties=genSkuProperty(fullSkuDTO);
+
+
+        skuService.saveFullSku(sku,fullSkuDTO.getImgVoArray(),skuProperties);
         return ResultUtil.buildResult(ResultEnum.SUCC.getCode(),"sku保存成功");
+    }
+
+    private List<SkuProperty> genSkuProperty(@RequestBody @Validated FullSkuDTO fullSkuDTO) {
+        List<SkuProperty> skuProperties=new ArrayList<>();
+        List<SkuPropertyDTO> skuPropertyList = fullSkuDTO.getSkuPropertyList();
+        for (SkuPropertyDTO skuPropertyDTO : skuPropertyList) {
+            SkuProperty skuProperty=new SkuProperty();
+            BeanUtils.copyProperties(skuPropertyDTO,skuProperty);
+            if(Constants.YES.equals(skuPropertyDTO.getNeedPic())){
+                skuProperty.setSkuImage("yes");
+            }
+            skuProperties.add(skuProperty);
+        }
+        return skuProperties;
     }
 
 

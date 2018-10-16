@@ -1,7 +1,10 @@
 package com.dmall.product.mapper;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dmall.product.entity.PropsOption;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface PropsOptionMapper extends BaseMapper<PropsOption> {
 
+    List<JSONObject> queryOptionsByPropsId(Long propsId);
 }
