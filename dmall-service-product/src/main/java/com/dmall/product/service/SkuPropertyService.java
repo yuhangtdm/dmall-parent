@@ -16,4 +16,6 @@ import java.util.List;
 public interface SkuPropertyService extends IService<SkuProperty> {
 
     void batchInsert(List<SkuProperty> skuPropertyList);
+
+    List<SkuProperty> selectBySkuId(Long id);
 }

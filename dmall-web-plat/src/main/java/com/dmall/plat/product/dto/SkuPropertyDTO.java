@@ -19,6 +19,14 @@ public class SkuPropertyDTO implements Serializable {
      */
     private Long skuId;
     /**
+     * 组id
+     */
+    private Long groupId;
+    /**
+     * 组名称
+     */
+    private String groupName;
+    /**
      * 属性ID
      */
     private Long propertyId;
@@ -37,11 +45,7 @@ public class SkuPropertyDTO implements Serializable {
     /**
      * 是否需要配图
      */
-    private String needPic;
-    /**
-     * 组id
-     */
-    private Long groupId;
+    private Integer needPic;
 
 
 }

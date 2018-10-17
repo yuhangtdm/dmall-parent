@@ -67,19 +67,19 @@
                         <div class="layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">成本价</label>
                             <div class="layui-input-block">
-                                <input type="number" name="costPrice" lay-verify="required" class="layui-input">
+                                <input type="number" name="costPrice" lay-verify="number" class="layui-input">
                             </div>
                         </div>
                         <div  class=" layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">市场价</label>
                             <div class="layui-input-block">
-                                <input type="number" name="marketPrice" class="layui-input" >
+                                <input type="number" name="marketPrice" lay-verify="number" class="layui-input" >
                             </div>
                         </div>
                         <div  class=" layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">优惠价</label>
                             <div class="layui-input-block">
-                                <input type="number" name="price" class="layui-input" >
+                                <input type="number" name="price" lay-verify="number" class="layui-input" >
                             </div>
                         </div>
                     </div>
@@ -197,6 +197,7 @@
             // SKU列表分页查询
             curd.initSimplePage('sku','/sku/page?productCode='+productCode,buildColumn());
             transfer.initDate('sku-form','yyyy-MM-dd HH:mm:ss','onSaleTime','datetime')
+            transfer.initFilter();
 
             // 商品状态
             form.on('radio(state)', function(data){
@@ -214,6 +215,11 @@
                 }else{
                     $("#timeSale").css('display','none');
                 }
+            });
+
+            $("input[name='costPrice'],input[name='marketPrice'],input[name='price']").on('focus', function(){
+                var that = this;
+                layer.tips('价格必填,保留两位小数', that); //在元素的事件回调体中，follow直接赋予this即可
             });
 
             //
@@ -244,19 +250,18 @@
             var i=0;
             $("#addSkuProp").click(function () {
                 var productCode=$("input[name='productCode']").val();
-
                 var html='<div class="layui-row" style="margin-top: 10px">'
                     +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">'
                     +'<label class="layui-form-label">属性组</label> <div class="layui-input-block">'
-                    + '<select loadData="normal"  lay-filter="group" id='+i+' url="/product/getGroup?productCode='+productCode+'">'
+                    + '<select loadData="normal" lay-verify="required"  lay-filter="group" id='+i+' url="/product/getGroup?productCode='+productCode+'">'
                     +' </select></div></div>'
                     +'<div  class=" layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">'
                     +'<label class="layui-form-label">属性</label> <div class="layui-input-block">'
-                    + '<select loadData="normal" lay-filter="props"  id="props'+i+'"  url="/product/getProps?productCode='+productCode+'">'
+                    + '<select loadData="normal" lay-verify="required" lay-filter="props"  id="props'+i+'"  url="/product/getProps?productCode='+productCode+'">'
                     +' </select></div></div>'
                     +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">'
                     +'<label class="layui-form-label">属性值</label><div class="layui-input-block">'
-                    + '<select loadData="normal" lay-filter="values"  id="values_props'+i+'">'
+                    + '<select loadData="normal" lay-verify="required" lay-filter="values"  id="values_props'+i+'">'
                     +' </select></div></div>'
                     +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">'
                     +'<label class="layui-form-label">是否需要配图</label><div class="layui-input-block">'
@@ -299,8 +304,13 @@
                 $("#submit").click();
                 if(parseInt($("input[name='costPrice']").val())<0
                     || parseInt($("input[name='marketPrice']").val())<0
-                    || parseInt($("input[name='price']").val())<0){
-                    layer.msg('金额不能为负数',{icon:2});
+                    || parseInt($("input[name='price']").val())<0
+                    || parseInt($("input[name='availableStock']").val())<0){
+                    layer.msg('金额不能小于0',{icon:2});
+                    return false;
+                }
+                if($("input[name='availableStock']").val().indexOf(".")>-1){
+                    layer.msg('可用库存不能是小数',{icon:2});
                     return false;
                 }
                 var fullSkuDTO={};
@@ -315,7 +325,6 @@
                     }
                 });
                 fullSkuDTO.imgVoArray=imgVoArray;
-
                 var optionValueList=[];
                 for(var o=0;o<i;o++){
                     var optionValue={}
@@ -328,6 +337,8 @@
                     optionValue.propertyId=$("#props"+o).val();
                     optionValue.propertyName=$("#props"+o+" option:selected").text();
                     optionValue.groupId=$("#"+o).val();
+                    optionValue.groupName=$("#"+o+" option:selected").text();
+
                     var ch=$("#pic"+o).is(":checked");
                     if(ch){
                         optionValue.needPic=1;
@@ -337,7 +348,6 @@
                     optionValueList.push(optionValue);
                 }
                 fullSkuDTO.skuPropertyList=optionValueList;
-                console.log(fullSkuDTO);
                 curd.saveOrUpdate('/sku/save',fullSkuDTO,'POST',true);
             })
 

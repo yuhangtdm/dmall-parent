@@ -73,7 +73,7 @@ public class PlatExceptionHandler  {
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
         StringBuffer sb=new StringBuffer();
         for (FieldError fieldError : fieldErrors) {
-            sb.append(fieldError.getDefaultMessage()).append("\n");
+            sb.append(fieldError.getDefaultMessage()).append("</br>");
         }
         map.put("code",ResultEnum.BAD_REQUEST.getCode());
         map.put("msg",sb.toString());
@@ -93,7 +93,7 @@ public class PlatExceptionHandler  {
         StringBuffer sb=new StringBuffer();
         Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
         for (ConstraintViolation<?> constraintViolation : constraintViolations) {
-            sb.append(constraintViolation.getMessage());
+            sb.append(constraintViolation.getMessage()).append("</br>");
         }
         map.put("code",ResultEnum.BAD_REQUEST.getCode());
         map.put("msg",sb.toString());
@@ -114,7 +114,7 @@ public class PlatExceptionHandler  {
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
         StringBuffer sb=new StringBuffer();
         for (FieldError fieldError : fieldErrors) {
-            sb.append(fieldError.getDefaultMessage()).append("\n");
+            sb.append(fieldError.getDefaultMessage()).append("</br>");
         }
         map.put("code",ResultEnum.BAD_REQUEST.getCode());
         map.put("msg",sb.toString());

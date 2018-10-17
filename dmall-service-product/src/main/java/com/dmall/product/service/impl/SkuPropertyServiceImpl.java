@@ -1,5 +1,6 @@
 package com.dmall.product.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.dmall.product.entity.SkuProperty;
 import com.dmall.product.mapper.SkuPropertyMapper;
 import com.dmall.product.service.SkuPropertyService;
@@ -25,5 +26,12 @@ public class SkuPropertyServiceImpl extends ServiceImpl<SkuPropertyMapper, SkuPr
     @Override
     public void batchInsert(List<SkuProperty> skuPropertyList) {
         mapper.batchInsert(skuPropertyList);
+    }
+
+    @Override
+    public List<SkuProperty> selectBySkuId(Long id) {
+        EntityWrapper<SkuProperty> wrapper=new EntityWrapper<>();
+        wrapper.eq("sku_id",id);
+        return this.selectList(wrapper);
     }
 }

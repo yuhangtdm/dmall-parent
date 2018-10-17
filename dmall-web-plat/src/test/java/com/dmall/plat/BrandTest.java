@@ -39,7 +39,16 @@ public class BrandTest {
         PropsGroup group=new PropsGroup();
         List<Map<String, Object>> maps = propsGroupMapper.pageList(page, group);
         System.out.println(maps);
-
-
     }
+
+    @Test
+    public void test3(){
+        Brand brand=new Brand();
+        brand.setName("真维斯");
+        brand.setEnglishName("Jewish");
+        brand.setFirstLetter("Z");
+        brandService.insert(brand);
+        System.out.println(brand);
+    }
+
 }

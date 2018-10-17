@@ -201,7 +201,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         product.setCommentCount(0);
         product.setCommentScore(0.0d);
         product.setGoodCommentCount(0);
-        product.setGoodRate(0.0d);
+        product.setGoodRate("0%");
         product.setMiddleCommentCount(0);
         product.setBadCommentCount(0);
     }

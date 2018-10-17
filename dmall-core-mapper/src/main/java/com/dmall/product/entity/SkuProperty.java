@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.annotations.Version;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
@@ -24,6 +25,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+@RequiredArgsConstructor
 @TableName("p_sku_property")
 public class SkuProperty implements Serializable {
 
@@ -39,6 +41,14 @@ public class SkuProperty implements Serializable {
      */
     @TableField("sku_id")
     private Long skuId;
+    /**
+     * 组id
+     */
+    @TableField("group_id")
+    private Long groupId;
+
+    @TableField("group_name")
+    private Long groupName;
     /**
      * 属性ID
      */

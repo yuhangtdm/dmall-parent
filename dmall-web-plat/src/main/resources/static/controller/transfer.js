@@ -36,6 +36,7 @@ layui.extend({
                 });
             }
             initSelect(null,formId);
+            initFilter(formId);
             form.render();
         },
         initSelect:function (id,formId) {
@@ -46,9 +47,19 @@ layui.extend({
         },
         initSelectTree:function (url,id) {
             initSelectTree(url,id);
+        },
+        initFilter:function () {
+            initFilter();
         }
     }
 
+    function initFilter(){
+        $("[lay-verify='required']").each(function () {
+            $(this).on('focus',function () {
+                layer.tips('该项必填',this);
+            })
+        })
+    }
     /**
      * 初始化下拉框 包括单选 多选 联动选择  树
      */

@@ -90,7 +90,7 @@ public class Product implements Serializable {
      * 好评率
      */
     @TableField("good_rate")
-    private Double goodRate;
+    private String goodRate;
     /**
      * 好评数
      */

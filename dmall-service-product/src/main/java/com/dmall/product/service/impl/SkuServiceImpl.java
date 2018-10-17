@@ -1,5 +1,7 @@
 package com.dmall.product.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.dmall.common.Constants;
@@ -19,6 +21,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.dmall.util.QueryUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -57,6 +60,7 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuSe
     }
 
     @Override
+    @Transactional
     public void saveFullSku(Sku sku, List<String> imgVoArray,List<SkuProperty> skuPropertyList) {
         if(sku.getId()==null){
             initSku(sku);
@@ -87,8 +91,22 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuSe
                 if("yes".equals(skuProperty.getSkuImage())){
                     skuProperty.setSkuImage(sku.getSkuMainPic());
                 }
+                skuProperty.setCreateTime(System.currentTimeMillis());
+                skuProperty.setUpdateTime(System.currentTimeMillis());
             }
             skuPropertyService.batchInsert(skuPropertyList);
+        }
+
+        List<SkuProperty> skuPropList=skuPropertyService.selectBySkuId(sku.getId());
+        JSONArray jsonArray=new JSONArray();
+        if(StringUtil.isNotEmptyObj(skuPropList)){
+            for (SkuProperty skuProperty : skuPropList) {
+                JSONObject group=new JSONObject();
+                group.put("groupId",skuProperty.getGroupId());
+                group.put("groupName",skuProperty.getGroupName());
+
+
+            }
         }
     }
 
@@ -131,7 +149,7 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuSe
         sku.setGoodCommentCount(0);
         sku.setMiddleCommentCount(0);
         sku.setBadCommentCount(0);
-        sku.setGoodRate(0.0d);
+        sku.setGoodRate("0%");
         sku.setScore(0.0d);
         sku.setSaleCount(0);
         sku.setViewCount(0);

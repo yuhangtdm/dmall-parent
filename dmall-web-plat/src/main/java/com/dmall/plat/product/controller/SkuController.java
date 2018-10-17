@@ -8,6 +8,7 @@ import com.dmall.common.enums.ImageTypeEnum;
 import com.dmall.common.enums.MediaEnum;
 import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.exception.BusinessException;
+import com.dmall.common.utils.MathUtil;
 import com.dmall.common.utils.StringUtil;
 import com.dmall.plat.product.dto.FullSkuDTO;
 import com.dmall.plat.product.dto.SkuDTO;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -105,9 +107,10 @@ public class SkuController {
         if(skuDTO.getOnSaleTime()!=null){
             sku.setOnSaleTime(skuDTO.getOnSaleTime().getTime());
         }
+        sku.setCostPrice(MathUtil.format(skuDTO.getCostPrice(),BigDecimal.ROUND_DOWN));
+        sku.setMarketPrice(MathUtil.format(skuDTO.getMarketPrice(),BigDecimal.ROUND_DOWN));
+        sku.setPrice(MathUtil.format(skuDTO.getPrice(),BigDecimal.ROUND_DOWN));
         List<SkuProperty> skuProperties=genSkuProperty(fullSkuDTO);
-
-
         skuService.saveFullSku(sku,fullSkuDTO.getImgVoArray(),skuProperties);
         return ResultUtil.buildResult(ResultEnum.SUCC.getCode(),"sku保存成功");
     }
