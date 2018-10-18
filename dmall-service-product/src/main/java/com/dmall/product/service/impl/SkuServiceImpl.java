@@ -97,17 +97,7 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuSe
             skuPropertyService.batchInsert(skuPropertyList);
         }
 
-        List<SkuProperty> skuPropList=skuPropertyService.selectBySkuId(sku.getId());
-        JSONArray jsonArray=new JSONArray();
-        if(StringUtil.isNotEmptyObj(skuPropList)){
-            for (SkuProperty skuProperty : skuPropList) {
-                JSONObject group=new JSONObject();
-                group.put("groupId",skuProperty.getGroupId());
-                group.put("groupName",skuProperty.getGroupName());
 
-
-            }
-        }
     }
 
     @Override

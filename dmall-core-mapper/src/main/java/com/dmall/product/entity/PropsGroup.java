@@ -54,4 +54,9 @@ public class PropsGroup implements Serializable {
      */
     private String remark;
 
+    /**
+     * 排序
+     */
+    private Integer sortIndex;
+
 }

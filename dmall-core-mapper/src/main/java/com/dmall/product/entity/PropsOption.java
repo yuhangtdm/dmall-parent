@@ -49,6 +49,7 @@ public class PropsOption implements Serializable {
      */
     @TableField("option_pic")
     private String optionPic;
+
     /**
      * 创建时间
      */
@@ -59,6 +60,7 @@ public class PropsOption implements Serializable {
      */
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Long updateTime;
+
 
 
 }

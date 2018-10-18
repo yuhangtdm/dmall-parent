@@ -65,6 +65,13 @@ public class Props implements Serializable {
      * 备注
      */
     private String remark;
+
+    /**
+     * 排序
+     */
+    @TableField(value = "sort_index", fill = FieldFill.INSERT)
+    private Integer sortIndex;
+
     /**
      * 创建时间
      */
@@ -75,6 +82,8 @@ public class Props implements Serializable {
      */
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Long updateTime;
+
+
 
   /*  @TableField(exist = false)
     private String optionValues;*/

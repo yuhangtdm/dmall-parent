@@ -32,7 +32,18 @@ layui.define(['layer','table','zTree','form'],function (e) {
         },
         toJson:function (formId) {
             return toJson(formId);
+        },
+        validateNumber:function(number){
+            validateNumber(number);
         }
+    }
+
+    function validateNumber(number) {
+        if(parseInt(number)<0 || number.indexOf(".")>-1 ){
+            layer.msg('输入值不能为负数或小数',{type:2});
+            return false;
+        }
+
     }
 
     /**

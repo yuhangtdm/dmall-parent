@@ -99,10 +99,10 @@ public class PropsServiceImpl extends ServiceImpl<PropsMapper, Props> implements
     }
 
     private void batchInsert(Props props,List<String> propValues){
-        for (String propValue : propValues) {
+        for(int i=0;i<propValues.size();i++){
             PropsOption propsOption=new PropsOption();
             propsOption.setPropsId(props.getId());
-            propsOption.setOptionValue(propValue);
+            propsOption.setOptionValue(propValues.get(i));
             propsOptionService.insert(propsOption);
         }
     }

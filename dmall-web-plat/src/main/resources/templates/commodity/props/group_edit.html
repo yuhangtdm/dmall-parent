@@ -43,6 +43,14 @@
             </div>
         </div>
 
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">排序</label>
+            <div class="layui-input-block">
+                <input type="number" name="sortIndex" lay-verify="required" autocomplete="off" placeholder="请输入排序"
+                       class="layui-input">
+            </div>
+        </div>
+
         <div class="layui-form-item">
             <div class="layui-input-block">
                 <button type="button" class="layui-btn" lay-submit="" id="submit" lay-filter="submit">立即提交</button>
@@ -62,6 +70,9 @@
 
             transfer.init([[${bean}]],null,'props-group-form');
             form.on('submit(submit)', function (data) {
+                if(curd.validateNumber($("input[name='sortIndex']").val())){
+                    return false;
+                }
                 curd.saveOrUpdate('/props/group/save',data.field);
                 return false;
             });

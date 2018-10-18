@@ -1,6 +1,7 @@
 package com.dmall.product.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dmall.product.entity.Product;
 import com.dmall.product.entity.ProductProperty;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -59,5 +60,8 @@ public interface ProductPropertyService extends IService<ProductProperty> {
      */
     List<ProductProperty> queryByProductCodeAndPropertyId(String productCode,Long propertyId);
 
-
+    /**
+     * 根据商品编码查询数据
+     */
+    List<JSONObject> selectByProductCode(String productCode);
 }

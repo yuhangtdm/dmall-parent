@@ -2,13 +2,16 @@ package com.dmall.product.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.dmall.product.entity.Product;
 import com.dmall.product.entity.ProductProperty;
 import com.dmall.product.mapper.ProductPropertyMapper;
 import com.dmall.product.service.ProductPropertyService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.omg.CORBA.MARSHAL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -81,5 +84,20 @@ public class ProductPropertyServiceImpl extends ServiceImpl<ProductPropertyMappe
         wrapper.eq("product_code",productCode);
         wrapper.eq("property_id",propertyId);
         return this.selectList(wrapper);
+    }
+
+    @Override
+    public List<JSONObject> selectByProductCode(String productCode) {
+        List<JSONObject> result=new ArrayList<>();
+        List<JSONObject> groupArray=mapper.queryGroupByProductCode(productCode);
+        for (JSONObject object : groupArray) {
+            List<JSONObject> propsByProductCode=mapper.queryPropsByProductCode(productCode,object.getString("id"));
+            for (JSONObject jsonObject : propsByProductCode) {
+                jsonObject.put("groupId",object.getLong("groupId"));
+                jsonObject.put("groupName",object.getString("name"));
+                result.add(jsonObject);
+            }
+        }
+        return result;
     }
 }

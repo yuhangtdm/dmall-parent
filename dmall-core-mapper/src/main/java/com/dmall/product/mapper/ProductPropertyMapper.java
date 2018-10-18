@@ -23,4 +23,5 @@ public interface ProductPropertyMapper extends BaseMapper<ProductProperty> {
     List<JSONObject> queryGroupByProductCode(@Param("productCode") String productCode);
 
     List<JSONObject> queryPropsByProductCode(@Param("productCode") String productCode,@Param("groupId") String groupId);
+
 }

@@ -1,6 +1,8 @@
 package com.dmall.plat.product.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.dmall.common.Constants;
 import com.dmall.common.annotation.TransBean;
@@ -14,6 +16,7 @@ import com.dmall.plat.product.dto.FullSkuDTO;
 import com.dmall.plat.product.dto.SkuDTO;
 import com.dmall.plat.product.dto.SkuPropertyDTO;
 import com.dmall.product.entity.*;
+import com.dmall.product.service.ProductPropertyService;
 import com.dmall.product.service.ProductService;
 import com.dmall.product.service.SkuMediaService;
 import com.dmall.product.service.SkuService;
@@ -62,6 +65,9 @@ public class SkuController {
     private SkuMediaService skuMediaService;
 
     @Autowired
+    private ProductPropertyService productPropertyService;
+
+    @Autowired
     private QiniuUtil qiniuUtil;
 
     /**
@@ -78,7 +84,8 @@ public class SkuController {
                 sortIndex=sku.getSortIndex()+1;
             }
         }
-
+        List<JSONObject> jsonObjects = productPropertyService.selectByProductCode(productCode);
+        request.setAttribute("groupPropsArray",jsonObjects);
         request.setAttribute("productCode",productCode);
         request.setAttribute("productType",product.getProductType());
         request.setAttribute("brandId",product.getBrandId());
@@ -117,6 +124,7 @@ public class SkuController {
 
     private List<SkuProperty> genSkuProperty(@RequestBody @Validated FullSkuDTO fullSkuDTO) {
         List<SkuProperty> skuProperties=new ArrayList<>();
+        JSONObject skuPropertyObj=new JSONObject();
         List<SkuPropertyDTO> skuPropertyList = fullSkuDTO.getSkuPropertyList();
         for (SkuPropertyDTO skuPropertyDTO : skuPropertyList) {
             SkuProperty skuProperty=new SkuProperty();
@@ -125,7 +133,18 @@ public class SkuController {
                 skuProperty.setSkuImage("yes");
             }
             skuProperties.add(skuProperty);
+            JSONArray array=null;
+            if(skuPropertyObj.containsKey(skuPropertyDTO.getGroupId())){
+                array=skuPropertyObj.getJSONArray(skuPropertyDTO.getGroupId().toString());
+            }else {
+                array=new JSONArray();
+                skuPropertyObj.put(skuPropertyDTO.getGroupId().toString(),array);
+            }
+            JSONObject subObject=new JSONObject();
+            subObject.put(skuPropertyDTO.getPropertyName(),skuPropertyDTO.getOptionValue());
+            array.add(subObject);
         }
+        fullSkuDTO.getSkuDTO().setSkuProperties(skuPropertyObj.toJSONString());
         return skuProperties;
     }
 

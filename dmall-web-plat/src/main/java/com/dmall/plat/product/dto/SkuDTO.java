@@ -78,6 +78,11 @@ public class SkuDTO implements Serializable {
      */
     private String skuContent;
 
+    /**
+     * sku属性
+     */
+    private String skuProperties;
+
 
 
 }
