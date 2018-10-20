@@ -1,7 +1,11 @@
 package com.dmall.product.mapper;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.dmall.product.entity.Sku;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -13,4 +17,5 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface SkuMapper extends BaseMapper<Sku> {
 
+    List<Map<String,Object>> pageList(Page page, Map<String,Object> param);
 }

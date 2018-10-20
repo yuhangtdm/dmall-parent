@@ -26,31 +26,40 @@
     </fieldset>
     <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
         <ul class="layui-tab-title">
+            <li class="layui-this">sku列表</li>
             <li>基本信息</li>
             <li>图文详情</li>
             <li>图片信息</li>
             <li>sku属性信息</li>
-            <li>sku属性预览</li>
         </ul>
         <div class="layui-tab-content" style="height: 100px;">
             <button  id="saveSku" type="button"  class="layui-btn" style="float: right">保存SKU</button>
             <div class="layui-tab-item layui-show">
+                <table id="sku"  class="layui-hide"  lay-filter="product">
+                </table>
+                <script type="text/html" id="image">
+                    {{# if (d.skuMainPic!=null || d.skuMainPic!='') { }}
+                    <img src="http://pgdyorkvy.bkt.clouddn.com/{{d.skuMainPic }}?imageView2/2/w/30/h/30" />
+                    {{# } }}
+                </script>
+            </div>
+            <div class="layui-tab-item">
                 <form class="layui-form" id="sku-form" action="">
                     <div class="layui-row">
                         <div class="layui-col-xs8 layui-col-sm8 layui-col-md8 layui-col-lg8">
                             <label class="layui-form-label">SKU名称</label>
                             <div class="layui-input-block">
-                                <input type="hidden" name="id" th:value="${sku.id}">
                                 <input type="text" name="skuName" lay-verify="required" autocomplete="off"
-                                       class="layui-input" th:value="${sku.skuName}"  >
+                                       class="layui-input" >
                             </div>
                         </div>
                         <div  class=" layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
-                            <label class="layui-form-label">SKU编码</label>
+                            <label class="layui-form-label">商品编码</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="productCode" th:value="${sku.skuCode}"  autocomplete="off"
+                                <input type="text" name="productCode" th:value="${productCode}"  autocomplete="off"
                                        class="layui-input" readonly >
-                                <input type="hidden" name="sortIndex" th:value="${sku.sortIndex}">
+                                <input type="hidden" name="brandId" th:value="${brandId}">
+                                <input type="hidden" name="sortIndex" th:value="${sortIndex}">
                             </div>
                         </div>
                     </div>
@@ -58,19 +67,19 @@
                         <div class="layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">成本价</label>
                             <div class="layui-input-block">
-                                <input type="number" name="costPrice" th:value="${sku.costPrice}" lay-verify="number" class="layui-input">
+                                <input type="number" name="costPrice" lay-verify="number" class="layui-input">
                             </div>
                         </div>
                         <div  class=" layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">市场价</label>
                             <div class="layui-input-block">
-                                <input type="number" name="marketPrice" th:value="${sku.marketPrice}" lay-verify="number" class="layui-input" >
+                                <input type="number" name="marketPrice" lay-verify="number" class="layui-input" >
                             </div>
                         </div>
                         <div  class=" layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">优惠价</label>
                             <div class="layui-input-block">
-                                <input type="number" name="price" th:value="${sku.price}" lay-verify="number" class="layui-input" >
+                                <input type="number" name="price" lay-verify="number" class="layui-input" >
                             </div>
                         </div>
                     </div>
@@ -78,14 +87,14 @@
                         <div  class=" layui-col-xs4 layui-col-sm4 layui-col-md8 layui-col-lg4">
                             <label class="layui-form-label">可用库存</label>
                             <div class="layui-input-block">
-                                <input type="number" name="availableStock" th:value="${sku.availableStock}" lay-verify="required" class="layui-input">
+                                <input type="number" name="availableStock" lay-verify="required" class="layui-input">
                             </div>
                         </div>
                         <div  class=" layui-col-xs4 layui-col-sm4 layui-col-md8 layui-col-lg4">
                             <label class="layui-form-label">是否上架</label>
                             <div class="layui-input-block">
-                                <input type="radio" name="state" lay-filter="state"  value="1" title="是" th:checked="${sku.state eq '1' }" >
-                                <input type="radio" name="state" lay-filter="state" value="0" title="否"  th:checked="${sku.state eq '0' }" >
+                                <input type="radio" name="state" lay-filter="state"  value="1" title="是" checked>
+                                <input type="radio" name="state" lay-filter="state" value="0" title="否" >
                             </div>
                         </div>
                     </div>
@@ -106,7 +115,7 @@
                     <div class="layui-row" style="margin-top: 10px">
                         <label class="layui-form-label">SKU简介</label>
                         <div class="layui-input-block">
-                            <textarea name="skuDescription" lay-verify="required" th:text="${sku.skuDescription}" placeholder="请输入内容" class="layui-textarea"></textarea>
+                            <textarea name="skuDescription" lay-verify="required"  placeholder="请输入内容" class="layui-textarea"></textarea>
                         </div>
                     </div>
                     <button type="button" class="layui-btn" lay-submit="" style="display: none" id="submit"  lay-filter="submit">立即提交</button>
@@ -115,7 +124,7 @@
             <div class="layui-tab-item">
                 <form class="layui-form" action="">
                     <h3>图文详情</h3>
-                    <textarea id="skuContent" name="skuContent" th:text="${sku.skuContent}" ></textarea>
+                    <textarea id="skuContent" name="skuContent" ></textarea>
                 </form>
             </div>
             <div class="layui-tab-item">
@@ -131,10 +140,6 @@
                                 <div id="layer-photos-demo" class="layer-photos-demo">
                                     <img src="http://pgdyorkvy.bkt.clouddn.com/ea1e5a77d8494b8c9fb3d517642269d9.jpg?v=1539355305343&amp;imageView2/2/w/160/h/160" layer-src="http://pgdyorkvy.bkt.clouddn.com/ea1e5a77d8494b8c9fb3d517642269d9.jpg?v=1539355305343" alt="示例图片">
                                 </div>
-                                <span  th:each="imgObj : ${imgUrls}">
-                                        <img  th:src="${imgObj.imgSrc}" th:key="${imgObj.imgKey}" th:layer-src="${imgObj.layerSrc}" alt="SKU图片" >
-                                        <i class="layui-icon layui-icon-close-fill"  style="color:red;cursor:pointer;" th:imgSrc="${imgObj.imgKey}" ></i>
-                                </span>
                             </blockquote>
                         </div>
                     </div>
@@ -160,12 +165,13 @@
                                     </select>
                                 </div>
                             </div>
-                            <div  class=" layui-col-xs3 layui-col-sm3 layui-col-md3 layui-col-lg3">
-                                <label class="layui-form-label">商品名称</label>
+                           <!-- <div  class="layui-col-xs3 layui-col-sm3 layui-col-md3 layui-col-lg3">
                                 <div class="layui-input-block">
-                                    <input  th:value="${productName}" disabled="disabled" />
+                                   <button type="button" class="layui-btn" id="addSkuProp">
+                                        <i class="layui-icon layui-icon-add-circle-fine"></i>添加SKU属性
+                                    </button>
                                 </div>
-                            </div>
+                            </div>-->
                     </div>
                     <div class="layui-row" style="margin-top: 10px" th:each="prop:${groupPropsArray}">
                         <div  class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">
@@ -183,24 +189,19 @@
                         <div  class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">
                             <label class="layui-form-label">属性值</label>
                             <div class="layui-input-block">
-                                <select loadData="normal" th:value="${prop.optionValue}" th:url="@{'/product/getOptions?propsId='+${prop.id}}"  lay-verify="required" lay-filter="values" >
+                                <select loadData="normal" th:url="@{'/product/getOptions?propsId='+${prop.id}}"  lay-verify="required" lay-filter="values" >
                                 </select>
                             </div>
                         </div>
                         <div  class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">
                             <label class="layui-form-label">是否需要配图</label>
                             <div class="layui-input-block">
-                                <input type="checkbox" lay-skin="switch" th:checked="${prop.sku_image eq '1' }" lay-text="是|否">
+                                <input type="checkbox" lay-skin="switch" lay-text="是|否">
                             </div>
                         </div>
                     </div>
                 </form>
 
-            </div>
-            <div class="layui-tab-item">
-                <pre class="layui-code" th:value="${sku.skuProperties}">
-
-                </pre>
             </div>
         </div>
     </div>
@@ -208,7 +209,7 @@
     <script th:inline="javascript">
         layui.config({
             base: '/controller/'
-        }).use(['element','form', 'transfer','curd','layer','layedit','upload','croppers','table','code'], function () {
+        }).use(['element','form', 'transfer','curd','layer','layedit','upload','croppers','table'], function () {
             var $=layui.$;
             var form = layui.form;
             var transfer = layui.transfer;
@@ -223,6 +224,7 @@
             var groupPropArray=[[${groupProps}]];
 
             // SKU列表分页查询
+            curd.initSimplePage('sku','/sku/page?productCode='+productCode,buildColumn());
             transfer.initDate('sku-form','yyyy-MM-dd HH:mm:ss','onSaleTime','datetime')
             transfer.initFilter();
 
@@ -246,7 +248,7 @@
 
             $("input[name='costPrice'],input[name='marketPrice'],input[name='price']").on('focus', function(){
                 var that = this;
-                layer.tips('价格必填,保留两位小数', that);
+                layer.tips('价格必填,保留两位小数', that); //在元素的事件回调体中，follow直接赋予this即可
             });
 
             //
@@ -260,9 +262,6 @@
             var extIndex=layedit.build('skuContent',{
                 height: 1000 //设置编辑器高度
             });
-
-            layui.code(); //引用code方法
-
             //文件上传
             croppers.render({
                 elem: '#up'
@@ -347,7 +346,93 @@
                 $(this).removeAttr('style');
             })
 
+            function buildColumn() {
+                var cols=[
+                    [
+                        {field:'skuCode', width:150,  title: 'SKU编码'},
+                        {field:'skuMainPic',  title: '主图',templet:'#image',width:100},
+                        {field:'skuName', title: 'SKU名称',width:450},
+                        {field:'costPrice', title: '成本价', sort: true},
+                        {field:'marketPrice', title: '市场价', sort: true},
+                        {field:'price', title: '优惠价', sort: true},
+                        {field:'availableStock', title: '可用库存', sort: true},
+                        {field:'stateName', title: '状态'},
+                    ]
 
+                ];
+                return cols;
+            }
+
+           /* $("#addSkuProp").click(function () {
+                var productCode=$("input[name='productCode']").val();
+                var html='<div class="layui-row" style="margin-top: 10px">'
+                    +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">'
+                    +'<label class="layui-form-label">属性组</label> <div class="layui-input-block">'
+                    + '<select loadData="normal" lay-verify="required"  lay-filter="group" id='+i+' url="/product/getGroup?productCode='+productCode+'">'
+                    +' </select></div></div>'
+                    +'<div  class=" layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">'
+                    +'<label class="layui-form-label">属性</label> <div class="layui-input-block">'
+                    + '<select loadData="normal" lay-verify="required" lay-filter="props"  id="props'+i+'"  url="/product/getProps?productCode='+productCode+'">'
+                    +' </select></div></div>'
+                    +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">'
+                    +'<label class="layui-form-label">属性值</label><div class="layui-input-block">'
+                    + '<select loadData="normal" lay-verify="required" lay-filter="values"  id="values_props'+i+'">'
+                    +' </select></div></div>'
+                    +'<div  class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">'
+                    +'<label class="layui-form-label">是否需要配图</label><div class="layui-input-block">'
+                    +'<input type="checkbox" id="pic'+i+'"  lay-skin="switch" lay-text="是|否">&nbsp;&nbsp;'
+                    + '<i class="layui-icon layui-icon-delete size" id="delete'+i+'" ></i>'
+                    +'</div></div>'
+                    + '</div>'
+                $(this).parents(".layui-row").after(html);
+                transfer.initSelect(i+'');
+                transfer.initSelect('props'+i);
+                i++;
+            });*/
+            /*for(var o=0;o<i;o++){
+                var optionValue={}
+                var optionId=$("#values_props"+o).val();
+                if(optionId==undefined || optionId=='' ){
+                    continue;
+                }
+                optionValue.optionId=optionId;
+                optionValue.optionValue=$("#values_props"+o+" option:selected").text();
+                optionValue.propertyId=$("#props"+o).val();
+                optionValue.propertyName=$("#props"+o+" option:selected").text();
+                optionValue.groupId=$("#"+o).val();
+                optionValue.groupName=$("#"+o+" option:selected").text();
+
+                var ch=$("#pic"+o).is(":checked");
+                if(ch){
+                    optionValue.needPic=1;
+                }else{
+                    optionValue.needPic=0;
+                }
+                optionValueList.push(optionValue);
+            }*/
+            // 监听属性组
+            /*form.on('select(group)',function (data) {
+                var productCode=$("input[name='productCode']").val();
+                var id=$(data.elem).attr("id");
+                $("#props"+id).attr("url","/product/getProps?productCode="+productCode+"&groupId="+data.value);
+                transfer.initSelect('props'+id);
+            });
+
+            // 删除属性值
+            $(document).on('click','.layui-icon-delete',function () {
+                var sel=$(this);
+                layer.confirm('确定删除该属性值?', {icon: 3, title:'提示'}, function(index){
+                    layer.close(index);
+                    sel.parents(".layui-row").remove();
+                });
+            })
+
+            //监听属性
+            form.on('select(props)',function (data) {
+                var id=$(data.elem).attr("id");
+                $("#values_"+id).attr("url","/product/getOptions?propsId="+data.value);
+                transfer.initSelect('values_'+id);
+            })*/
 
         });
 </script>

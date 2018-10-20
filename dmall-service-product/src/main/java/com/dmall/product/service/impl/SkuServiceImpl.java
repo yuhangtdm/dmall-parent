@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -35,6 +36,9 @@ import java.util.List;
  */
 @Service
 public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuService {
+
+    @Autowired
+    private SkuMapper skuMapper;
 
     @Autowired
     private SkuMediaService mediaService;
@@ -84,7 +88,8 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuSe
                 mediaService.updateById(skuMedia);
             }
         }
-        //todu 定时上架功能
+        //tudu 定时上架功能
+
         if(StringUtil.isNotEmptyObj(skuPropertyList)){
             for (SkuProperty skuProperty : skuPropertyList) {
                 skuProperty.setSkuId(sku.getId());
@@ -108,13 +113,45 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuSe
         if(StringUtil.isEmptyObj(skus)){
             throw new BusinessException(ResultEnum.SERVER_ERROR,"sku编码不存在");
         }
-
         if(skus.size()>0){
             throw new BusinessException(ResultEnum.SERVER_ERROR,"sku编码必须唯一");
         }
         return skus.get(0);
     }
 
+    @Override
+    public Page skuPageList(Map<String, Object> param, Page page) {
+        List<Map<String, Object>> maps = skuMapper.pageList(page, param);
+        return page.setRecords(maps);
+    }
+
+    @Override
+    public void onSale(Long id) {
+        Sku sku = this.selectById(id);
+        if (sku==null){
+            throw new BusinessException(ResultEnum.SERVER_ERROR.getCode(),"sku不存在");
+        }
+        if (Constants.YES.equals(sku.getState())){
+            throw new BusinessException(ResultEnum.SERVER_ERROR.getCode(),"sku已上架 不可重复上架");
+        }
+        sku.setState(Constants.YES);
+        sku.setOnSaleTime(System.currentTimeMillis());
+        this.updateById(sku);
+    }
+
+    @Override
+    public void offSale(Long id) {
+        Sku sku = this.selectById(id);
+        if (sku==null){
+            throw new BusinessException(ResultEnum.SERVER_ERROR.getCode(),"sku不存在");
+        }
+        if (Constants.NO.equals(sku.getState())){
+            throw new BusinessException(ResultEnum.SERVER_ERROR.getCode(),"sku已下架 不可重复下架");
+        }
+        sku.setState(Constants.NO);
+        sku.setOffSaleTime(System.currentTimeMillis());
+        this.updateById(sku);
+    }
 
 
     /**
@@ -129,7 +166,7 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuSe
         }else {
             String code = todaySku.getSkuCode();
             int i = Integer.parseInt(code.substring(code.length() - 4));
-            skuCode="P"+DateUtil.formatDate(DateUtil.YYYYMMDD)+String.format("%04d",i+1);
+            skuCode="S"+DateUtil.formatDate(DateUtil.YYYYMMDD)+String.format("%04d",i+1);
         }
         sku.setSkuCode(skuCode);
         // 锁定库存
@@ -151,7 +188,7 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuSe
 
     private Sku queryToday() {
         EntityWrapper<Sku> wrapper=new EntityWrapper<>();
-        wrapper.like("product_code","P"+ DateUtil.formatDate(DateUtil.YYYYMMDD));
+        wrapper.like("sku_code","S"+ DateUtil.formatDate(DateUtil.YYYYMMDD));
         wrapper.orderBy(true,"create_time",false);
         List<Sku> products = this.selectList(wrapper);
         if(StringUtil.isEmptyObj(products)){

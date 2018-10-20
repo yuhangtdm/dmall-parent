@@ -21,10 +21,10 @@
     </sql>
 
     <insert id="batchInsert">
-        insert into p_sku_property(sku_id, property_id, property_name, option_id, option_value, sku_image,create_time,update_time)
+        insert into p_sku_property(sku_id,group_id,group_name, property_id, property_name, option_id, option_value, sku_image,create_time,update_time)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.skuId},#{item.propertyId},#{item.propertyName},#{item.optionId},#{item.optionValue},#{item.skuImage},#{createTime},#{updateTime})
+            (#{item.skuId},#{item.groupId},#{item.groupName},#{item.propertyId},#{item.propertyName},#{item.optionId},#{item.optionValue},#{item.skuImage},now(),now())
         </foreach>
     </insert>
 

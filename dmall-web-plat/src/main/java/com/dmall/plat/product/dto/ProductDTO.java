@@ -10,14 +10,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * 商品基本属性
  * @author: yuhang
  * @date: 2018/9/27
  */
 @Data
 public class ProductDTO implements Serializable {
-    /**
-     * 商品基本属性
-     */
+
     private static final long serialVersionUID = 8387231244000395070L;
 
     private Long id;
@@ -51,6 +50,9 @@ public class ProductDTO implements Serializable {
      */
     private Date onCityTime;
 
+    /**
+     * 商品编码
+     */
     private String productCode;
 
 

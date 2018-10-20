@@ -1,5 +1,6 @@
 package com.dmall.product.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.dmall.product.entity.Product;
 import com.dmall.product.entity.ProductProperty;
@@ -63,5 +64,5 @@ public interface ProductPropertyService extends IService<ProductProperty> {
     /**
      * 根据商品编码查询数据
      */
-    List<JSONObject> selectByProductCode(String productCode);
+    List<Map<String,Object>> selectByProductCode(String productCode);
 }

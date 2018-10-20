@@ -35,4 +35,62 @@
         id, sku_code, sku_name, product_id, market_price, price, cost_price, sale_count, sort_index, available_stock, frozen_stock, sku_main_pic, sku_properties, view_count, comment_count, good_comment_count, middle_comment_count, bad_comment_count, good_rate, score, brand_id, is_del, create_time, update_time
     </sql>
 
+    <select id="pageList" resultType="map">
+            SELECT
+                sku.id,
+                sku.product_code productCode,
+                sku.sku_code skuCode,
+                sku.sku_name skuName,
+                sku.market_price marketPrice,
+                sku.price price,
+                sku.cost_price costPrice,
+                sku.sale_count saleCount,
+                sku.sort_index sortIndex,
+                sku.available_stock availableStock,
+                sku.frozen_stock frozenStock,
+                sku.sku_main_pic skuMainPic,
+                sku.view_count viewCount,
+                sku.comment_count commentCount,
+                sku.good_rate goodRate,
+                sku.score,
+                sku.brand_id brandId,
+                productType.name productTypeName,
+                brand.name brandName,
+                sku.state,
+                dict.dict_value stateName,
+                sku.create_time createTime,
+                sku.update_time updateTime
+            FROM p_sku sku
+            INNER JOIN p_product product on sku.product_code=product.product_code
+            INNER JOIN p_product_type productType  on productType.id=substring_index(product.product_type, '/' ,- 1)
+            INNER JOIN p_brand brand on brand.id=product.brand_id
+            INNER JOIN sys_dict dict on dict.dict_code=sku.state and dict.dict_type='_sku_state'
+
+        <where>
+                <if test="productCode!=null and productCode!=''">
+                    and sku.product_code like '%${productCode}%'
+                </if>
+                <if test="skuCode!=null and skuCode!=''">
+                    and sku.product_code like '%${productCode}%'
+                </if>
+                <if test="productName!=null and productName!=''">
+                    and  product.name like '%${productName}%'
+                </if>
+                <if test="skuName!=null and skuName!=''">
+                    and  sku.sku_name like '%${skuName}%'
+                </if>
+                <if test="productType!=null and productType!=''">
+                    and product.productType =#{productType}
+                </if>
+                <if test="brandId!=null and brandId!=''">
+                    and  brand.id =#{brandId}
+                </if>
+                <if test="brandId!=null and brandId!=''">
+                    and  brand.id =#{brandId}
+                </if>
+            </where>
+
+    </select>
+
+
 </mapper>

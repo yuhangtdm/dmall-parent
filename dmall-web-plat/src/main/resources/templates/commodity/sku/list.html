@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>
-            商品管理
+            SKU管理
         </title>
         <meta name="renderer" content="webkit">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -21,7 +21,7 @@
             <span class="layui-breadcrumb">
               <a><cite>首页</cite></a>
               <a><cite>商品信息管理</cite></a>
-              <a><cite>商品管理</cite></a>
+              <a><cite>SKU管理</cite></a>
             </span>
             <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
             <button class="layui-btn layui-btn-small" style="line-height:1.6em;margin:3px;float:right" lay-submit id="formSearch" lay-filter="formSearch" title="搜索"><i class="layui-icon layui-icon-search"></i></button>
@@ -40,9 +40,15 @@
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
                             <label class="layui-form-label">商品名称：</label>
                             <div class="layui-input-block">
-                                <input class="layui-input" name="name" >
+                                <input class="layui-input" name="productName" >
                             </div>
                         </div>
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg4">
+                            <label class="layui-form-label">SKU编码：</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" name="skuCode" >
+                            </div>
+                         </div>
                     </div>
 
                     <div class="layui-row layui-col-space10" style="margin-top: 5px;">
@@ -54,27 +60,43 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">
+                            <label class="layui-form-label">品牌：</label>
+                            <div class="layui-input-block">
+                                <select loadData="normal"  bean="brandServiceImpl" name="brandId" >
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">
+                            <label class="layui-form-label">sku状态：</label>
+                            <div class="layui-input-block">
+                                <select loadData="normal" dict="_product_state"   name="brandId" >
+                                </select>
+                            </div>
+                        </div>
                     </div>
             </form>
-            <table id="product"  class="layui-hide"  lay-filter="product">
+            <table id="sku"  class="layui-hide"  lay-filter="sku">
             </table>
 
             <script type="text/html" id="image">
-                {{# if (d.mainImage!=null || d.mainImage!='') { }}
-                 <img src="http://pgdyorkvy.bkt.clouddn.com/{{d.mainImage }}?imageView2/2/w/30/h/30" />
+                {{# if (d.skuMainPic!=null || d.skuMainPic!='') { }}
+                 <img src="http://pgdyorkvy.bkt.clouddn.com/{{d.skuMainPic }}?imageView2/2/w/30/h/30" />
                 {{# } }}
             </script>
 
             <script type="text/html" id="toolbarDemo">
                 <div class="layui-btn-container">
-                    <button class="layui-btn" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>添加商品</button>
-                    <button class="layui-btn layui-btn-normal" lay-event="sku"><i class="layui-icon layui-icon-template-1"></i>SKU管理</button>
                 </div>
             </script>
 
             <script type="text/html" id="barDemo">
                 <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                {{# if (d.state=='1') { }}
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="off">下架</a>
+                {{# } else { }}
+                    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="on">上架</a>
+                {{# } }}
             </script>
         </div>
         <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
@@ -90,75 +112,54 @@
                 var transfer = layui.transfer;
 
                 transfer.initSelect();
-                curd.initPage('product','/product/page',buildColumn());
+                curd.initPage('sku','/sku/skuPage',buildColumn());
 
-                //头工具栏事件
-                table.on('toolbar(product)', function(obj){
-                    var checkStatus = table.checkStatus(obj.config.id);
-                    switch(obj.event){
-                        case 'add':
-                             curd.openForm('/product/edit','添加商品','1000px', '1000px',true);
-                            break;
-                        case 'sku':
-                            SKUManage(checkStatus.data);
-                            break;
-                    };
-                });
-
-                //监听行工具事件
-                table.on('tool(product)', function(obj){
-                    var data = obj.data;
-                    if(obj.event === 'del'){
-                        layer.confirm('确定删除该品牌?', {icon: 3, title:'提示'}, function(index){
-                            curd.deleteById('/product/delete?id='+data.id,function(){
-                                $("#formSearch").click();
-                            });
-                        });
-
-                    } else if(obj.event === 'edit'){
-                        curd.openForm('/product/edit?id='+data.id,'修改商品','1000px', '1000px',true);
-                    }
-                });
-
-                //监听提交
+                //搜索
                 form.on('submit(formSearch)', function(data){
-                    table.reload('product', {
+                    table.reload('sku', {
                         where: data.field
                     });
                     return false;
                 });
 
-                // SKU 管理
-                function SKUManage(data) {
-                    if(data.length!=1){
-                        layer.msg('请选择一个商品添加SKU');
-                        return false;
+                //监听行工具事件
+                table.on('tool(sku)', function(obj){
+                    var data = obj.data;
+                    if(obj.event === 'off'){
+                        layer.confirm('确定下架该sku?', {icon: 3, title:'提示'}, function(index){
+                            curd.save('/sku/off?id='+data.id,null,function(){
+                                $("#formSearch").click();
+                            });
+                        });
+                    } else if(obj.event === 'edit'){
+                        curd.openForm('/sku/edit?id='+data.id,'修改SKU','1000px', '1000px',true);
+                    } else if(obj.event === 'on'){
+                        layer.confirm('确定上架该sku?', {icon: 3, title:'提示'}, function(index){
+                            curd.save('/sku/on?id='+data.id,null,function(){
+                                $("#formSearch").click();
+                            });
+                        });
                     }
-                    var productCode=data[0].productCode;
-                    curd.openForm('/product/skuEdit?productCode='+productCode,'添加SKU','1000px', '1000px',true);
-                }
+                });
 
                 function buildColumn() {
                     var cols=[
                         [
                             {type: 'checkbox', fixed: 'left'},
                             {field:'productCode', width:150,  title: '商品编码'},
-                            {field:'mainImage',  title: '主图',templet:'#image'},
-                            {field:'name', title: '商品名称'},
+                            {field:'skuCode', width:150,  title: 'SKU编码'},
+                            {field:'skuMainPic',  title: '主图',templet:'#image'},
+                            {field:'skuName', title: 'SKU名称'},
                             {field:'productTypeName', title: '商品分类'},
                             {field:'brandName', title: '品牌'},
-                            {field:'onCityTime', title: '上市时间',width:180, sort: true,templet: function (d) {
-                                    if(d.onCityTime){
-                                        return layui.util.toDateString(d.onCityTime,'yyyy-MM-dd');
-                                    }else {
-                                        return '';
-                                    }
-                                }
-                            },
-                            {field:'maxPrice', title: '最高价', sort: true},
-                            {field:'minPrice', title: '最低价', sort: true},
+                            {field:'marketPrice', title: '市场价'},
+                            {field:'price', title: '售价'},
+                            {field:'availableStock', title: '可用库存'},
                             {field:'saleCount', title: '销量', sort: true},
-                            {field:'updateTime',  title: '更新时间',width:180, sort: true,templet: function (d) {
+                            {field:'commentCount', title: '评论数', sort: true},
+                            {field:'goodRate', title: '好评率', sort: true},
+                            {field:'stateName', title: '商品状态', sort: true},
+                            {field:'updateTime',  title: '更新时间', width:180, sort: true,templet: function (d) {
                                 if(d.updateTime){
                                     return layui.util.toDateString(d.updateTime);
                                 }else {

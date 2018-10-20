@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.dmall.product.entity.SkuProperty;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -25,4 +26,9 @@ public interface SkuService extends IService<Sku> {
 
     Sku selectBySkuCode(String skuCode);
 
+    Page skuPageList(Map<String,Object> param, Page page);
+
+    void onSale(Long id);
+
+    void offSale(Long id);
 }

@@ -8,14 +8,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
+ * 商品的完整对象
  * @author:yuhang
  * @Date:2018/10/4
  */
 @Data
 public class FullProductDTO implements Serializable {
-    /**
-     * 商品的完整对象
-     */
+
     private static final long serialVersionUID = 7850485968698279159L;
 
     @Valid

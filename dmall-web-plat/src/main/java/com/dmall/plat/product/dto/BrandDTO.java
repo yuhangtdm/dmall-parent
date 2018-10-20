@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * 保存品牌的dto
  * @author: yuhang
  * @date: 2018/9/2
  */

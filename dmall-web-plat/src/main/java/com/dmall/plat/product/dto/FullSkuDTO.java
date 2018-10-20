@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
+ * sku的完整信息
  * @author: yuhang
  * @date: 2018/10/14
  */

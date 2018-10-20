@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
+ * 类型dto
  * @author: yuhang
  * @date: 2018/9/8
  */

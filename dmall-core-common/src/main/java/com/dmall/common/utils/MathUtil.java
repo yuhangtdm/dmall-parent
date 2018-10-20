@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  */
 public class MathUtil {
 
-    public static final int num=2;
+    public static final int num=3;
     public static final int rounding=BigDecimal.ROUND_HALF_UP;
 
     /**
@@ -60,7 +60,7 @@ public class MathUtil {
      * 保留两位小数
      */
     public static Double format(Double a, int roundingMode){
-        BigDecimal a1=new BigDecimal(a);
+        BigDecimal a1=new BigDecimal(String.valueOf(a));
         return a1.setScale(num,roundingMode).doubleValue();
     }
 
@@ -70,5 +70,9 @@ public class MathUtil {
     public static Double format(Double a){
         BigDecimal a1=new BigDecimal(a);
         return a1.setScale(num,rounding).doubleValue();
+    }
+
+    public static void main(String[] args) {
+        System.out.println(MathUtil.format(7000d,BigDecimal.ROUND_DOWN));
     }
 }

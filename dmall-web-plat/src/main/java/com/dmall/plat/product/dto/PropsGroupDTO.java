@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 属性组dto
  * @author:yuhang
  * @Date:2018/9/17
  */
@@ -26,8 +27,14 @@ public class PropsGroupDTO implements Serializable {
     @NotBlank(message = "排序不可为空",groups = {SaveProps.class})
     private Integer sortIndex;
 
+    /**
+     * 简介
+     */
     private String remark;
 
+    /**
+     * 是否是销售属性
+     */
     private Integer isSale;
 
     private List<Props> propsList=new ArrayList<>();

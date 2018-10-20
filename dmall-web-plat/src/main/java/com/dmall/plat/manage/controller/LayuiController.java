@@ -69,4 +69,9 @@ public class LayuiController {
     public String editTest(){
         return "commodity/editTest";
     }
+
+    @RequestMapping("/sku")
+    public String sku(){
+        return "commodity/sku/list";
+    }
 }

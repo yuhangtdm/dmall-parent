@@ -54,7 +54,7 @@ public class SkuDTO implements Serializable {
      * 品牌id
      */
     @NotNull(message = "品牌id不能为空")
-    private Integer brandId;
+    private Long brandId;
 
 
     /**
@@ -82,6 +82,11 @@ public class SkuDTO implements Serializable {
      * sku属性
      */
     private String skuProperties;
+
+    /**
+     * 排序
+     */
+    private Integer sortIndex;
 
 
 

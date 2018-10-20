@@ -10,6 +10,7 @@ import com.dmall.common.enums.ImageTypeEnum;
 import com.dmall.common.enums.MediaEnum;
 import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.exception.BusinessException;
+import com.dmall.common.utils.StringUtil;
 import com.dmall.plat.product.dto.FullProductDTO;
 import com.dmall.plat.product.dto.PropsDTO;
 import com.dmall.plat.product.dto.PropsGroupDTO;
@@ -66,6 +67,9 @@ public class ProductController {
 
     @Autowired
     private PropsOptionService propsOptionService;
+
+    @Autowired
+    private SkuService skuService;
 
     @Autowired
     private QiniuUtil qiniuUtil;
@@ -316,6 +320,30 @@ public class ProductController {
         return ResultUtil.buildResult(ResultEnum.SUCC,list);
     }
 
+
+    /**
+     * 跳转到SKU添加页面
+     */
+    @RequestMapping("skuEdit")
+    public String edit(@NotBlank(message = "商品编码不能为空") String productCode, HttpServletRequest request){
+        Product product = productService.selectByProductCode(productCode);
+        List<Sku> list = skuService.list(productCode);
+        Integer sortIndex=1;
+        if(StringUtil.isNotEmptyObj(list)){
+            Sku sku = list.get(0);
+            if(sku!=null && sku.getSortIndex()!=null){
+                sortIndex=sku.getSortIndex()+1;
+            }
+        }
+        // 查询商品下的属性组 属性
+        List<Map<String,Object>> jsonObjects = productPropertyService.selectByProductCode(productCode);
+        request.setAttribute("groupPropsArray",jsonObjects);
+        request.setAttribute("productCode",productCode);
+        request.setAttribute("productType",product.getProductType());
+        request.setAttribute("brandId",product.getBrandId());
+        request.setAttribute("sortIndex",sortIndex);
+        return "commodity/product/skuEdit";
+    }
 
     private List<PropsGroupDTO> getProps(String productCode) {
         List<PropsGroupDTO> propsDTOList=new ArrayList<>();

@@ -28,14 +28,13 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,32 +69,11 @@ public class SkuController {
     @Autowired
     private QiniuUtil qiniuUtil;
 
-    /**
-     * 跳转到SKU添加页面
-     */
-    @RequestMapping("edit")
-    public String edit(@NotBlank(message = "商品编码不能为空") String productCode, HttpServletRequest request){
-        Product product = productService.selectByProductCode(productCode);
-        List<Sku> list = skuService.list(productCode);
-        Integer sortIndex=1;
-        if(StringUtil.isNotEmptyObj(list)){
-            Sku sku = list.get(0);
-            if(sku!=null && sku.getSortIndex()!=null){
-                sortIndex=sku.getSortIndex()+1;
-            }
-        }
-        List<JSONObject> jsonObjects = productPropertyService.selectByProductCode(productCode);
-        request.setAttribute("groupPropsArray",jsonObjects);
-        request.setAttribute("productCode",productCode);
-        request.setAttribute("productType",product.getProductType());
-        request.setAttribute("brandId",product.getBrandId());
-        request.setAttribute("sortIndex",sortIndex);
-        return "commodity/sku/edit";
-    }
+
 
 
     /**
-     *商品列表
+     *sku列表
      */
     @RequestMapping("page")
     @ResponseBody
@@ -117,15 +95,14 @@ public class SkuController {
         sku.setCostPrice(MathUtil.format(skuDTO.getCostPrice(),BigDecimal.ROUND_DOWN));
         sku.setMarketPrice(MathUtil.format(skuDTO.getMarketPrice(),BigDecimal.ROUND_DOWN));
         sku.setPrice(MathUtil.format(skuDTO.getPrice(),BigDecimal.ROUND_DOWN));
-        List<SkuProperty> skuProperties=genSkuProperty(fullSkuDTO);
+        List<SkuProperty> skuProperties=genSkuProperty(sku,fullSkuDTO.getSkuPropertyList());
         skuService.saveFullSku(sku,fullSkuDTO.getImgVoArray(),skuProperties);
         return ResultUtil.buildResult(ResultEnum.SUCC.getCode(),"sku保存成功");
     }
 
-    private List<SkuProperty> genSkuProperty(@RequestBody @Validated FullSkuDTO fullSkuDTO) {
+    private List<SkuProperty> genSkuProperty(Sku sku,List<SkuPropertyDTO> skuPropertyList)  {
         List<SkuProperty> skuProperties=new ArrayList<>();
         JSONObject skuPropertyObj=new JSONObject();
-        List<SkuPropertyDTO> skuPropertyList = fullSkuDTO.getSkuPropertyList();
         for (SkuPropertyDTO skuPropertyDTO : skuPropertyList) {
             SkuProperty skuProperty=new SkuProperty();
             BeanUtils.copyProperties(skuPropertyDTO,skuProperty);
@@ -133,18 +110,18 @@ public class SkuController {
                 skuProperty.setSkuImage("yes");
             }
             skuProperties.add(skuProperty);
-            JSONArray array=null;
-            if(skuPropertyObj.containsKey(skuPropertyDTO.getGroupId())){
-                array=skuPropertyObj.getJSONArray(skuPropertyDTO.getGroupId().toString());
+            JSONArray array;
+            if(skuPropertyObj.containsKey(skuPropertyDTO.getGroupName())){
+                array=skuPropertyObj.getJSONArray(skuPropertyDTO.getGroupName());
             }else {
                 array=new JSONArray();
-                skuPropertyObj.put(skuPropertyDTO.getGroupId().toString(),array);
+                skuPropertyObj.put(skuPropertyDTO.getGroupName(),array);
             }
             JSONObject subObject=new JSONObject();
             subObject.put(skuPropertyDTO.getPropertyName(),skuPropertyDTO.getOptionValue());
             array.add(subObject);
         }
-        fullSkuDTO.getSkuDTO().setSkuProperties(skuPropertyObj.toJSONString());
+        sku.setSkuProperties(skuPropertyObj.toJSONString());
         return skuProperties;
     }
 
@@ -217,6 +194,45 @@ public class SkuController {
         }
         skuMediaService.deleteByKey(key);
         return ResultUtil.buildResult(ResultEnum.SUCC.getCode(),"删除成功");
+    }
+
+    /**
+     * sku分页查询
+     */
+    @GetMapping("skuPage")
+    @ResponseBody
+    public ReturnResult skuPage(@RequestParam  Map<String,Object> param, Page page){
+        page=skuService.skuPageList(param,page);
+        return ResultUtil.buildResult(ResultEnum.SUCC,page.getTotal(),page.getRecords());
+    }
+
+    /**
+     * 上架
+     */
+    @RequestMapping("/on")
+    @ResponseBody
+    public ReturnResult onSale(@RequestParam @NotNull(message = "skuId不能为空") Long id){
+        skuService.onSale(id);
+        return ResultUtil.buildResult(ResultEnum.SUCC.getCode(),"上架成功");
+    }
+
+    /**
+     * 下架
+     */
+    @RequestMapping("/off")
+    @ResponseBody
+    public ReturnResult offSale(@RequestParam @NotNull(message = "skuId不能为空") Long id){
+        skuService.offSale(id);
+        return ResultUtil.buildResult(ResultEnum.SUCC.getCode(),"下架成功");
+    }
+
+    /**
+     * 跳转到SKU编辑页面
+     */
+    @RequestMapping("edit")
+    public String edit(@NotNull(message = "skuId不能为空") Long id, HttpServletRequest request){
+
+        return "commodity/sku/edit";
     }
 }
 

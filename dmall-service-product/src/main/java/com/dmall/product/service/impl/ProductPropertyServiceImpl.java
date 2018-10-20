@@ -1,7 +1,9 @@
 package com.dmall.product.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.dmall.common.utils.MathUtil;
 import com.dmall.product.entity.Product;
 import com.dmall.product.entity.ProductProperty;
 import com.dmall.product.mapper.ProductPropertyMapper;
@@ -11,10 +13,7 @@ import org.omg.CORBA.MARSHAL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p>
@@ -87,15 +86,18 @@ public class ProductPropertyServiceImpl extends ServiceImpl<ProductPropertyMappe
     }
 
     @Override
-    public List<JSONObject> selectByProductCode(String productCode) {
-        List<JSONObject> result=new ArrayList<>();
+    public List<Map<String,Object>> selectByProductCode(String productCode) {
+        List<Map<String,Object>> result = new ArrayList<>();
         List<JSONObject> groupArray=mapper.queryGroupByProductCode(productCode);
         for (JSONObject object : groupArray) {
-            List<JSONObject> propsByProductCode=mapper.queryPropsByProductCode(productCode,object.getString("id"));
-            for (JSONObject jsonObject : propsByProductCode) {
-                jsonObject.put("groupId",object.getLong("groupId"));
-                jsonObject.put("groupName",object.getString("name"));
-                result.add(jsonObject);
+            List<JSONObject> propsList=mapper.queryPropsByProductCode(productCode,object.getString("id"));
+            for (JSONObject jsonObject : propsList) {
+                Map<String,Object> map=new HashMap<>();
+                map.put("groupId",object.getLong("id"));
+                map.put("groupName",object.getString("name"));
+                map.put("id",jsonObject.getLong("id"));
+                map.put("name",jsonObject.getString("name"));
+                result.add(map);
             }
         }
         return result;

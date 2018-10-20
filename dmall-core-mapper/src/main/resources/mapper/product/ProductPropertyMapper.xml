@@ -36,41 +36,35 @@
           </where>
     </select>
 
-    <select id="queryGroupByProductCode" resultType="map">
-        SELECT
-        distinct
-        pg.id id,
-        pg.name name
-        from p_product_property pp
-        INNER JOIN p_props_group pg on pp.group_id=pg.id
-        <where>
-            <if test="productCode!=null and productCode!=''">
-                and  pp.product_code=#{productCode}
-            </if>
-        </where>
-        group by pp.group_id
-        order by pg.sort_index
+    <select id="queryGroupByProductCode" resultType="com.alibaba.fastjson.JSONObject">
+        SELECT DISTINCT
+            pg.id id,
+            pg.name name,
+            pg.sort_index
+        FROM
+            p_product_property pp
+        INNER JOIN p_props_group pg ON pp.group_id = pg.id
+        WHERE
+            pp.product_code = #{productCode}
+        ORDER BY
+            pg.sort_index
     </select>
 
 
 
 
-    <select id="queryPropsByProductCode" resultType="map">
-        SELECT
-        distinct
-        pps.id id,
-        pps.name name
-        from p_product_property pp
-        inner join p_props pps on pps.id=pp.property_id
-        <where>
-            <if test="productCode!=null and productCode!=''">
-                and  pp.product_code=#{productCode}
-            </if>
-            <if test="groupId!=null ">
-                and  pp.group_id=#{groupId}
-            </if>
-        </where>
-        order by pps.sort_index
+    <select id="queryPropsByProductCode" resultType="com.alibaba.fastjson.JSONObject">
+            SELECT
+                pps.id id,
+                pps.name name
+            FROM
+                p_product_property pp
+            INNER JOIN p_props pps ON pps.id = pp.property_id
+            WHERE
+                pp.product_code = #{productCode}
+            AND pp.group_id = #{groupId}
+            ORDER BY
+                pps.sort_index
     </select>
 
 </mapper>
