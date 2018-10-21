@@ -4,6 +4,7 @@ import com.dmall.product.entity.SkuProperty;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -16,4 +17,5 @@ import java.util.List;
 public interface SkuPropertyMapper extends BaseMapper<SkuProperty> {
 
     void batchInsert(List<SkuProperty> skuPropertyList);
+
 }

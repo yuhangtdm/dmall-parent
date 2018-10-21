@@ -15,6 +15,10 @@ import java.util.Date;
 public class SkuDTO implements Serializable {
 
     /**
+     * sku id
+     */
+    private Long id;
+    /**
      * SKU 名称
      */
     @NotBlank(message = "sku名称不能为空")
@@ -56,6 +60,10 @@ public class SkuDTO implements Serializable {
     @NotNull(message = "品牌id不能为空")
     private Long brandId;
 
+    /**
+     * 商品分类
+     */
+    private String productType;
 
     /**
      * 商品状态 0-下架 1-上架

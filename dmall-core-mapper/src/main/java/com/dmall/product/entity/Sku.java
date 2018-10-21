@@ -135,6 +135,12 @@ public class Sku implements Serializable {
     private Long brandId;
 
     /**
+     * 商品分类
+     */
+    @TableField("product_type")
+    private String productType;
+
+    /**
      * 状态 0 下架 1 上架
      */
     @ChangeColumn(value = "stateName",dictType = "_product_state")

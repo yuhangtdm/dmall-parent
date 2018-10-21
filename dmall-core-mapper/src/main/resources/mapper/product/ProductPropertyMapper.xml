@@ -51,8 +51,6 @@
     </select>
 
 
-
-
     <select id="queryPropsByProductCode" resultType="com.alibaba.fastjson.JSONObject">
             SELECT
                 pps.id id,

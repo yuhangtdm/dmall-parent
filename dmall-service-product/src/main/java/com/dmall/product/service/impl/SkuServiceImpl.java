@@ -23,8 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -91,15 +93,38 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuSe
         //tudu 定时上架功能
 
         if(StringUtil.isNotEmptyObj(skuPropertyList)){
-            for (SkuProperty skuProperty : skuPropertyList) {
+            List<Long> optionList = skuPropertyList.stream().map(SkuProperty::getOptionId).collect(Collectors.toList());
+            List<Long> oldOptionList=new ArrayList<>();
+            List<Long> insertList=new ArrayList<>();
+            List<Long> deleteList=new ArrayList<>();
+            List<SkuProperty> addList=new ArrayList<>();
+
+            List<SkuProperty> list=skuPropertyService.selectBySkuId(sku.getId());
+            for (SkuProperty skuProperty : list) {
                 skuProperty.setSkuId(sku.getId());
                 if("yes".equals(skuProperty.getSkuImage())){
                     skuProperty.setSkuImage(sku.getSkuMainPic());
                 }
                 skuProperty.setCreateTime(System.currentTimeMillis());
                 skuProperty.setUpdateTime(System.currentTimeMillis());
+                Long optionId = skuProperty.getOptionId();
+                oldOptionList.add(optionId);
+                if(!optionList.contains(optionId)){
+                    insertList.add(optionId);
+                    addList.add(skuProperty);
+                }
             }
-            skuPropertyService.batchInsert(skuPropertyList);
+            for (Long option : optionList) {
+                if(!oldOptionList.contains(option)){
+                    deleteList.add(option);
+                }
+            }
+            if (StringUtil.isNotEmptyObj(addList)){
+                skuPropertyService.batchInsert(addList);
+            }
+            if(StringUtil.isNotEmptyObj(deleteList)){
+                skuPropertyService.batchDelete(deleteList,sku.getId());
+            }
         }
 
 

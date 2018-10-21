@@ -59,6 +59,7 @@
                                 <input type="text" name="productCode" th:value="${productCode}"  autocomplete="off"
                                        class="layui-input" readonly >
                                 <input type="hidden" name="brandId" th:value="${brandId}">
+                                <input type="hidden" name="productType" th:value="${productType}">
                                 <input type="hidden" name="sortIndex" th:value="${sortIndex}">
                             </div>
                         </div>
@@ -276,6 +277,42 @@
                         '<i class="layui-icon layui-icon-close-fill"  style="color:red;cursor:pointer;" imgSrc="'+ res.data.key +'"></i>')
                 }
             });
+
+            // 文件删除
+            $(document).on('click','.layui-icon-close-fill',function () {
+                var _this=$(this);
+                var layerSrc=_this.attr("imgSrc");
+                layer.confirm("确认删除该照片吗?",function (ok) {
+                    $.ajax({
+                        url:"/sku/deleteFile?key="+layerSrc,
+                        type:'post',
+                        beforeSend:function(){
+                            layer.load(1);
+                        },
+                        success:function (data) {
+                            if (data.code==0) {
+                                _this.prev().remove();
+                                _this.remove();
+                                layer.msg(data.msg,{ icon: 1,time:1000 });
+                            } else {
+                                layer.msg(data.msg, { icon: 2,time:1000 });
+                            }
+                        },
+                        error:function (data) {
+                            if(data && data.msg){
+                                layer.msg(data.msg, { icon: 2,time:1000 });
+                            }else{
+                                layer.msg('删除失败 未知异常', { icon: 2,time:1000 });
+                            }
+                        },
+                        complete:function () {
+                            layer.closeAll('loading');
+                        }
+                    })
+
+                })
+            });
+
 
             // 保存按钮点击事件
             $("#saveSku").click(function () {

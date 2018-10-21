@@ -43,4 +43,12 @@ public class SkuMediaServiceImpl extends ServiceImpl<SkuMediaMapper, SkuMedia> i
         wrapper.eq("img_key",key);
         this.delete(wrapper);
     }
+
+    @Override
+    public List<SkuMedia> selectBySkuCode(String skuCode) {
+        EntityWrapper<SkuMedia> wrapper=new EntityWrapper<>();
+        wrapper.eq("sku_code",skuCode);
+        List<SkuMedia> skuMedia = this.selectList(wrapper);
+        return skuMedia;
+    }
 }

@@ -48,7 +48,7 @@ public class SkuProperty implements Serializable {
     private Long groupId;
 
     @TableField("group_name")
-    private Long groupName;
+    private String groupName;
     /**
      * 属性ID
      */
