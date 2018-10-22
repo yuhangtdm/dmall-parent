@@ -24,55 +24,47 @@
             <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
             <button class="layui-btn layui-btn-small" style="line-height:1.6em;margin:3px;float:right" lay-submit id="formSearch" lay-filter="formSearch" title="搜索"><i class="layui-icon layui-icon-search"></i></button>
         </div>
-
         <div class="x-body">
-
             <form class="layui-form" action="" >
-
-                    <div class="layui-row">
-                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg3">
-                            <label class="layui-form-label">品牌名称：</label>
-                            <div class="layui-input-inline">
-                                <input class="layui-input" name="name" >
-                            </div>
-                        </div>
-                        <div class="layui-col-xs6 layui-col-sm6  layui-col-md4 layui-col-lg3">
-                            <label class="layui-form-label">英文名称：</label>
-                            <div class="layui-input-inline">
-                                <input class="layui-input" name="englishName" >
-                            </div>
-                        </div>
-                        <div class="layui-col-xs6 layui-col-sm6  layui-col-md4 layui-col-lg3">
-                            <label class="layui-form-label">首字母：</label>
-                            <div class="layui-input-inline">
-                                <input class="layui-input" name="firstLetter" >
-                            </div>
-                        </div>
-                        <div class="layui-col-xs6 layui-col-sm6  layui-col-md4 layui-col-lg3">
-                            <div class="layui-input-inline" style="width:80px">
-                            </div>
+                <div class="layui-row">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg3">
+                        <label class="layui-form-label">品牌名称：</label>
+                        <div class="layui-input-inline">
+                            <input class="layui-input" name="name" >
                         </div>
                     </div>
+                    <div class="layui-col-xs6 layui-col-sm6  layui-col-md4 layui-col-lg3">
+                        <label class="layui-form-label">英文名称：</label>
+                        <div class="layui-input-inline">
+                            <input class="layui-input" name="englishName" >
+                        </div>
+                    </div>
+                    <div class="layui-col-xs6 layui-col-sm6  layui-col-md4 layui-col-lg3">
+                        <label class="layui-form-label">首字母：</label>
+                        <div class="layui-input-inline">
+                            <input class="layui-input" name="firstLetter" >
+                        </div>
+                    </div>
+                </div>
             </form>
-            <table id="brand"  class="layui-hide"  lay-filter="brand">
+            <table id="brand" class="layui-hide"  lay-filter="brand">
             </table>
             <script type="text/html" id="toolbarDemo">
                 <div class="layui-btn-container">
                     <button class="layui-btn layui-btn" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>添加品牌</button>
                 </div>
             </script>
-
             <script type="text/html" id="logo">
-                <img src="{{ d.logo }}" />
+                {{# if (d.logo!=null || d.logo!='') { }}
+                <img src="http://pgdyorkvy.bkt.clouddn.com/{{d.logo }}?imageView2/2/w/30/h/30" />
+                {{# } }}
             </script>
-
             <script type="text/html" id="barDemo">
                 <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
             </script>
         </div>
         <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
-
         <script>
             layui.config({
                 base: '/controller/'
@@ -81,10 +73,7 @@
                 var table=layui.table;
                 var form=layui.form;
                 var curd=layui.curd;
-
                 curd.initPage('brand','/brand/page',buildColumn());
-
-                //头工具栏事件
                 table.on('toolbar(brand)', function(obj){
                     var checkStatus = table.checkStatus(obj.config.id);
                     switch(obj.event){
@@ -93,8 +82,6 @@
                             break;
                     };
                 });
-
-                //监听行工具事件
                 table.on('tool(brand)', function(obj){
                     var data = obj.data;
                     if(obj.event === 'del'){
@@ -107,15 +94,12 @@
                         curd.openForm('/brand/edit?id='+data.id,'修改品牌','600px', '800px',true);
                     }
                 });
-
-                //监听提交
                 form.on('submit(formSearch)', function(data){
                     table.reload('brand', {
                         where: data.field
                     });
                     return false;
                 });
-
                 function buildColumn() {
                     var cols=[
                         [
@@ -139,7 +123,6 @@
                     ];
                     return cols;
                 }
-
             });
         </script>
     </body>

@@ -4,6 +4,7 @@ import com.dmall.product.entity.Props;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class PropsGroupDTO implements Serializable {
     @NotBlank(message = "商品类型不可为空",groups = {SaveProps.class})
     private String productType;
 
-    @NotBlank(message = "排序不可为空",groups = {SaveProps.class})
+    @NotNull(message = "排序不可为空",groups = {SaveProps.class})
     private Integer sortIndex;
 
     /**

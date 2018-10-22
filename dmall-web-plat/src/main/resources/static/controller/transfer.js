@@ -1,14 +1,12 @@
 layui.extend({
     formSelects:'formSelects',
-    treeSelect:'treeSelect',
     croppers:'croppers'
-}).define(['layer', 'laydate', 'form','formSelects','treeSelect'], function(e) {
+}).define(['layer', 'laydate', 'form','formSelects'], function(e) {
     var $ = layui.jquery;
     var form = layui.form;
     var layer = layui.layer;
     var laydate = layui.laydate;
     var formSelects = layui.formSelects;
-    var treeSelect = layui.treeSelect;
 
     formSelects.config(null, {
         keyName: 'name',
@@ -16,24 +14,22 @@ layui.extend({
     }, false);
 
     var obj={
+        _ajax:function(type,url,successCallback,errorCallBack,async,data,loadding,traditional){
+            ajax(type,url,successCallback,errorCallBack,async,data,loadding,traditional);
+        },
         init:function (bean,url,formId) {
             if(bean){
                 initForm(bean,formId);
-            }
-            if(url){
-                $.ajax({
-                    type: 'GET',
-                    url: url,
-                    success: function(data) {
+            }else{
+                if(url){
+                    ajax('GET',url,function(data) {
                         if (data && data.code && data.code == 0) {
                             initForm(data.data);
                         } else {
                             layer.msg(data.msg, { icon: 5 });
                         }
-                        form.render();
-                    },
-                    dataType: 'json'
-                });
+                    });
+                }
             }
             initSelect(null,formId);
             initFilter(formId);
@@ -45,232 +41,46 @@ layui.extend({
         initDate : function(formId,format,domId,type){
             initDate(formId,format,domId,type);
         },
-        initSelectTree:function (url,id) {
-            initSelectTree(url,id);
-        },
-        initFilter:function () {
-            initFilter();
+        initFilter:function (formId) {
+            initFilter(formId);
         }
     }
-
-    function initFilter(){
-        $("[lay-verify='required']").each(function () {
-            $(this).on('focus',function () {
-                layer.tips('该项必填',this);
-            })
-        })
-    }
-    /**
-     * 初始化下拉框 包括单选 多选 联动选择  树
-     */
-    function initSelect(id,formId) {
-        if(id){
-            select($("#"+id));
-        }else{
-            if(formId){
-                $("#"+formId).find("select[loadData]").each(function(){
-                    select($(this));
-                });
-            }else{
-                $("select[loadData]").each(function(){
-                    select($(this));
-                });
-            }
-
-        }
-
-    }
-
-    function select(sel) {
-        var value = sel.val() || sel.attr("value");
-        sel.empty();
-        sel.append("<option value=''>请选择</option>");
-        //var value = sel.attr("value");
-        var dict=sel.attr("dict")||'';//数据字典的key
-        var bean=sel.attr("bean")||'';//查询下拉框的对象bean
-        var method=sel.attr("method")||'';//查询的方法
-        var linkageWidth=sel.attr("linkageWidth") || 100;
-        if(typeof linkageWidth==="string"){
-            linkageWidth=parseInt(linkageWidth);
-        }
-        var url=sel.attr("url")||'';//查询的路径
-        var xm=sel.attr("xm-select");
-        var xmValue=$("input[name='"+xm+"']").val() || value;
-        var xmVals=[];
-        var type=sel.attr("loadData");
-        var query=sel.attr("query");
-        if(xm && xmValue){
-            if(type=='normal' || type=='tree'){
-                var xms=xmValue.split(",");
-                for(var i=0;i<xms.length;i++){
-                    xmVals.push(parseInt(xms[i]));
-                }
-            }else if(type=='linkage' || type=='region'){
-                var xms=xmValue.split(",");
-                for(var i=0;i<xms.length;i++){
-                    xmVals.push(xms[i]);
-                }
-            }
-        }
-        if(xm && type){
-            if(type=='normal'){
-                if(url){
-                    formSelects.data(xm, 'server', {
-                        url: url,
-                        success:function () {
-                            formSelects.value(xm,xmVals);
-                        }
-                    });
-                }else {
-                    formSelects.data(xm, 'server', {
-                        url: '/common/select?dict='+dict+"&bean="+bean+"&methodName="+method,
-                        success:function () {
-                            formSelects.value(xm,xmVals);
-                        }
-                    });
-                }
-
-            } else if(type=='region'){
-                initRegion(xm,xmValue);
-            } else if(type=='tree'){
-                formSelects.data(xm, 'server', {
-                    url: url,
-                    success:function () {
-                        formSelects.value(xm,xmVals);
-                    }
-                });
-
-            } else if(type=='linkage'){
-                formSelects.data(xm, 'server', {
-                    url: url,
-                    linkage: true,
-                    linkageWidth: linkageWidth,
-                    success:function () {
-                        formSelects.value(xm,xmVals);
-                    }
-                });
-            }
-        }else {
-            if(url){
-                $.ajax({
-                    url : url,
-                    type : "post",
-                    async: false,
-                    success : function(result){
-                        if(result.code==0){
-                            for (var i=0; i<result.data.length; i++){
-                                sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
-                            }
-                            if(value){
-                                sel.val(value);
-                            }
-                        }
-                    }
-                });
-            }else{
-                $.ajax({
-                    url : "/common/select",
-                    type : "post",
-                    data : {"dict":dict,"bean":bean,"methodName":method,"query":query},
-                    async: false,
-                    success : function(result){
-                        if(result.code==0){
-                            for (var i=0; i<result.data.length; i++){
-                                sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
-                            }
-                            if(value){
-                                sel.val(value);
-                            }
-                        }
-                    }
-                });
-            }
-
-        }
-        form.render();
-    }
-
 
     /**
-     * 省市区的加载
-     * @param xm
+     * ajax公用方法
      */
+    function ajax(type,url,successCallback,errorCallBack,async,data,loadding,traditional) {
+        if(traditional==undefined || traditional==null){
+            traditional=false;
+        }
+        if(async==undefined || async==null){
+            async=true;
+        }
 
-    function initRegion(xm,regionValue) {
-        $.getJSON('/json/region.js',function (result) {
-            formSelects.data(xm, 'local', {
-                arr: result.data,
-                linkage: true
-            });
-            var regionVals=regionValue.split(",");
-            formSelects.value(xm, regionVals);
+        $.ajax({
+            type: type,
+            url: url,
+            data:data,
+            async:async,
+            traditional:traditional,
+            beforeSend:function(){
+                if(loadding){
+                    layer.load();
+                }
+            },
+            success: successCallback,
+            error:errorCallBack,
+            complete:function () {
+                if(loadding){
+                    layer.closeAll('loading');
+                }
+
+            }
         });
-    }
-
-
-    function initSelectTree(url,id) {
-        treeSelect.render(
-            {
-                elem: "#"+id,
-                data: url,
-                method: "GET"
-            }
-        );
-    }
-
-    /**
-     * 初始化日期控件
-     * @param formId
-     */
-    function initDate(formId,format,domId,type) {
-        if(!format){
-            format='yyyy-MM-dd HH:mm:ss';
-        }
-        if(!type){
-            type='date';
-        }
-        if(domId){
-            var val = $("#"+domId).val();
-            if (val) {
-                laydate.render({
-                    elem: '#' + domId,
-                    format: format,
-                    type:type,
-                    value: layui.util.toDateString(parseInt(val), 'yyyy-MM-dd') //参数即为：2018-08-20 20:08:08 的时间戳
-                });
-            } else {
-                laydate.render({
-                    elem: '#' + domId,
-                    format: format,
-                    type:type
-                });
-            }
-
-        }else{
-            if(formId) {
-                $("#" + formId).find(".date").each(function () {
-                    var val = $(this).val();
-                    if (val) {
-                        laydate.render({
-                            elem: '#' + $(this).attr("id"),
-                            format: format,
-                            value: layui.util.toDateString(parseInt(val), 'yyyy-MM-dd') //参数即为：2018-08-20 20:08:08 的时间戳
-                        });
-                    } else {
-                        laydate.render({
-                            elem: '#' + $(this).attr("id"),
-                            format: format
-                        });
-                    }
-                })
-            }
-        }
-
     }
 
     /**
      * 根据对象给表单赋值
-     * @param bean
      */
     function initForm(bean,formId) {
         for(var prop in bean){
@@ -283,9 +93,11 @@ layui.extend({
             }
             initData(prop,value,formId);
         }
-
     }
 
+    /**
+     * 给表单赋值的具体方法
+     */
     function initData(prop,value,formId){
         $("#"+formId).find("[name='"+prop+"'],[name='"+prop+"[]']").each(function () {
             var tagName=$(this)[0].tagName;
@@ -330,6 +142,236 @@ layui.extend({
             }
         });
     }
-    
+
+    /**
+     * 初始化下拉框 包括单选 多选 联动选择  树
+     */
+    function initSelect(id,formId) {
+        if(id){
+            select($("#"+id));
+        }else{
+            if(formId){
+                $("#"+formId).find("select[loadData]").each(function(){
+                    select($(this));
+                });
+            }else{
+                $("select[loadData]").each(function(){
+                    select($(this));
+                });
+            }
+        }
+    }
+
+    /**
+     * 下拉框具体的加载方法
+     */
+    function select(sel) {
+        sel.empty();
+        sel.append("<option value=''>请选择</option>");
+        // 下拉框的值
+        var value = sel.val() || sel.attr("value");
+        // 下拉框的类型 normal-普通单选框  linkage-联动框 tree-树 region-省市区
+        var type=sel.attr("loadData");
+        //查询的路径
+        var url=sel.attr("url")||'';
+        //数据字典的key
+        var dict=sel.attr("dict")||'';
+        //查询下拉框的对象bean
+        var bean=sel.attr("bean")||'';
+        //查询的方法
+        var method=sel.attr("method")||'';
+        // 下拉框的宽度
+        var linkageWidth=sel.attr("linkageWidth") || 100;
+        if(typeof linkageWidth==="string"){
+            linkageWidth=parseInt(linkageWidth);
+        }
+        var xm=sel.attr("xm-select");
+        var xmValue=$("input[name='"+xm+"']").val() || value;
+        var xmValues=[];
+        //多选
+        if(xm && xmValue){
+            if(type=='normal' || type=='tree'){
+                var xms=xmValue.split(",");
+                for(var i=0;i<xms.length;i++){
+                    xmValues.push(parseInt(xms[i]));
+                }
+            }else if(type=='linkage' || type=='region'){
+                var xms=xmValue.split(",");
+                for(var i=0;i<xms.length;i++){
+                    xmValues.push(xms[i]);
+                }
+            }
+
+            if(type=='normal'){
+                if(url){
+                    formSelects.data(xm, 'server', {
+                        url: url,
+                        success:function () {
+                            formSelects.value(xm,xmValues);
+                        }
+                    });
+                }else {
+                    formSelects.data(xm, 'server', {
+                        url: '/common/select?dict='+dict+"&bean="+bean+"&methodName="+method,
+                        success:function () {
+                            formSelects.value(xm,xmValues);
+                        }
+                    });
+                }
+            } else if(type=='region'){
+                initRegion(xm,xmValue);
+            } else if(type=='tree'){
+                formSelects.data(xm, 'server', {
+                    url: url,
+                    success:function () {
+                        formSelects.value(xm,xmValues);
+                    }
+                });
+            } else if(type=='linkage'){
+                formSelects.data(xm, 'server', {
+                    url: url,
+                    linkage: true,
+                    linkageWidth: linkageWidth,
+                    success:function () {
+                        formSelects.value(xm,xmValues);
+                    }
+                });
+            }
+
+        } else {
+            // 单选
+            if(url){
+                ajax('POST',url, function(result){
+                    if(result.code==0){
+                        for (var i=0; i<result.data.length; i++){
+                            sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
+                        }
+                        if(value){
+                            sel.val(value);
+                        }
+                    }
+                },null,false);
+                /*$.ajax({
+                    url : url,
+                    type : "post",
+                    async: false,
+                    success : function(result){
+                        if(result.code==0){
+                            for (var i=0; i<result.data.length; i++){
+                                sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
+                            }
+                            if(value){
+                                sel.val(value);
+                            }
+                        }
+                    }
+                });*/
+            }else{
+                ajax('POST',"/common/select", function(result){
+                    if(result.code==0){
+                        for (var i=0; i<result.data.length; i++){
+                            sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
+                        }
+                        if(value){
+                            sel.val(value);
+                        }
+                    }
+                },null,false,{"dict":dict,"bean":bean,"methodName":method});
+                /*$.ajax({
+                    url : "/common/select",
+                    type : "post",
+                    data : {"dict":dict,"bean":bean,"methodName":method},
+                    async: false,
+                    success : function(result){
+                        if(result.code==0){
+                            for (var i=0; i<result.data.length; i++){
+                                sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
+                            }
+                            if(value || value=='0'){
+                                sel.val(value);
+                            }
+                        }
+                    }
+                });*/
+            }
+
+        }
+        form.render();
+    }
+
+    /**
+     * 省市区的加载
+     */
+    function initRegion(xm,regionValue) {
+        $.getJSON('/json/region.js',function (result) {
+            formSelects.data(xm, 'local', {
+                arr: result.data,
+                linkage: true
+            });
+            var regionVals=regionValue.split(",");
+            formSelects.value(xm, regionVals);
+        });
+    }
+
+    /**
+     * 初始化日期控件
+     * @param formId
+     */
+    function initDate(formId,format,domId,type) {
+        if(!format){
+            format='yyyy-MM-dd HH:mm:ss';
+        }
+        if(!type){
+            type='date';
+        }
+        if(domId){
+            var val = $("#"+domId).val();
+            if (val) {
+                laydate.render({
+                    elem: '#' + domId,
+                    format: format,
+                    type:type,
+                    value: layui.util.toDateString(parseInt(val), 'yyyy-MM-dd') //参数即为：2018-08-20 20:08:08 的时间戳
+                });
+            } else {
+                laydate.render({
+                    elem: '#' + domId,
+                    format: format,
+                    type:type
+                });
+            }
+
+        }else{
+            if(formId) {
+                $("#" + formId).find(".date").each(function () {
+                    var val = $(this).val();
+                    if (val) {
+                        laydate.render({
+                            elem: '#' + $(this).attr("id"),
+                            format: format,
+                            value: layui.util.toDateString(parseInt(val), 'yyyy-MM-dd')
+                        });
+                    } else {
+                        laydate.render({
+                            elem: '#' + $(this).attr("id"),
+                            format: format
+                        });
+                    }
+                })
+            }
+        }
+    }
+
+    /**
+     * 必填项提示框公共方法
+     */
+    function initFilter(){
+        $("[lay-verify='required']").each(function () {
+            $(this).on('focus',function () {
+                layer.tips('该项必填',this);
+            })
+        })
+    }
+
     e('transfer',obj);
 });

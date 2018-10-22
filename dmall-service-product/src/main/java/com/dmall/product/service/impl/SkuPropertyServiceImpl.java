@@ -47,7 +47,7 @@ public class SkuPropertyServiceImpl extends ServiceImpl<SkuPropertyMapper, SkuPr
     @Override
     public JSONArray selectSkuPropertySkuId(Sku sku) {
         JSONArray result = new JSONArray();
-        // 查询商品下的分组 按照组排序
+        // 查询商品下的属性组 按照组排序
         List<JSONObject> jsonObjects = productPropertyService.queryGroupByProductCode(sku.getProductCode());
         for (JSONObject groupObj : jsonObjects) {
             // 根据组查询属性 按照属性顺序排序
@@ -64,6 +64,10 @@ public class SkuPropertyServiceImpl extends ServiceImpl<SkuPropertyMapper, SkuPr
                     }else {
                         propObj.put("needPic",false);
                     }
+                }else {
+                    propObj.put("optionId",null);
+                    propObj.put("optionValue",null);
+                    propObj.put("needPic",false);
                 }
                 result.add(propObj);
             }

@@ -72,19 +72,19 @@
                     <div class="layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
                         <label class="layui-form-label">销量</label>
                         <div class="layui-input-block">
-                            <input type="number" name="saleCount"  class="layui-input" disabled="disabled">
+                            <input type="number" name="saleCount"  class="layui-input layui-disabled" disabled>
                         </div>
                     </div>
                     <div class=" layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
                         <label class="layui-form-label">浏览量</label>
                         <div class="layui-input-block">
-                            <input type="number" name="viewCount" class="layui-input" disabled="disabled">
+                            <input type="number" name="viewCount" class="layui-input layui-disabled" disabled>
                         </div>
                     </div>
                     <div class=" layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
                         <label class="layui-form-label">评论数</label>
                         <div class="layui-input-block">
-                            <input type="number" name="commentCount" class="layui-input" disabled="disabled">
+                            <input type="number" name="commentCount" class="layui-input layui-disabled" disabled>
                         </div>
                     </div>
                 </div>
@@ -92,19 +92,19 @@
                     <div class="layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
                         <label class="layui-form-label">好评数</label>
                         <div class="layui-input-block">
-                            <input type="number" name="goodCommentCount"  class="layui-input" disabled="disabled">
+                            <input type="number" name="goodCommentCount"  class="layui-input  layui-disabled" disabled>
                         </div>
                     </div>
                     <div class=" layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
                         <label class="layui-form-label">中评数</label>
                         <div class="layui-input-block">
-                            <input type="number" name="middleCommentCount" class="layui-input" disabled="disabled">
+                            <input type="number" name="middleCommentCount" class="layui-input  layui-disabled" disabled>
                         </div>
                     </div>
                     <div class=" layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
                         <label class="layui-form-label">差评数</label>
                         <div class="layui-input-block">
-                            <input type="number" name="badCommentCount"  class="layui-input" disabled="disabled">
+                            <input type="number" name="badCommentCount"  class="layui-input  layui-disabled" disabled>
                         </div>
                     </div>
                 </div>
@@ -112,13 +112,13 @@
                     <div class="layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
                         <label class="layui-form-label">好评率</label>
                         <div class="layui-input-block">
-                            <input type="text" name="goodRate"  class="layui-input" disabled="disabled">
+                            <input type="text" name="goodRate"  class="layui-input  layui-disabled">
                         </div>
                     </div>
                     <div class=" layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
                         <label class="layui-form-label">评分</label>
                         <div class="layui-input-block">
-                            <input type="number" name="score" class="layui-input" disabled="disabled">
+                            <input type="number" name="score" class="layui-input  layui-disabled" disabled>
                         </div>
                     </div>
 
@@ -133,7 +133,7 @@
                     <div class=" layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
                         <label class="layui-form-label">锁定库存</label>
                         <div class="layui-input-block">
-                            <input type="number" name="frozenStock"  class="layui-input" disabled="disabled">
+                            <input type="number" name="frozenStock"  class="layui-input layui-disabled" disabled>
                         </div>
                     </div>
                 </div>
@@ -141,20 +141,20 @@
                     <div class=" layui-col-xs4 layui-col-sm4 layui-col-md8 layui-col-lg4">
                         <label class="layui-form-label">状态</label>
                         <div class="layui-input-block">
-                            <select loadData="normal" dict="_product_state"  name="state" >
+                            <select loadData="normal" th:value="${sku.state}" dict="_product_state"  name="state" class="layui-disabled"  disabled>
                             </select>
                         </div>
                     </div>
                     <div th:if="${sku.state==1}" class="layui-col-xs4 layui-col-sm4 layui-col-md8 layui-col-lg4">
                         <label class="layui-form-label">上架时间</label>
                         <div class="layui-input-block">
-                            <input type="text" id="onSaleTime" class="layui-input date"  disabled="disabled"  name="onSaleTime">
+                            <input type="text" id="onSaleTime" class="layui-input layui-disabled date"  disabled  name="onSaleTime">
                         </div>
                     </div>
                     <div th:if="${sku.state==0}" class="layui-col-xs4 layui-col-sm4 layui-col-md8 layui-col-lg4">
                         <label class="layui-form-label">上架时间</label>
                         <div class="layui-input-block">
-                            <input type="text" id="offSaleTime" class="layui-input date" disabled="disabled"  name="offSaleTime">
+                            <input type="text" id="offSaleTime" class="layui-input layui-disabled date" disabled name="offSaleTime">
                         </div>
                     </div>
                 </div>
@@ -211,8 +211,7 @@
                         <div class="layui-input-block">
                             <select loadData="linkage" url="/type/tree" xm-select-search=""
                                     name="productType" xm-select="productType" th:value="${sku.productType}"
-                                    disabled="disabled"
-                                    linkage="true" linkageWidth="140" xm-select-radio="" lay-verify="required">
+                                    disabled linkage="true" linkageWidth="140" xm-select-radio="" lay-verify="required">
                             </select>
                         </div>
                     </div>
@@ -220,15 +219,14 @@
                         <label class="layui-form-label">品牌</label>
                         <div class="layui-input-block">
                             <select id="brandId" name="brandId" lay-filter="brandId" th:value="${sku.brandId}"
-                                    lay-verify="required"
-                                    disabled="disabled" loadData="normal" url="/brand/listAll">
+                                    class="layui-disabled" disabled loadData="normal" url="/brand/listAll">
                             </select>
                         </div>
                     </div>
                     <div class=" layui-col-xs3 layui-col-sm3 layui-col-md3 layui-col-lg3">
                         <label class="layui-form-label">商品名称</label>
                         <div class="layui-input-block">
-                            <input class="layui-input" th:value="${productName}" disabled="disabled"/>
+                            <input class="layui-input layui-disabled " th:value="${productName}" disabled/>
                         </div>
                     </div>
                 </div>
@@ -236,23 +234,21 @@
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">
                         <label class="layui-form-label">属性组</label>
                         <div class="layui-input-block">
-                            <input class="layui-input group" th:groupId="${prop.groupId}" th:value="${prop.groupName}"
-                                   disabled="disabled"/>
+                            <input class="layui-input layui-disabled group" th:groupId="${prop.groupId}" th:value="${prop.groupName}" disabled/>
                         </div>
                     </div>
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">
                         <label class="layui-form-label">属性</label>
                         <div class="layui-input-block">
-                            <input class="layui-input prop" th:propId="${prop.id}" th:value="${prop.name}"
-                                   disabled="disabled"/>
+                            <input class="layui-input layui-disabled prop" th:propId="${prop.id}" th:value="${prop.name}"
+                                   disabled/>
                         </div>
                     </div>
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md3 layui-col-lg3">
                         <label class="layui-form-label">属性值</label>
                         <div class="layui-input-block">
                             <select loadData="normal" th:value="${prop.optionId}"
-                                    th:url="@{'/product/getOptions?propsId='+${prop.id}}" lay-verify="required"
-                                    lay-filter="values">
+                                    th:url="@{'/product/getOptions?propsId='+${prop.id}}"  lay-search>
                             </select>
                         </div>
                     </div>
@@ -279,32 +275,29 @@
         base: '/controller/'
     }).use(['element', 'form', 'transfer', 'curd', 'layer', 'layedit', 'upload', 'croppers', 'table', 'code'], function () {
         var $ = layui.$;
-        var form = layui.form;
         var transfer = layui.transfer;
         var curd = layui.curd;
         var element = layui.element;
-        var formSelects = layui.formSelects;
         var layer = layui.layer;
-        var table = layui.table;
         var croppers = layui.croppers;
         var layedit = layui.layedit;
 
         transfer.init([[${sku}]], null, 'sku-form');
         transfer.initDate('sku-form', 'yyyy-MM-dd HH:mm:ss', 'onSaleTime', 'datetime');
         transfer.initDate('sku-form', 'yyyy-MM-dd HH:mm:ss', 'offSaleTime', 'datetime');
-        transfer.initFilter();
         transfer.initSelect(null,'propsForm');
         $("input[name='costPrice'],input[name='marketPrice'],input[name='price']").on('focus', function () {
             var that = this;
             layer.tips('价格必填,保留两位小数', that);
         });
 
-        // 建立编辑器
+        //layedit 文件上传
         layedit.set({
             uploadImage: {
                 url: '/sku/layEditUpload'
             }
         });
+        // 建立编辑器
         var extIndex = layedit.build('skuContent', {
             height: 1000 //设置编辑器高度
         });
@@ -316,7 +309,7 @@
             encode: true,
             skin: 'notepad',
             about: false
-        }); //引用code方法
+        });
 
         //文件上传
         croppers.render({
@@ -337,34 +330,22 @@
         $(document).on('click','.layui-icon-close-fill',function () {
             var _this=$(this);
             var layerSrc=_this.attr("imgSrc");
-            layer.confirm("确认删除该照片吗?",function (ok) {
-                $.ajax({
-                    url:"/sku/deleteFile?key="+layerSrc,
-                    type:'post',
-                    beforeSend:function(){
-                        layer.load(1);
-                    },
-                    success:function (data) {
-                        if (data.code==0) {
-                            _this.prev().remove();
-                            _this.remove();
-                            layer.msg(data.msg,{ icon: 1,time:1000 });
-                        } else {
-                            layer.msg(data.msg, { icon: 2,time:1000 });
-                        }
-                    },
-                    error:function (data) {
-                        if(data && data.msg){
-                            layer.msg(data.msg, { icon: 2,time:1000 });
-                        }else{
-                            layer.msg('删除失败 未知异常', { icon: 2,time:1000 });
-                        }
-                    },
-                    complete:function () {
-                        layer.closeAll('loading');
+            layer.confirm("确认删除该照片吗?",function (index) {
+                transfer._ajax('POST',"/sku/deleteFile?key="+layerSrc,function (data) {
+                    if (data.code==0) {
+                        _this.prev().remove();
+                        _this.remove();
+                        layer.msg(data.msg,{ icon: 1,time:1000 });
+                    } else {
+                        layer.msg(data.msg, { icon: 2,time:1000 });
                     }
-                });
-
+                },function (data) {
+                    if(data && data.msg){
+                        layer.msg(data.msg, { icon: 2,time:1000 });
+                    }else{
+                        layer.msg('删除失败 未知异常', { icon: 2,time:1000 });
+                    }
+                },true,null,true);
             })
         });
 

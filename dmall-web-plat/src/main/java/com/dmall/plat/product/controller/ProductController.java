@@ -382,7 +382,9 @@ public class ProductController {
             }
             propsDTOList.add(groupDTO);
         }
-        propsDTOList.add(saleDTO);
+        if(saleDTO.getIsSale()!=null){
+            propsDTOList.add(saleDTO);
+        }
 
         return propsDTOList;
     }

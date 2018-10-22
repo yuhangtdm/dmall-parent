@@ -44,11 +44,6 @@ public class PropsOption implements Serializable {
      */
     @TableField("option_value")
     private String optionValue;
-    /**
-     * 配图
-     */
-    @TableField("option_pic")
-    private String optionPic;
 
     /**
      * 创建时间

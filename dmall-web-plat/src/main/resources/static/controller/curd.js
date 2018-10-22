@@ -1,9 +1,10 @@
-layui.define(['layer','table','zTree','form'],function (e) {
+layui.define(['layer','table','zTree','form','transfer'],function (e) {
     var layer = layui.layer;
     var $ = layui.$;
     var table = layui.table;
     var zTree=layui.zTree;
     var form = layui.form;
+    var transfer=layui.transfer;
 
     var obj={
         openForm:function (url,title,width,height,full) {
@@ -48,10 +49,6 @@ layui.define(['layer','table','zTree','form'],function (e) {
 
     /**
      * 打开弹窗表单
-     * @param url 路径
-     * @param title 弹窗标题
-     * @param width 弹框宽度
-     * @param height 弹框高度
      */
     function openForm(url,title,width,height,full) {
         layer.open({
@@ -70,12 +67,7 @@ layui.define(['layer','table','zTree','form'],function (e) {
     }
 
     /**
-     *
-     * @param url
-     * @param title
-     * @param width
-     * @param height
-     * @param full
+     * 打开有确定按钮的表单
      */
     function open(url,title,width,height,callback,full) {
         layer.open({
@@ -102,13 +94,6 @@ layui.define(['layer','table','zTree','form'],function (e) {
 
     /**
      * 打开树
-     * @param url
-     * @param style
-     * @param title
-     * @param width
-     * @param height
-     * @param callback
-     * @param full
      */
     function openTree(url,style,title,width,height,callback,full) {
         var obj={
@@ -161,95 +146,63 @@ layui.define(['layer','table','zTree','form'],function (e) {
         }
         var ty='POST';
         if(type){
-            ty='POST';
+            ty=type;
         }
-        $.ajax({
-            url:url,
-            type:ty,
-            data:requestData,
-            contentType:contentType,
-            beforeSend:function(){
-               layer.load(1);
-            },
-            traditional:traditional,
-            success:function (data) {
-                if(data.code==0){
-                    layer.msg(data.msg,{
-                        icon:1,
-                        time:1000
-                    },function () {
-                        if(callback){
-                            callback();
-                        }
-                    });
-                }else{
-                    layer.msg(data.msg,{icon:2})
-                }
-            },
-            complete:function(){
-                layer.closeAll('loading');
-            },
-            error:function (data) {
-                var msg="";
-                if(data && data.responseJSON && data.responseJSON.msg){
-                    msg=data.responseJSON.msg;
-                }else{
-                    msg='服务故障';
-                }
-                layer.msg(msg,{icon:2})
+        transfer._ajax(ty,url,function (data) {
+            if(data.code==0){
+                layer.msg(data.msg,{
+                    icon:1,
+                    time:1000
+                },function () {
+                    if(callback){
+                        callback();
+                    }
+                });
+            }else{
+                layer.msg(data.msg,{icon:2})
             }
-
-        })
+        },function (data) {
+            var msg="";
+            if(data && data.responseJSON && data.responseJSON.msg){
+                msg=data.responseJSON.msg;
+            }else{
+                msg='服务故障';
+            }
+            layer.msg(msg,{icon:2})
+        },false,requestData,true,traditional);
     }
 
     /**
-     * 正常表单弹窗的保存
-     * @param url
-     * @param requestData
+     * 普通弹窗的保存 保存成功后关闭弹窗 刷新父页面
      */
     function saveOrUpdate(url,requestData,type,json) {
         save(url,requestData,saveAfter,type,json);
     }
 
     /**
-     * 有回调的删除
-     * @param url
-     * @param callbak
+     * 公共删除方法
      */
     function deleteById(url,callback) {
-        var load;
-        $.ajax({
-            type:'GET',
-            url:url,
-            async:false,
-            beforeSend:function(){
-                load=layer.load(1);
-            },
-            success:function (data) {
-                if(data.code==0){
-                    layer.msg("删除成功",{
-                        icon: 1,
-                        time: 1000
-                    },function () {
-                        layer.closeAll();
-                        callback();
-                    });
-                }else {
-                    layer.msg(data.msg,{icon:2})
-                }
-            },
-            error:function (data) {
-                var msg=data.responseJSON.msg || '服务异常';
-                layer.msg(msg,{icon:2})
+        transfer._ajax('GET',url,function (data) {
+            if(data.code==0){
+                layer.msg("删除成功",{
+                    icon: 1,
+                    time: 1000
+                },function () {
+                    layer.closeAll();
+                    callback();
+                });
+            }else {
+                layer.msg(data.msg,{icon:2})
             }
-        })
+        },function (data) {
+            var msg=data.responseJSON.msg || '服务异常';
+            layer.msg(msg,{icon:2})
+        },false,null,true);
     }
 
     /**
-     * 表格的初始化
-     * @param id
-     * @param url
-     * @param cols
+     * 公共表格初始化方法
      */
     function initPage(id,url,cols) {
         table.render({
@@ -269,13 +222,14 @@ layui.define(['layer','table','zTree','form'],function (e) {
                 limitName: 'size'
             },
             done:function (res, curr, count) {
-                
             }
         });
     }
 
+    /**
+     * 简单表格初始化方法
+     */
     function initSimplePage(id,url,cols) {
-
         table.render({
             elem: '#'+id,
             id: id,
@@ -291,43 +245,12 @@ layui.define(['layer','table','zTree','form'],function (e) {
                 limitName: 'size'
             },
             done:function (res, curr, count) {
-
             }
         });
     }
 
     /**
-     * 保存之后关闭弹窗
-     */
-    function saveAfter() {
-        window.parent.location.reload();//刷新父页面
-        var index=parent.layer.getFrameIndex(window.name);
-        parent.layer.close(index);//关闭父窗口
-    }
-
-    form.verify({
-        password:function (value) {
-            var passReg='(?![0-9A-Z]+$)(?![0-9a-z]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,18}$';
-            var r = '/^[^\u4e00-\u9fa5]+$/';
-            if(!passReg.match(value) && r.match(value)){
-                return "密码必须包含数字、大小写字母,不包含汉字,且至少六位";
-            }
-        },
-        bigZero:function (value) {
-            if(parseFloat(value)<0){
-                return "数字必须大于0";
-            }
-        },
-        twoDecimal:function (value) {
-            var decimalReg='/^\\d+(\\.\\d{1,2})?$/';
-            if(!decimalReg.match(value)){
-                return "只能有两位小数点";
-            }
-        }
-    });
-
-    /**
-     * 格式化表单对象为json对象
+     * 格式化表单对象的方法
      */
     function toJson(formId) {
         var o={};
@@ -359,6 +282,38 @@ layui.define(['layer','table','zTree','form'],function (e) {
         });
         return o;
     }
+
+
+    /**
+     * 弹窗保存之后的回调方法
+     */
+    function saveAfter() {
+        window.parent.location.reload();//刷新父页面
+        var index=parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);//关闭父窗口
+    }
+
+    form.verify({
+        password:function (value) {
+            var passReg='(?![0-9A-Z]+$)(?![0-9a-z]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,18}$';
+            var r = '/^[^\u4e00-\u9fa5]+$/';
+            if(!passReg.match(value) && r.match(value)){
+                return "密码必须包含数字、大小写字母,不包含汉字,且至少六位";
+            }
+        },
+        bigZero:function (value) {
+            if(parseFloat(value)<0){
+                return "数字必须大于0";
+            }
+        },
+        twoDecimal:function (value) {
+            var decimalReg='/^\\d+(\\.\\d{1,2})?$/';
+            if(!decimalReg.match(value)){
+                return "只能有两位小数点";
+            }
+        }
+    });
+
 
 
     e('curd',obj);
