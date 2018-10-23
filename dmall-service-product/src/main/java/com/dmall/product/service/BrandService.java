@@ -40,10 +40,11 @@ public interface BrandService extends IService<Brand> {
      * @return
      */
     List<Brand> list(Long productType);
+
+
     /**
      * 删除品牌
      * @param id
-     * @return
      */
-    List<Brand> deleteById(Long id);
+    List<Brand> delete(Long id);
 }

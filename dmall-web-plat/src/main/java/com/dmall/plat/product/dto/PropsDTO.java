@@ -14,6 +14,9 @@ import java.util.List;
 public class PropsDTO implements Serializable {
 
     private static final long serialVersionUID = 4092276563120191943L;
+    /**
+     * id
+     */
     private Long id;
     /**
      * 属性名称

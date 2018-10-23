@@ -57,6 +57,9 @@ public class ProductTypeController {
         return ResultUtil.buildResult(ResultEnum.SUCC,"success",result);
     }
 
+    /**
+     * 查询所有商品分类的树数据
+     */
     @RequestMapping("ztree")
     @ResponseBody
     public List<ProductType> ztree(){
@@ -81,11 +84,12 @@ public class ProductTypeController {
 
     /**
      * 商品分类删除
+     * 如果分类下有商品 不允许删除
+     * 删除时级联删除 分类-品牌表 属性组 属性 属性值
      */
     @RequestMapping("delete")
     @ResponseBody
     public ReturnResult delete(@NotNull(message = "id不能为空") Long id){
-        //todo 类型下维护了商品 维护了属性 不可删除
         productTypeService.batchDelete(id);
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
@@ -122,7 +126,6 @@ public class ProductTypeController {
             brandIds.add(Long.parseLong(s));
         }
         build.put("brandIds",brandIds);
-
         List<Long> list=new ArrayList<>();
         list.add(Long.parseLong(typeBrandDTO.getTypeIds()));
         build.put("typeIds",list);

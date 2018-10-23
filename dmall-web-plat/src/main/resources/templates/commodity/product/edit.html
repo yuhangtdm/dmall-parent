@@ -253,7 +253,6 @@
             });
             // 编辑时初始化数据
             if(productVo.product.id){
-
                 var product=productVo.product;
                 var split=product.productType.split("/");
                 $("#brandId").attr("url","/brand/listAll?productTypeId="+split[split.length-1]);

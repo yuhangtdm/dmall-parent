@@ -2,7 +2,9 @@ package com.dmall.product.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.dmall.common.utils.StringUtil;
 import com.dmall.product.entity.PropsOption;
+import com.dmall.product.entity.SkuProperty;
 import com.dmall.product.mapper.PropsOptionMapper;
 import com.dmall.product.service.PropsOptionService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -43,5 +45,26 @@ public class PropsOptionServiceImpl extends ServiceImpl<PropsOptionMapper, Props
     @Override
     public List<JSONObject> queryOptionsByPropsId(Long propsId) {
         return  mapper.queryOptionsByPropsId(propsId);
+    }
+
+    @Override
+    public void deleteByProductType(String type) {
+        EntityWrapper<PropsOption> wrapper=new EntityWrapper<>();
+        wrapper.eq("product_type",type);
+        this.delete(wrapper);
+    }
+
+    @Override
+    public void deleteByGroupId(Long groupId) {
+        EntityWrapper<PropsOption> wrapper=new EntityWrapper<>();
+        wrapper.eq("group_id",groupId);
+        this.delete(wrapper);
+    }
+
+    @Override
+    public void deleteByPropertyId(Long id) {
+        EntityWrapper<PropsOption> wrapper=new EntityWrapper<>();
+        wrapper.eq("props_id",id);
+        this.delete(wrapper);
     }
 }

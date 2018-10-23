@@ -25,4 +25,6 @@ public interface SkuPropertyService extends IService<SkuProperty> {
     JSONArray selectSkuPropertySkuId(Sku sku);
 
     void batchDelete(List<Long> deleteList,Long skuCode);
+
+    boolean validOption(Long propId,List<String> delete);
 }

@@ -22,4 +22,20 @@ public interface PropsService extends IService<Props> {
     void saveOrUpdate(Props props, List<String> propValues);
 
     List<Props> listAll(String productTypeId, Long groupId);
+
+    /**
+     * 根据商品分类删除属性
+     */
+    void deleteByProductType(String type);
+
+    /**
+     * 根据属性组删除属性
+     * @param id
+     */
+    void deleteByGroupId(Long id);
+
+    /**
+     * 删除属性及其属性值
+     */
+    void deleteObj(Long id);
 }

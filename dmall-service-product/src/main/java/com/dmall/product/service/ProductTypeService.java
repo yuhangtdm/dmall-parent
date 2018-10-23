@@ -41,8 +41,7 @@ public interface ProductTypeService extends IService<ProductType> {
 
 
     /**
-     * 删除节点以及后代节点
-     * @param id
+     * 删除商品分类
      */
     List<ProductType> batchDelete(Long id);
 
@@ -61,8 +60,6 @@ public interface ProductTypeService extends IService<ProductType> {
 
     /**
      * ztree
-     * @param pid
-     * @return
      */
     List<ProductType> ztree(long pid);
 }

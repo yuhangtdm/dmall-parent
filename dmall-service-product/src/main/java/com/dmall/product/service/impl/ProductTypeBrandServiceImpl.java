@@ -57,19 +57,19 @@ public class ProductTypeBrandServiceImpl extends ServiceImpl<ProductTypeBrandMap
         mapper.batchInsert2(brandIds,typeId);
     }
 
-    @Override
-    public List<ProductTypeBrand> selectByParam(Long brandId, Long typeId) {
-        EntityWrapper<ProductTypeBrand> wrapper=new EntityWrapper();
-        wrapper.eq("product_type_id",typeId);
-        wrapper.eq("brand_id",brandId);
-        return this.selectList(wrapper);
-    }
 
     @Override
     public void deleteByBrandId(List<Long> delBrandIds, Long typeId) {
         EntityWrapper<ProductTypeBrand> wrapper=new EntityWrapper();
         wrapper.in("brand_id",delBrandIds);
         wrapper.eq("product_type_id",typeId);
+        this.delete(wrapper);
+    }
+
+    @Override
+    public void deleteByProductType(Long id) {
+        EntityWrapper<ProductTypeBrand> wrapper=new EntityWrapper();
+        wrapper.eq("product_type_id",id);
         this.delete(wrapper);
     }
 

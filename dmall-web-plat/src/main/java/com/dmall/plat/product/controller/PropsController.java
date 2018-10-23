@@ -17,6 +17,7 @@ import com.dmall.product.service.ProductTypeService;
 import com.dmall.product.service.PropsGroupService;
 import com.dmall.product.service.PropsOptionService;
 import com.dmall.product.service.PropsService;
+import com.dmall.util.ValidUtil;
 import com.dmall.web.common.result.ReturnResult;
 import com.dmall.web.common.utils.ResultUtil;
 import org.springframework.beans.BeanUtils;
@@ -30,10 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -63,7 +61,7 @@ public class PropsController {
     private PropsOptionService propsOptionService;
 
     /**
-     *属性组列表
+     *属性组分页列表
      */
     @RequestMapping("group/page")
     @ResponseBody
@@ -96,7 +94,26 @@ public class PropsController {
         validGroup(groupDTO);
         PropsGroup group=new PropsGroup();
         BeanUtils.copyProperties(groupDTO,group);
+        if(ValidUtil.valid(group,"propsGroupServiceImpl","name","productType")){
+            throw new BusinessException(ResultEnum.SERVER_ERROR,"同一商品分类下的属性组名称必须唯一");
+        }
         propsGroupService.saveOrUpdate(group);
+        return ResultUtil.buildResult(ResultEnum.SUCC);
+    }
+
+    /**
+     * 属性组删除
+     */
+    @RequestMapping("group/delete")
+    @ResponseBody
+    public ReturnResult groupDelete(@NotNull(message = "id不能为空") Long id){
+        if(!ValidUtil.validList("productPropertyServiceImpl","group_id",id)){
+            throw new BusinessException(ResultEnum.SERVER_ERROR,"该属性组下有商品,不可删除");
+        }
+        /**
+         * 删除属性组下的属性及属性值
+         */
+        propsGroupService.deleteObj(id);
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
 
@@ -156,7 +173,6 @@ public class PropsController {
         return ResultUtil.buildResult(ResultEnum.SUCC,result);
     }
 
-
     /**
      * 属性保存 包含属性值
      */
@@ -165,6 +181,13 @@ public class PropsController {
     public ReturnResult save(@Validated PropsDTO propsDTO){
         Props group=new Props();
         BeanUtils.copyProperties(propsDTO,group);
+        if(ValidUtil.valid(group,"propsServiceImpl","name","groupId")){
+            throw new BusinessException(ResultEnum.SERVER_ERROR,"同一属性组下的属性名称必须唯一");
+        }
+        Set<String> strings=new HashSet<String>(propsDTO.getPropValues());
+        if(strings.size()!=propsDTO.getPropValues().size()){
+            throw new BusinessException(ResultEnum.SERVER_ERROR,"同一属性下的属性值名称必须唯一");
+        }
         propsService.saveOrUpdate(group,propsDTO.getPropValues());
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
@@ -186,8 +209,13 @@ public class PropsController {
     @RequestMapping("delete")
     @ResponseBody
     public ReturnResult delete(@NotNull(message = "id不能为空") Long id){
-        //todo 属性组维护了商品 不可删除 属性维护了商品 不可删除
-        //propsService.deleteById(id);
+        if(!ValidUtil.validList("productPropertyServiceImpl","property_id",id)){
+            throw new BusinessException(ResultEnum.SERVER_ERROR,"该属性下有商品,不可删除");
+        }
+        /**
+         * 删除属性及其属性值
+         */
+        propsService.deleteObj(id);
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
 

@@ -9,10 +9,13 @@ import com.dmall.product.entity.PropsGroup;
 import com.dmall.product.mapper.PropsGroupMapper;
 import com.dmall.product.service.PropsGroupService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.dmall.product.service.PropsOptionService;
+import com.dmall.product.service.PropsService;
 import com.dmall.util.QueryUtil;
 import com.dmall.util.ValidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -30,6 +33,12 @@ public class PropsGroupServiceImpl extends ServiceImpl<PropsGroupMapper, PropsGr
 
     @Autowired
     private PropsGroupMapper propsGroupMapper;
+
+    @Autowired
+    private PropsService propsService;
+
+    @Autowired
+    private PropsOptionService propsOptionService;
 
     @Override
     public Page pageList(PropsGroup group, Page page) {
@@ -56,5 +65,20 @@ public class PropsGroupServiceImpl extends ServiceImpl<PropsGroupMapper, PropsGr
             wrapper.eq("product_type",productTypeId);
         }
         return this.selectList(wrapper);
+    }
+
+    @Override
+    public void deleteByProductType(String type) {
+        EntityWrapper<PropsGroup> wrapper=new EntityWrapper();
+        wrapper.eq("product_type",type);
+        this.delete(wrapper);
+    }
+
+    @Override
+    @Transactional
+    public void deleteObj(Long id) {
+        propsService.deleteByGroupId(id);
+        propsOptionService.deleteByGroupId(id);
+        this.deleteById(id);
     }
 }

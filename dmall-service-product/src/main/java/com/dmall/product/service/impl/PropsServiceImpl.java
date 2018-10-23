@@ -14,6 +14,7 @@ import com.dmall.product.mapper.PropsOptionMapper;
 import com.dmall.product.service.PropsOptionService;
 import com.dmall.product.service.PropsService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.dmall.product.service.SkuPropertyService;
 import com.dmall.util.QueryUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,9 @@ public class PropsServiceImpl extends ServiceImpl<PropsMapper, Props> implements
 
     @Autowired
     private PropsOptionService propsOptionService;
+
+    @Autowired
+    private SkuPropertyService skuPropertyService;
 
     @Override
     public Page pageList(Props props, Page page) {
@@ -77,6 +81,9 @@ public class PropsServiceImpl extends ServiceImpl<PropsMapper, Props> implements
                 batchInsert(props,insert);
             }
             if(StringUtil.isNotEmptyObj(delete)){
+                if(!skuPropertyService.validOption(props.getId(),delete)){
+                    throw new BusinessException(ResultEnum.SERVER_ERROR,"删除的属性值有商品 不可删除");
+                }
                 propsOptionService.batchDelete(props.getId(),delete);
             }
         }else {
@@ -98,11 +105,34 @@ public class PropsServiceImpl extends ServiceImpl<PropsMapper, Props> implements
         return this.selectList(wrapper);
     }
 
+    @Override
+    public void deleteByProductType(String type) {
+        EntityWrapper<Props> wrapper=new EntityWrapper<>();
+        wrapper.eq("product_type",type);
+        this.delete(wrapper);
+    }
+
+    @Override
+    public void deleteByGroupId(Long groupId) {
+        EntityWrapper<Props> wrapper=new EntityWrapper<>();
+        wrapper.eq("group_id",groupId);
+        this.delete(wrapper);
+    }
+
+    @Override
+    @Transactional
+    public void deleteObj(Long id) {
+        propsOptionService.deleteByPropertyId(id);
+        this.deleteById(id);
+    }
+
     private void batchInsert(Props props,List<String> propValues){
         for(int i=0;i<propValues.size();i++){
             PropsOption propsOption=new PropsOption();
             propsOption.setPropsId(props.getId());
             propsOption.setOptionValue(propValues.get(i));
+            propsOption.setGroupId(props.getGroupId());
+            propsOption.setProductType(props.getProductType());
             propsOptionService.insert(propsOption);
         }
     }

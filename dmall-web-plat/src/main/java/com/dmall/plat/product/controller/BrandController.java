@@ -2,17 +2,24 @@ package com.dmall.plat.product.controller;
 
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.dmall.common.enums.ImageTypeEnum;
+import com.dmall.common.enums.MediaEnum;
 import com.dmall.common.exception.BusinessException;
 import com.dmall.common.utils.StringUtil;
 import com.dmall.plat.product.dto.BrandDTO;
 import com.dmall.product.entity.Brand;
 import com.dmall.product.entity.ProductTypeBrand;
+import com.dmall.product.entity.SkuMedia;
 import com.dmall.product.service.BrandService;
 import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.annotation.TransBean;
+import com.dmall.product.service.ProductService;
 import com.dmall.product.service.ProductTypeBrandService;
+import com.dmall.util.ValidUtil;
 import com.dmall.web.common.result.ReturnResult;
+import com.dmall.web.common.utils.QiniuUtil;
 import com.dmall.web.common.utils.ResultUtil;
+import com.qiniu.storage.model.DefaultPutRet;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -20,13 +27,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -48,11 +54,18 @@ public class BrandController {
     @Autowired
     private ProductTypeBrandService productTypeBrandService;
 
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private QiniuUtil qiniuUtil;
+
     /**
      *品牌分页列表
      */
     @RequestMapping("page")
     @ResponseBody
+    @TransBean
     public ReturnResult page(Brand brand, Page page){
         page=brandService.pageList(brand,page);
         return ResultUtil.buildResult(ResultEnum.SUCC,page.getTotal(),page.getRecords());
@@ -95,8 +108,8 @@ public class BrandController {
     @RequestMapping("delete")
     @ResponseBody
     public ReturnResult delete(@NotNull(message = "id不能为空") Long id){
-        //todo 品牌维护了商品不能删除 维护了类型 则删除关联数据
-        brandService.deleteById(id);
+        brandService.delete(id);
+
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
 
@@ -110,6 +123,23 @@ public class BrandController {
             result=brandService.list(productTypeId);
         }
         return ResultUtil.buildResult(ResultEnum.SUCC,result);
+    }
+
+    @RequestMapping("/upload")
+    @ResponseBody
+    public ReturnResult fileUpload(MultipartFile file){
+        Map<String,String> result=new HashMap<>();
+        try {
+            String originalFilename = file.getOriginalFilename();
+            String fileType=originalFilename.substring(originalFilename.lastIndexOf(".")+1);
+            DefaultPutRet defaultPutRet = qiniuUtil.uploadFile(file.getInputStream(), qiniuUtil.getKey(ImageTypeEnum.BRAND.getCode(),fileType));
+            result.put("src",qiniuUtil.getUrl(defaultPutRet.key));
+            result.put("key",defaultPutRet.key);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BusinessException(ResultEnum.SERVER_ERROR,"上传品牌logo失败");
+        }
+        return ResultUtil.buildResult(ResultEnum.SUCC,"上传品牌logo成功",result);
     }
 
 }

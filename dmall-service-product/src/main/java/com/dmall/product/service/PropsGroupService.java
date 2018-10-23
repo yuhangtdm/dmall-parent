@@ -30,4 +30,14 @@ public interface PropsGroupService extends IService<PropsGroup> {
      * 属性组列表
      */
     List<PropsGroup> listAll(String productTypeId);
+
+    /**
+     * 根据商品分类删除属性组
+     */
+    void deleteByProductType(String type);
+
+    /**
+     * 删除属性组下的属性及属性值
+     */
+    void deleteObj(Long id);
 }

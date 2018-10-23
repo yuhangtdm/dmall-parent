@@ -22,15 +22,13 @@
             <div class="layui-input-block">
                 <input type="hidden" name="id" />
                 <input type="hidden" name="groupId" th:value="${param.groupId}" >
-                <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入属性名称"
-                       class="layui-input">
+                <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入属性名称" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item" style="padding-top: 5px">
             <label class="layui-form-label">属性值</label>
             <div class="layui-input-block">
-                <input type="text" name=""  id="tagValue"
-                       class="layui-input">
+                <input type="text" name=""  id="tagValue" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
@@ -42,8 +40,7 @@
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">排序</label>
             <div class="layui-input-block">
-                <input type="number" name="sortIndex" lay-verify="required" autocomplete="off" placeholder="请输入排序"
-                       class="layui-input">
+                <input type="number" name="sortIndex" lay-verify="required" autocomplete="off" placeholder="请输入排序" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
@@ -70,7 +67,6 @@
             tag.initView();
 
             transfer.init([[${bean}]],null,'props-form');
-
             form.on('submit(submit)', function (data) {
                 if(curd.validateNumber($("input[name='sortIndex']").val())){
                     return false;

@@ -3,6 +3,7 @@ package com.dmall.product.service.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.dmall.common.utils.StringUtil;
 import com.dmall.product.entity.Sku;
 import com.dmall.product.entity.SkuProperty;
 import com.dmall.product.mapper.SkuPropertyMapper;
@@ -81,6 +82,18 @@ public class SkuPropertyServiceImpl extends ServiceImpl<SkuPropertyMapper, SkuPr
         wrapper.eq("sku_id",skuId);
         wrapper.in("option_id",deleteList);
         this.delete(wrapper);
+    }
+
+    @Override
+    public boolean validOption(Long propId, List<String> delete) {
+        EntityWrapper<SkuProperty> wrapper=new EntityWrapper<>();
+        wrapper.eq("property_id",propId);
+        wrapper.in("option_value",delete);
+        List<SkuProperty> propsOptions = this.selectList(wrapper);
+        if(StringUtil.isEmptyObj(propsOptions)){
+            return true;
+        }
+        return false;
     }
 
     private SkuProperty selectOption(Long skuId, Long propertyId) {

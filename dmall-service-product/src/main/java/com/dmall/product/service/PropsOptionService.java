@@ -21,4 +21,16 @@ public interface PropsOptionService extends IService<PropsOption> {
     void batchDelete(Long id, List<String> delete);
 
     List<JSONObject> queryOptionsByPropsId(Long propsId);
+
+    void deleteByProductType(String type);
+
+    /**
+     * 根据属性组删除属性值
+     */
+    void deleteByGroupId(Long groupId);
+
+    /**
+     * 根据属性删除属性值
+     */
+    void deleteByPropertyId(Long id);
 }

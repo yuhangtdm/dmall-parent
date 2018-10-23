@@ -33,7 +33,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">商品类型</label>
                 <div class="layui-input-block">
-                    <select loadData="tree" url="/type/tree" xm-select-search=""  name="productType"   xm-select="productType">
+                    <select loadData="tree" url="/type/tree" lay-verify="required" xm-select-search=""  name="productType"   xm-select="productType">
                     </select>
                 </div>
             </div>
@@ -42,12 +42,20 @@
                     <label class="layui-form-label">品牌LOGO</label>
                     <div class="layui-inline">
                     <div class="layui-upload">
-                        <button type="button" class="layui-btn" id="test1"><i class="layui-icon"></i>上传图片</button>
+                        <button type="button"  class="layui-btn" id="logo"><i class="layui-icon"></i>上传图片</button>
                         <div class="layui-upload-list">
-                            <img class="layui-upload-img" name="logo">
+                            <img class="layui-upload-img" name="logo" id="logoSrc">
+                            <input type="hidden" name="logo"  >
                         </div>
                     </div>
                     </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否有效</label>
+                <div class="layui-input-inline">
+                    <select loadData="normal" lay-verify="required" name="status"  dict="_status" value="1">
+                    </select>
                 </div>
             </div>
             <div class="layui-form-item layui-form-text">
@@ -67,15 +75,31 @@
         <script th:inline="javascript">
         layui.config({
             base: '/controller/'
-        }).use(['form','transfer','curd'], function(){
+        }).use(['form','transfer','curd','croppers'], function(){
             var transfer=layui.transfer;
             var form = layui.form;
             var curd=layui.curd;
+            var croppers=layui.croppers;
+            var $=layui.$;
             // 初始化表单
             transfer.init([[${bean}]],null,'brandForm');
             form.on('submit(submit)', function(data){
                 curd.saveOrUpdate('/brand/save',data.field);
                 return false;
+            });
+            //文件上传
+            croppers.render({
+                elem: '#logo'
+                ,saveW:102     //保存宽度
+                ,saveH:36
+                ,resizable:false
+                ,mark:1/1    //选取比例
+                ,area:'900px'  //弹窗宽度
+                ,url: "/brand/upload"
+                ,done: function(res){ //上传完毕回调
+                    $("#logoSrc").attr("src",res.data.src);
+                    $("input[name='logo']").val(res.data.src);
+                }
             });
         });
     </script>

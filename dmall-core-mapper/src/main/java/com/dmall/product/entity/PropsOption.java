@@ -34,6 +34,18 @@ public class PropsOption implements Serializable {
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
+
+    /**
+     * 商品分类
+     */
+    @TableField("product_type")
+    private String productType;
+
+    /**
+     * 属性组id
+     */
+    @TableField("group_id")
+    private Long groupId;
     /**
      * 属性ID
      */
@@ -44,6 +56,8 @@ public class PropsOption implements Serializable {
      */
     @TableField("option_value")
     private String optionValue;
+
+
 
     /**
      * 创建时间

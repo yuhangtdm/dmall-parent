@@ -89,8 +89,12 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
                         delTypeIds.add(productTypeBrand.getProductTypeId());
                     }
                 }
-                productTypeBrandService.deleteByTypeIds(brand.getId(),delTypeIds);
-                productTypeBrandService.batchInsert(brand.getId(),insertTypeIds);
+                if(StringUtil.isNotEmptyObj(delTypeIds)){
+                    productTypeBrandService.deleteByTypeIds(brand.getId(),delTypeIds);
+                }
+                if(StringUtil.isNotEmptyObj(insertTypeIds)){
+                    productTypeBrandService.batchInsert(brand.getId(),insertTypeIds);
+                }
             }else {
                 productTypeBrandService.batchInsert(brand.getId(),typeIds);
             }
@@ -113,10 +117,18 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
         return brandMapper.listAll(productType);
     }
 
+
+
     @Override
     @CachePut(value = "brandCache",key = "'select:com.dmall.product.service.impl.BrandServiceImpl.list()'")
-    public List<Brand> deleteById(Long id) {
-        super.deleteById(id);
+    @Transactional
+    public List<Brand> delete(Long id) {
+        //品牌维护了商品则不能删除 维护了类型 则删除关联数据
+        if(ValidUtil.validList("productServiceImpl","brand_id",id)){
+            throw new BusinessException(ResultEnum.SERVER_ERROR,"该品牌下包含商品，不可删除");
+        }
+        this.deleteById(id);
+        productTypeBrandService.deleteByBrandId(id);
         return list();
     }
 

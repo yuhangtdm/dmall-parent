@@ -124,7 +124,7 @@ layui.extend({
                 }else{
                     $(this).val(value);
                 }
-            }else if(tagName=='img'){
+            }else if(tagName=='IMG'){
                 $(this).attr('src',value);
             }else if(tagName=='SELECT'){
                 //多选框支持数组和字符串以逗号分隔两种
@@ -189,19 +189,20 @@ layui.extend({
         var xmValue=$("input[name='"+xm+"']").val() || value;
         var xmValues=[];
         //多选
-        if(xm && xmValue){
-            if(type=='normal' || type=='tree'){
-                var xms=xmValue.split(",");
-                for(var i=0;i<xms.length;i++){
-                    xmValues.push(parseInt(xms[i]));
-                }
-            }else if(type=='linkage' || type=='region'){
-                var xms=xmValue.split(",");
-                for(var i=0;i<xms.length;i++){
-                    xmValues.push(xms[i]);
+        if(xm){
+            if(xmValue){
+                if(type=='normal' || type=='tree'){
+                    var xms=xmValue.split(",");
+                    for(var i=0;i<xms.length;i++){
+                        xmValues.push(parseInt(xms[i]));
+                    }
+                }else if(type=='linkage' || type=='region'){
+                    var xms=xmValue.split(",");
+                    for(var i=0;i<xms.length;i++){
+                        xmValues.push(xms[i]);
+                    }
                 }
             }
-
             if(type=='normal'){
                 if(url){
                     formSelects.data(xm, 'server', {

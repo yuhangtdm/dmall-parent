@@ -6,12 +6,12 @@ import com.dmall.common.entity.Tree;
 import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.exception.BusinessException;
 import com.dmall.common.utils.StringUtil;
+import com.dmall.product.entity.Product;
 import com.dmall.product.entity.ProductType;
 import com.dmall.product.entity.ProductTypeBrand;
 import com.dmall.product.mapper.ProductTypeBrandMapper;
 import com.dmall.product.mapper.ProductTypeMapper;
-import com.dmall.product.service.ProductTypeBrandService;
-import com.dmall.product.service.ProductTypeService;
+import com.dmall.product.service.*;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.dmall.util.ValidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +41,16 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
 
     @Autowired
     private ProductTypeBrandService productTypeBrandService;
+
+
+    @Autowired
+    private PropsGroupService propsGroupService;
+
+    @Autowired
+    private PropsService propsService;
+
+    @Autowired
+    private PropsOptionService propsOptionService;
 
     /**
      * 循环的方式得到树结构
@@ -150,11 +160,46 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
     @Transactional
     @CachePut(key = "'productType:ztree'")
     public List<ProductType> batchDelete(Long id) {
+        //类型下维护了商品 维护了属性 不可删除
         List<ProductType> later = getLater(id);
         for (ProductType productType : later) {
-            this.deleteById(productType.getId());
+             if(!valid(productType)){
+                throw new BusinessException(ResultEnum.SERVER_ERROR,"该类型下有商品 不可删除");
+             }
+        }
+        // 删除分类 分类下的属性组 属性 属性值 品牌
+        for (ProductType productType : later) {
+            if(Constants.LEVEL_ONE.equals(productType.getLevel()) || Constants.LEVEL_TWO.equals(productType.getLevel())){
+               this.deleteById(productType.getId());
+            }else{
+                this.deleteObj(productType);
+            }
         }
         return ztree(0L);
+    }
+
+    private void deleteObj(ProductType productType) {
+        ProductType father = this.selectById(productType.getPid());
+        ProductType grandFather=this.selectById(father.getPid());
+        String type=grandFather.getId()+"/"+father.getId()+"/"+productType.getId();
+        propsGroupService.deleteByProductType(type);
+        propsService.deleteByProductType(type);
+        propsOptionService.deleteByProductType(type);
+        productTypeBrandService.deleteByProductType(productType.getId());
+    }
+
+    /**
+     * 判断商品分类下是否有商品
+     */
+    private boolean valid(ProductType productType) {
+        if(Constants.LEVEL_ONE.equals(productType.getLevel()) || Constants.LEVEL_TWO.equals(productType.getLevel())){
+            return true;
+        }else {
+            ProductType father = this.selectById(productType.getPid());
+            ProductType grandFather=this.selectById(father.getPid());
+            String type=grandFather.getId()+"/"+father.getId()+"/"+productType.getId();
+            return ValidUtil.validList("productServiceImpl","product_type",type);
+        }
     }
 
     // 为类型设置品牌
@@ -198,8 +243,6 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
         List<ProductType> productTypes = this.selectList(wrapper);
         return productTypes;
     }
-
-
 
 
     /**

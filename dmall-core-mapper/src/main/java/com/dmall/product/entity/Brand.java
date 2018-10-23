@@ -75,10 +75,17 @@ public class Brand implements Serializable {
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Long updateTime;
 
+    @TableField(value = "status")
+    @ChangeColumn(value = "statusName",dictType = "_status")
+    private Integer status;
+
     /**
      * 多个商品分类ID
      */
     @TableField(exist = false)
     private String productType;
+
+    @TableField(exist = false)
+    private String statusName;
 
 }

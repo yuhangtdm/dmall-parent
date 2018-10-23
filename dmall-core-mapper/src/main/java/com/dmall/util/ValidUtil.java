@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.dmall.common.enums.ResultEnum;
 import com.dmall.common.exception.BusinessException;
 import com.dmall.common.utils.SpringContextUtil;
+import com.dmall.common.utils.StringUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -18,6 +19,9 @@ import java.util.List;
  */
 public class ValidUtil{
 
+    /**
+     * 校验唯一性
+     */
     public static <T> boolean valid(T t,String beanName,String... props){
         try {
             EntityWrapper<T> wrapper=new EntityWrapper<>();
@@ -53,6 +57,24 @@ public class ValidUtil{
             throw new BusinessException(ResultEnum.SERVER_ERROR,"校验唯一性出现异常:");
         }
 
+        return false;
+    }
+
+    public static <T> boolean validList(String beanName,String column,T value){
+        try {
+            EntityWrapper<T> wrapper=new EntityWrapper<>();
+            wrapper.eq(column,value);
+            Object bean = SpringContextUtil.getBean(beanName);
+            Method selectList = bean.getClass().getMethod("selectList",Wrapper.class);
+            List<T> list= (List<T>) selectList.invoke(bean,wrapper);
+            if(StringUtil.isEmptyObj(list)){
+                return true;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new BusinessException(ResultEnum.SERVER_ERROR,"校验出现异常:");
+
+        }
         return false;
     }
 }
