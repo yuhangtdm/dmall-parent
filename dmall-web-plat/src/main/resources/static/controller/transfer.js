@@ -43,6 +43,9 @@ layui.extend({
         },
         initFilter:function (formId) {
             initFilter(formId);
+        },
+        formatDate:function (date,pattern) {
+            formatDate(date,pattern);
         }
     }
 
@@ -252,21 +255,6 @@ layui.extend({
                         }
                     }
                 },null,false);
-                /*$.ajax({
-                    url : url,
-                    type : "post",
-                    async: false,
-                    success : function(result){
-                        if(result.code==0){
-                            for (var i=0; i<result.data.length; i++){
-                                sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
-                            }
-                            if(value){
-                                sel.val(value);
-                            }
-                        }
-                    }
-                });*/
             }else{
                 ajax('POST',"/common/select", function(result){
                     if(result.code==0){
@@ -278,22 +266,6 @@ layui.extend({
                         }
                     }
                 },null,false,{"dict":dict,"bean":bean,"methodName":method});
-                /*$.ajax({
-                    url : "/common/select",
-                    type : "post",
-                    data : {"dict":dict,"bean":bean,"methodName":method},
-                    async: false,
-                    success : function(result){
-                        if(result.code==0){
-                            for (var i=0; i<result.data.length; i++){
-                                sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
-                            }
-                            if(value || value=='0'){
-                                sel.val(value);
-                            }
-                        }
-                    }
-                });*/
             }
 
         }
@@ -372,6 +344,19 @@ layui.extend({
                 layer.tips('该项必填',this);
             })
         })
+    }
+
+    /**
+     * 格式化日期
+     */
+    function formatDate(date, pattern) {
+        if (!date || date == undefined) {
+            return '';
+        }
+        if (pattern == undefined) {
+            pattern = "yyyy-MM-dd hh:mm:ss";
+        }
+        return new Date(date).format(pattern);
     }
 
     e('transfer',obj);
