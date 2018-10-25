@@ -38,6 +38,18 @@ public interface ProductService extends IService<Product> {
      */
     Product queryToday();
 
+    /**
+     * 根据商品编码查询商品
+     */
     Product selectByProductCode(String productCode);
 
+    /**
+     * 启用
+     */
+    void on(Long id);
+
+    /**
+     * 停用
+     */
+    void off(Long id);
 }

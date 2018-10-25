@@ -17,6 +17,7 @@ import com.dmall.plat.product.dto.SkuDTO;
 import com.dmall.plat.product.dto.SkuPropertyDTO;
 import com.dmall.product.entity.*;
 import com.dmall.product.service.*;
+import com.dmall.util.ValidUtil;
 import com.dmall.web.common.result.ReturnResult;
 import com.dmall.web.common.utils.QiniuUtil;
 import com.dmall.web.common.utils.ResultUtil;
@@ -52,16 +53,12 @@ public class SkuController {
 
     @Autowired
     private SkuService skuService;
-
     @Autowired
     private ProductService productService;
-
     @Autowired
     private SkuMediaService skuMediaService;
-
     @Autowired
     private SkuPropertyService skuPropertyService;
-
     @Autowired
     private QiniuUtil qiniuUtil;
 
@@ -128,6 +125,9 @@ public class SkuController {
         Sku sku=new Sku();
         SkuDTO skuDTO = fullSkuDTO.getSkuDTO();
         BeanUtils.copyProperties(skuDTO,sku);
+        if(!ValidUtil.valid(sku,"skuServiceImpl","skuName")){
+            throw new BusinessException(ResultEnum.BAD_REQUEST,"sku名称必须唯一");
+        }
         if(skuDTO.getOnSaleTime()!=null){
             sku.setOnSaleTime(skuDTO.getOnSaleTime().getTime());
         }

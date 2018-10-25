@@ -1,6 +1,8 @@
 package com.dmall.product.service;
 
 import com.alibaba.fastjson.JSONArray;
+import com.dmall.product.entity.Props;
+import com.dmall.product.entity.PropsGroup;
 import com.dmall.product.entity.Sku;
 import com.dmall.product.entity.SkuProperty;
 import com.baomidou.mybatisplus.service.IService;
@@ -27,4 +29,8 @@ public interface SkuPropertyService extends IService<SkuProperty> {
     void batchDelete(List<Long> deleteList,Long skuCode);
 
     boolean validOption(Long propId,List<String> delete);
+
+    void updateByGroup(PropsGroup group);
+
+    void updateByProps(Props props);
 }

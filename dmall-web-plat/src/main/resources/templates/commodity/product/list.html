@@ -76,6 +76,11 @@
             <script type="text/html" id="barDemo">
                 <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                {{# if (d.status=='1') { }}
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="off">停用</a>
+                {{# } else { }}
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="on">启用</a>
+                {{# } }}
             </script>
         </div>
         <script th:src="@{/layui/layui.js}" src="./lib/layui/layui.js" charset="utf-8"></script>
@@ -118,6 +123,18 @@
 
                     } else if(obj.event === 'edit'){
                         curd.openForm('/product/edit?id='+data.id,'修改商品','1000px', '1000px',true);
+                    }else if(obj.event === 'on'){
+                        layer.confirm('确定启用该商品?', {icon: 3, title:'提示'}, function(index){
+                            curd.save('/product/on?id='+data.id,null,function(){
+                                $("#formSearch").click();
+                            });
+                        });
+                    }else if(obj.event === 'off'){
+                        layer.confirm('确定停用该商品 且下架商品下的sku?', {icon: 3, title:'提示'}, function(index){
+                            curd.save('/product/off?id='+data.id,null,function(){
+                                $("#formSearch").click();
+                            });
+                        });
                     }
                 });
 

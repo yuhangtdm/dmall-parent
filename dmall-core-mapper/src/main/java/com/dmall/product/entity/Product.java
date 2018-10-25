@@ -124,6 +124,14 @@ public class Product implements Serializable {
 
     @TableField("on_city_time")
     private Long onCityTime;
+
+    /**
+     * 状态
+     */
+    @TableField(value = "status")
+    @ChangeColumn(value = "statusName",dictType = "_status")
+    private Integer status;
+
     /**
     /**
      * 创建时间
@@ -141,5 +149,8 @@ public class Product implements Serializable {
 
     @TableField(exist = false)
     private String productTypeName;
+
+    @TableField(exist = false)
+    private String statusName;
 
 }

@@ -14,11 +14,8 @@ import com.dmall.product.entity.*;
 import com.dmall.product.mapper.ProductExtMapper;
 import com.dmall.product.mapper.ProductMapper;
 import com.dmall.product.mapper.ProductPropertyMapper;
-import com.dmall.product.service.ProductMediaService;
-import com.dmall.product.service.ProductPropertyService;
-import com.dmall.product.service.ProductService;
+import com.dmall.product.service.*;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.dmall.product.service.PropsService;
 import com.dmall.util.QueryUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,15 +36,14 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
     @Autowired
     private ProductExtMapper extMapper;
-
     @Autowired
     private ProductPropertyService productPropertyService;
-
     @Autowired
     private PropsService propsService;
-
     @Autowired
     private ProductMediaService mediaService;
+    @Autowired
+    private SkuService skuService;
 
     @Override
     public Page pageList(Product product, Page page) {
@@ -159,7 +155,6 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                 mediaService.updateById(productMedia);
             }
         }
-
     }
 
     private void insertProductProperty(JSONObject jsonGroup,String productCode,Map<Long,Integer> saleMap,Integer isSale) {
@@ -233,7 +228,22 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         return products.get(0);
     }
 
+    @Override
+    public void on(Long id) {
+        Product product=new Product();
+        product.setId(id);
+        product.setStatus(Constants.YES);
+        this.updateById(product);
+    }
 
-
+    @Override
+    @Transactional
+    public void off(Long id) {
+        Product product=new Product();
+        product.setId(id);
+        product.setStatus(Constants.NO);
+        this.updateById(product);
+        skuService.batchOff(this.selectById(id).getProductCode());
+    }
 
 }

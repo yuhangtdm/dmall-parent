@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.dmall.common.utils.MathUtil;
 import com.dmall.product.entity.Product;
 import com.dmall.product.entity.ProductProperty;
+import com.dmall.product.entity.PropsGroup;
 import com.dmall.product.mapper.ProductPropertyMapper;
 import com.dmall.product.service.ProductPropertyService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -102,4 +103,5 @@ public class ProductPropertyServiceImpl extends ServiceImpl<ProductPropertyMappe
         }
         return result;
     }
+
 }

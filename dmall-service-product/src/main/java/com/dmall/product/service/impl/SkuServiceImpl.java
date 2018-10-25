@@ -178,6 +178,16 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuSe
         this.updateById(sku);
     }
 
+    @Override
+    public void batchOff(String productCode) {
+        EntityWrapper<Sku> wrapper=new EntityWrapper<>();
+        wrapper.eq("product_code",productCode);
+        Sku sku=new Sku();
+        sku.setState(Constants.NO);
+        sku.setOffSaleTime(System.currentTimeMillis());
+        this.update(sku,wrapper);
+    }
+
 
     /**
      * 初始化sku

@@ -169,7 +169,7 @@ layui.define(['layer','table','zTree','form','transfer'],function (e) {
                 msg='服务故障';
             }
             layer.msg(msg,{icon:2})
-        },false,requestData,true,traditional);
+        },false,requestData,true,traditional,contentType);
     }
 
     /**

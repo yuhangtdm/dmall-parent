@@ -31,4 +31,6 @@ public interface SkuService extends IService<Sku> {
     void onSale(Long id);
 
     void offSale(Long id);
+
+    void batchOff(String productCode);
 }

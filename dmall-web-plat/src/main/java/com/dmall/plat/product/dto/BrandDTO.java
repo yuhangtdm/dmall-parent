@@ -43,7 +43,5 @@ public class BrandDTO implements Serializable {
      */
     private String logo;
 
-    private Integer status;
-
 
 }

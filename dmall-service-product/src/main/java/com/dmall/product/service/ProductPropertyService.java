@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.dmall.product.entity.Product;
 import com.dmall.product.entity.ProductProperty;
 import com.baomidou.mybatisplus.service.IService;
+import com.dmall.product.entity.PropsGroup;
 
 import java.util.List;
 import java.util.Map;
@@ -65,4 +66,5 @@ public interface ProductPropertyService extends IService<ProductProperty> {
      * 根据商品编码查询数据
      */
     List<Map<String,Object>> selectByProductCode(String productCode);
+
 }

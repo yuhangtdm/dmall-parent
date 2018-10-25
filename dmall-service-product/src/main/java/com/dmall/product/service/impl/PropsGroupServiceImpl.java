@@ -7,10 +7,8 @@ import com.dmall.common.exception.BusinessException;
 import com.dmall.common.utils.StringUtil;
 import com.dmall.product.entity.PropsGroup;
 import com.dmall.product.mapper.PropsGroupMapper;
-import com.dmall.product.service.PropsGroupService;
+import com.dmall.product.service.*;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.dmall.product.service.PropsOptionService;
-import com.dmall.product.service.PropsService;
 import com.dmall.util.QueryUtil;
 import com.dmall.util.ValidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +31,12 @@ public class PropsGroupServiceImpl extends ServiceImpl<PropsGroupMapper, PropsGr
 
     @Autowired
     private PropsGroupMapper propsGroupMapper;
-
     @Autowired
     private PropsService propsService;
-
     @Autowired
     private PropsOptionService propsOptionService;
+    @Autowired
+    private SkuPropertyService skuPropertyService;
 
     @Override
     public Page pageList(PropsGroup group, Page page) {
@@ -47,12 +45,16 @@ public class PropsGroupServiceImpl extends ServiceImpl<PropsGroupMapper, PropsGr
     }
 
     @Override
+    @Transactional
     public void saveOrUpdate(PropsGroup group) {
-        if(!ValidUtil.valid(group,"propsGroupServiceImpl","name","productType")){
-            throw new BusinessException(ResultEnum.BAD_REQUEST,"商品类型下的组名称必须唯一");
-        }
         if(group.getId()!=null){
             this.updateById(group);
+            propsService.updateByGroup(group);
+            propsOptionService.updateByGroup(group);
+            PropsGroup old = this.selectById(group.getId());
+            if(!old.getName().equals(group.getName())){
+                skuPropertyService.updateByGroup(group);
+            }
         }else {
             this.insert(group);
         }

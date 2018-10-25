@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.dmall.common.utils.StringUtil;
+import com.dmall.product.entity.Props;
+import com.dmall.product.entity.PropsGroup;
 import com.dmall.product.entity.Sku;
 import com.dmall.product.entity.SkuProperty;
 import com.dmall.product.mapper.SkuPropertyMapper;
@@ -94,6 +96,24 @@ public class SkuPropertyServiceImpl extends ServiceImpl<SkuPropertyMapper, SkuPr
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void updateByGroup(PropsGroup group) {
+        EntityWrapper<SkuProperty> wrapper=new EntityWrapper<>();
+        wrapper.eq("group_id",group.getId());
+        SkuProperty skuProperty=new SkuProperty();
+        skuProperty.setGroupName(group.getName());
+        this.update(skuProperty,wrapper);
+    }
+
+    @Override
+    public void updateByProps(Props props) {
+        EntityWrapper<SkuProperty> wrapper=new EntityWrapper<>();
+        wrapper.eq("property_id",props.getId());
+        SkuProperty skuProperty=new SkuProperty();
+        skuProperty.setPropertyName(props.getName());
+        this.update(skuProperty,wrapper);
     }
 
     private SkuProperty selectOption(Long skuId, Long propertyId) {

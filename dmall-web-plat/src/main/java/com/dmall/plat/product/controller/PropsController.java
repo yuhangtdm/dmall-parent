@@ -86,7 +86,7 @@ public class PropsController {
     }
 
     /**
-     * 属性组保存
+     * 属性组保存或更新
      */
     @RequestMapping("group/save")
     @ResponseBody
@@ -94,7 +94,7 @@ public class PropsController {
         validGroup(groupDTO);
         PropsGroup group=new PropsGroup();
         BeanUtils.copyProperties(groupDTO,group);
-        if(ValidUtil.valid(group,"propsGroupServiceImpl","name","productType")){
+        if(!ValidUtil.valid(group,"propsGroupServiceImpl","name","productType")){
             throw new BusinessException(ResultEnum.SERVER_ERROR,"同一商品分类下的属性组名称必须唯一");
         }
         propsGroupService.saveOrUpdate(group);
@@ -181,7 +181,7 @@ public class PropsController {
     public ReturnResult save(@Validated PropsDTO propsDTO){
         Props group=new Props();
         BeanUtils.copyProperties(propsDTO,group);
-        if(ValidUtil.valid(group,"propsServiceImpl","name","groupId")){
+        if(!ValidUtil.valid(group,"propsServiceImpl","name","groupId")){
             throw new BusinessException(ResultEnum.SERVER_ERROR,"同一属性组下的属性名称必须唯一");
         }
         Set<String> strings=new HashSet<String>(propsDTO.getPropValues());
@@ -219,6 +219,9 @@ public class PropsController {
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
 
+    /**
+     * 展示分类和分组下的属性
+     */
     @RequestMapping("listAll")
     @ResponseBody
     public ReturnResult propsListAll(String productTypeId,Long groupId){

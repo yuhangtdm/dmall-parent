@@ -83,7 +83,7 @@
                 table.on('tool(propGroup)', function(obj){
                     var data = obj.data;
                     if(obj.event === 'del'){
-                        layer.confirm('确定删除该属性?', {icon: 3, title:'提示'}, function(index){
+                        layer.confirm('确定删除该属性组及其属性?', {icon: 3, title:'提示'}, function(index){
                             curd.deleteById('/props/group/delete?id='+data.id,function(){
                                 $("#formSearch").click();
                             });

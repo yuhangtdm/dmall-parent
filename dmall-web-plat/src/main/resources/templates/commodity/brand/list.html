@@ -44,13 +44,6 @@
                             <input class="layui-input" name="firstLetter" >
                         </div>
                     </div>
-                    <div class="layui-col-xs6 layui-col-sm6  layui-col-md4 layui-col-lg3">
-                        <label class="layui-form-label">是否有效：</label>
-                        <div class="layui-input-inline">
-                            <select loadData="normal" name="status" dict="_status">
-                            </select>
-                        </div>
-                    </div>
                     <button class="layui-btn layui-btn-small" style="line-height:1.6em;margin:3px;float:right" lay-submit id="formSearch" lay-filter="formSearch" title="搜索"><i class="layui-icon layui-icon-search"></i></button>
                 </div>
             </form>
@@ -116,7 +109,6 @@
                             {field:'name',  title: '品牌名称'},
                             {field:'englishName', title: '英文名称'},
                             {field:'firstLetter', title: '首字母', sort: true},
-                            {field:'statusName', title: '是否有效'},
                             {field:'updateTime',  title: '更新时间', sort: true,templet: function (d) {
                                     if(d.updateTime){
                                         return layui.util.toDateString(d.updateTime);

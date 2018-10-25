@@ -38,4 +38,9 @@ public interface PropsService extends IService<Props> {
      * 删除属性及其属性值
      */
     void deleteObj(Long id);
+
+    /**
+     * 修改商品分类
+     */
+    void updateByGroup(PropsGroup group);
 }

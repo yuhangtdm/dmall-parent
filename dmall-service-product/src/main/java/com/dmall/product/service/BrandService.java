@@ -41,7 +41,6 @@ public interface BrandService extends IService<Brand> {
      */
     List<Brand> list(Long productType);
 
-
     /**
      * 删除品牌
      * @param id

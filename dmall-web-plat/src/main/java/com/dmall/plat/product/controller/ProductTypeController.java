@@ -43,7 +43,6 @@ public class ProductTypeController {
 
     @Autowired
     private ProductTypeService productTypeService;
-
     @Autowired
     private ProductTypeBrandService productTypeBrandService;
 

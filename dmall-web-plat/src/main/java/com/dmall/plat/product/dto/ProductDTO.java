@@ -45,6 +45,13 @@ public class ProductDTO implements Serializable {
      */
     @NotNull(message = "品牌不能为空")
     private Long brandId;
+
+    /**
+     * 商品状态
+     */
+    @NotNull(message = "商品状态不能为空")
+    private Integer status;
+
     /**
      * 上市时间
      */

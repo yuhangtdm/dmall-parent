@@ -38,17 +38,12 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
 
     @Autowired
     private ProductTypeMapper mapper;
-
     @Autowired
     private ProductTypeBrandService productTypeBrandService;
-
-
     @Autowired
     private PropsGroupService propsGroupService;
-
     @Autowired
     private PropsService propsService;
-
     @Autowired
     private PropsOptionService propsOptionService;
 
@@ -101,7 +96,6 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
                 }
             }*/
         }
-
         return result;
     }
 
@@ -155,7 +149,6 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
         return  this.selectList(wrapper);
     }
 
-
     @Override
     @Transactional
     @CachePut(key = "'productType:ztree'")
@@ -164,7 +157,7 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
         List<ProductType> later = getLater(id);
         for (ProductType productType : later) {
              if(!valid(productType)){
-                throw new BusinessException(ResultEnum.SERVER_ERROR,"该类型下有商品 不可删除");
+                throw new BusinessException(ResultEnum.SERVER_ERROR,productType.getName()+"下有商品,不可删除");
              }
         }
         // 删除分类 分类下的属性组 属性 属性值 品牌
@@ -178,31 +171,6 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
         return ztree(0L);
     }
 
-    private void deleteObj(ProductType productType) {
-        ProductType father = this.selectById(productType.getPid());
-        ProductType grandFather=this.selectById(father.getPid());
-        String type=grandFather.getId()+"/"+father.getId()+"/"+productType.getId();
-        propsGroupService.deleteByProductType(type);
-        propsService.deleteByProductType(type);
-        propsOptionService.deleteByProductType(type);
-        productTypeBrandService.deleteByProductType(productType.getId());
-    }
-
-    /**
-     * 判断商品分类下是否有商品
-     */
-    private boolean valid(ProductType productType) {
-        if(Constants.LEVEL_ONE.equals(productType.getLevel()) || Constants.LEVEL_TWO.equals(productType.getLevel())){
-            return true;
-        }else {
-            ProductType father = this.selectById(productType.getPid());
-            ProductType grandFather=this.selectById(father.getPid());
-            String type=grandFather.getId()+"/"+father.getId()+"/"+productType.getId();
-            return ValidUtil.validList("productServiceImpl","product_type",type);
-        }
-    }
-
-    // 为类型设置品牌
     @Override
     @Transactional
     public void setBrand(Map<String, List<Long>> build) {
@@ -244,7 +212,30 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
         return productTypes;
     }
 
+    private void deleteObj(ProductType productType) {
+        ProductType father = this.selectById(productType.getPid());
+        ProductType grandFather=this.selectById(father.getPid());
+        String type=grandFather.getId()+"/"+father.getId()+"/"+productType.getId();
+        propsGroupService.deleteByProductType(type);
+        propsService.deleteByProductType(type);
+        propsOptionService.deleteByProductType(type);
+        productTypeBrandService.deleteByProductType(productType.getId());
+        this.deleteById(productType.getId());
+    }
 
+    /**
+     * 判断商品分类下是否有商品
+     */
+    private boolean valid(ProductType productType) {
+        if(Constants.LEVEL_ONE.equals(productType.getLevel()) || Constants.LEVEL_TWO.equals(productType.getLevel())){
+            return true;
+        }else {
+            ProductType father = this.selectById(productType.getPid());
+            ProductType grandFather=this.selectById(father.getPid());
+            String type=grandFather.getId()+"/"+father.getId()+"/"+productType.getId();
+            return ValidUtil.validList("productServiceImpl","product_type",type);
+        }
+    }
     /**
      * 设置path
      */
@@ -263,7 +254,6 @@ public class ProductTypeServiceImpl extends ServiceImpl<ProductTypeMapper, Produ
             type.setPath(parent.getPath()+type.getId()+".");
         }
     }
-
     /**
      * 递归的方式得到树结构
      * 此种方式查询次数过多 不宜使用

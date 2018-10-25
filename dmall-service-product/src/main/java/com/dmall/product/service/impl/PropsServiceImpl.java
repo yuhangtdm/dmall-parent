@@ -86,6 +86,12 @@ public class PropsServiceImpl extends ServiceImpl<PropsMapper, Props> implements
                 }
                 propsOptionService.batchDelete(props.getId(),delete);
             }
+            Props old = this.selectById(props.getId());
+            if(!old.getName().equals(props.getName())){
+                skuPropertyService.updateByProps(props);
+            }
+
+
         }else {
             this.insert(props);
             batchInsert(props,propValues);
@@ -124,6 +130,15 @@ public class PropsServiceImpl extends ServiceImpl<PropsMapper, Props> implements
     public void deleteObj(Long id) {
         propsOptionService.deleteByPropertyId(id);
         this.deleteById(id);
+    }
+
+    @Override
+    public void updateByGroup(PropsGroup group) {
+        EntityWrapper<Props> wrapper=new EntityWrapper<>();
+        wrapper.eq("group_id",group.getId());
+        Props props=new Props();
+        props.setProductType(group.getProductType());
+        this.update(props,wrapper);
     }
 
     private void batchInsert(Props props,List<String> propValues){

@@ -17,6 +17,7 @@ import com.dmall.plat.product.dto.PropsGroupDTO;
 import com.dmall.plat.product.vo.ProductVo;
 import com.dmall.product.entity.*;
 import com.dmall.product.service.*;
+import com.dmall.util.ValidUtil;
 import com.dmall.web.common.result.ReturnResult;
 import com.dmall.web.common.utils.QiniuUtil;
 import com.dmall.web.common.utils.ResultUtil;
@@ -55,25 +56,18 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
-
     @Autowired
     private ProductExtService productExtService;
-
     @Autowired
     private ProductPropertyService productPropertyService;
-
     @Autowired
     private ProductMediaService productMediaService;
-
     @Autowired
     private PropsOptionService propsOptionService;
-
     @Autowired
     private SkuService skuService;
-
     @Autowired
     private QiniuUtil qiniuUtil;
-
 
     /**
      *商品列表
@@ -139,6 +133,9 @@ public class ProductController {
     public ReturnResult save(@Validated @RequestBody FullProductDTO fullProductDTO){
         Product product=new Product();
         BeanUtils.copyProperties(fullProductDTO.getProduct(),product);
+        if(!ValidUtil.valid(product,"productServiceImpl","name")){
+            throw new BusinessException(ResultEnum.BAD_REQUEST,"商品名称必须唯一");
+        }
         product.setOnCityTime(fullProductDTO.getProduct().getOnCityTime().getTime());
         ProductExt ext=new ProductExt();
         ext.setId(fullProductDTO.getProductExt().getId());
@@ -161,50 +158,13 @@ public class ProductController {
     }
 
     /**
-     * 文件上传
+     * 上传文件
      */
-   /* @RequestMapping("/upload")
-    @ResponseBody
-    public ReturnResult fileUpload(HttpServletRequest request){
-        Map<String,String> result=new HashMap<>();
-        try {
-
-            CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
-            //判断 request 是否有文件上传,即多部分请求
-            if(multipartResolver.isMultipart(request)) {
-                //转换成多部分request
-                MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-                //取得request中的所有文件名
-                Iterator<String> iter = multiRequest.getFileNames();
-                while (iter.hasNext()) {
-                    //取得上传文件
-                    MultipartFile file = multiRequest.getFile(iter.next());
-                    if (file != null) {
-                        String originalFilename = file.getOriginalFilename();
-                        String fileType=originalFilename.substring(originalFilename.lastIndexOf(".")+1);
-                        DefaultPutRet defaultPutRet = qiniuUtil.uploadFile(file.getInputStream(), qiniuUtil.getKey(fileType));
-                        //预览图
-                        result.put("src",qiniuUtil.getModelUrl(defaultPutRet.key,160));
-                        // 大图 原图
-                        result.put("layerSrc",qiniuUtil.getUrl(defaultPutRet.key));
-                    }
-                }
-            }
-
-         } catch (Exception e) {
-            e.printStackTrace();
-            throw new BusinessException(ResultEnum.SERVER_ERROR,"上传文件失败");
-        }
-
-        return ResultUtil.buildResult(ResultEnum.SUCC,result);
-    }*/
-
     @RequestMapping("/upload")
     @ResponseBody
     public ReturnResult fileUpload(MultipartFile file,String productCode){
         Map<String,String> result=new HashMap<>();
         try {
-
             String originalFilename = file.getOriginalFilename();
             String fileType=originalFilename.substring(originalFilename.lastIndexOf(".")+1);
             DefaultPutRet defaultPutRet = qiniuUtil.uploadFile(file.getInputStream(), qiniuUtil.getKey(ImageTypeEnum.PRODUCT.getCode(),fileType));
@@ -250,7 +210,7 @@ public class ProductController {
         return ResultUtil.buildResult(ResultEnum.SUCC,"上传成功",result);
     }
     /**
-     * 更新文件
+     * 更新上传的文件
      * @return
      */
     @RequestMapping("/updateUpload")
@@ -291,37 +251,6 @@ public class ProductController {
     }
 
     /**
-     * 获取属性组列表
-     */
-    @RequestMapping("/getGroup")
-    @ResponseBody
-    public ReturnResult getGroup(@NotBlank(message = "商品编码不能为空") String productCode){
-        List<JSONObject> list = productPropertyService.queryGroupByProductCode(productCode);
-        return ResultUtil.buildResult(ResultEnum.SUCC,list);
-    }
-
-    /**
-     * 获取属性列表
-     */
-    @RequestMapping("/getProps")
-    @ResponseBody
-    public ReturnResult getProp(@NotBlank(message = "商品编码不能为空") String productCode,String groupId){
-        List<JSONObject> list = productPropertyService.queryPropsByProductCode(productCode,groupId);
-        return ResultUtil.buildResult(ResultEnum.SUCC,list);
-    }
-
-    /**
-     * 获取属性值列表
-     */
-    @RequestMapping("/getOptions")
-    @ResponseBody
-    public ReturnResult getOptions(@NotNull(message = "属性id不能为空") Long propsId){
-        List<JSONObject> list = propsOptionService.queryOptionsByPropsId(propsId);
-        return ResultUtil.buildResult(ResultEnum.SUCC,list);
-    }
-
-
-    /**
      * 跳转到SKU添加页面
      */
     @RequestMapping("skuEdit")
@@ -344,6 +273,47 @@ public class ProductController {
         request.setAttribute("sortIndex",sortIndex);
         return "commodity/product/skuEdit";
     }
+
+    /**
+     * 启用
+     */
+    @RequestMapping("/on")
+    @ResponseBody
+    public ReturnResult on(@NotNull(message = "商品id不能为空") Long id){
+        productService.on(id);
+        return ResultUtil.buildResult(ResultEnum.SUCC.getCode(),"启用成功");
+    }
+
+    /**
+     * 获取属性组列表 暂时不用
+     */
+    @RequestMapping("/getGroup")
+    @ResponseBody
+    public ReturnResult getGroup(@NotBlank(message = "商品编码不能为空") String productCode){
+        List<JSONObject> list = productPropertyService.queryGroupByProductCode(productCode);
+        return ResultUtil.buildResult(ResultEnum.SUCC,list);
+    }
+
+    /**
+     * 获取属性列表  暂时不用
+     */
+    @RequestMapping("/getProps")
+    @ResponseBody
+    public ReturnResult getProp(@NotBlank(message = "商品编码不能为空") String productCode,String groupId){
+        List<JSONObject> list = productPropertyService.queryPropsByProductCode(productCode,groupId);
+        return ResultUtil.buildResult(ResultEnum.SUCC,list);
+    }
+
+    /**
+     * 获取属性值列表 暂时不用
+     */
+    @RequestMapping("/getOptions")
+    @ResponseBody
+    public ReturnResult getOptions(@NotNull(message = "属性id不能为空") Long propsId){
+        List<JSONObject> list = propsOptionService.queryOptionsByPropsId(propsId);
+        return ResultUtil.buildResult(ResultEnum.SUCC,list);
+    }
+
 
     private List<PropsGroupDTO> getProps(String productCode) {
         List<PropsGroupDTO> propsDTOList=new ArrayList<>();
@@ -388,5 +358,42 @@ public class ProductController {
 
         return propsDTOList;
     }
+
+    /* @RequestMapping("/upload")
+    @ResponseBody
+    public ReturnResult fileUpload(HttpServletRequest request){
+        Map<String,String> result=new HashMap<>();
+        try {
+
+            CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+            //判断 request 是否有文件上传,即多部分请求
+            if(multipartResolver.isMultipart(request)) {
+                //转换成多部分request
+                MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+                //取得request中的所有文件名
+                Iterator<String> iter = multiRequest.getFileNames();
+                while (iter.hasNext()) {
+                    //取得上传文件
+                    MultipartFile file = multiRequest.getFile(iter.next());
+                    if (file != null) {
+                        String originalFilename = file.getOriginalFilename();
+                        String fileType=originalFilename.substring(originalFilename.lastIndexOf(".")+1);
+                        DefaultPutRet defaultPutRet = qiniuUtil.uploadFile(file.getInputStream(), qiniuUtil.getKey(fileType));
+                        //预览图
+                        result.put("src",qiniuUtil.getModelUrl(defaultPutRet.key,160));
+                        // 大图 原图
+                        result.put("layerSrc",qiniuUtil.getUrl(defaultPutRet.key));
+                    }
+                }
+            }
+
+         } catch (Exception e) {
+            e.printStackTrace();
+            throw new BusinessException(ResultEnum.SERVER_ERROR,"上传文件失败");
+        }
+
+        return ResultUtil.buildResult(ResultEnum.SUCC,result);
+    }*/
+
 }
 

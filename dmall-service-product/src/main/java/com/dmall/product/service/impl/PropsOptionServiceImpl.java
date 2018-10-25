@@ -3,6 +3,7 @@ package com.dmall.product.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.dmall.common.utils.StringUtil;
+import com.dmall.product.entity.PropsGroup;
 import com.dmall.product.entity.PropsOption;
 import com.dmall.product.entity.SkuProperty;
 import com.dmall.product.mapper.PropsOptionMapper;
@@ -66,5 +67,14 @@ public class PropsOptionServiceImpl extends ServiceImpl<PropsOptionMapper, Props
         EntityWrapper<PropsOption> wrapper=new EntityWrapper<>();
         wrapper.eq("props_id",id);
         this.delete(wrapper);
+    }
+
+    @Override
+    public void updateByGroup(PropsGroup group) {
+        EntityWrapper<PropsOption> wrapper=new EntityWrapper<>();
+        wrapper.eq("group_id",group.getId());
+        PropsOption entity=new PropsOption();
+        entity.setProductType(group.getProductType());
+        this.update(entity,wrapper);
     }
 }

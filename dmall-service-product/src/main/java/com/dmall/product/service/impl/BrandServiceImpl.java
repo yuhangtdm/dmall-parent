@@ -43,10 +43,8 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
 
     @Autowired
     private BrandMapper brandMapper;
-
     @Autowired
     private ProductTypeBrandService productTypeBrandService;
-
     @Autowired
     private ProductTypeService productTypeService;
 
@@ -63,9 +61,6 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     @Transactional
     @CachePut(value = "brandCache",key = "'select:com.dmall.product.service.impl.BrandServiceImpl.list()'")
     public List<Brand> saveOrUpdate(Brand brand) {
-        if(!ValidUtil.valid(brand,"brandServiceImpl","name")){
-            throw new BusinessException(ResultEnum.BAD_REQUEST,"品牌名称必须唯一");
-        }
         List<Long> typeIds=buildTypeIds(brand);
         List<ProductType> valid=productTypeService.selectByParam(typeIds);
         if(StringUtil.isNotEmptyObj(valid)){
@@ -124,7 +119,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     @Transactional
     public List<Brand> delete(Long id) {
         //品牌维护了商品则不能删除 维护了类型 则删除关联数据
-        if(ValidUtil.validList("productServiceImpl","brand_id",id)){
+        if(!ValidUtil.validList("productServiceImpl","brand_id",id)){
             throw new BusinessException(ResultEnum.SERVER_ERROR,"该品牌下包含商品，不可删除");
         }
         this.deleteById(id);

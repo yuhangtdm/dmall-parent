@@ -14,8 +14,8 @@ layui.extend({
     }, false);
 
     var obj={
-        _ajax:function(type,url,successCallback,errorCallBack,async,data,loadding,traditional){
-            ajax(type,url,successCallback,errorCallBack,async,data,loadding,traditional);
+        _ajax:function(type,url,successCallback,errorCallBack,async,data,loadding,traditional,contentType){
+            ajax(type,url,successCallback,errorCallBack,async,data,loadding,traditional,contentType);
         },
         init:function (bean,url,formId) {
             if(bean){
@@ -49,23 +49,23 @@ layui.extend({
     /**
      * ajax公用方法
      */
-    function ajax(type,url,successCallback,errorCallBack,async,data,loadding,traditional) {
+    function ajax(type,url,successCallback,errorCallBack,async,data,loadding,traditional,contentType) {
         if(traditional==undefined || traditional==null){
             traditional=false;
         }
         if(async==undefined || async==null){
             async=true;
         }
-
         $.ajax({
             type: type,
             url: url,
             data:data,
             async:async,
+            contentType:contentType,
             traditional:traditional,
             beforeSend:function(){
                 if(loadding){
-                    layer.load();
+                    layer.load(1);
                 }
             },
             success: successCallback,

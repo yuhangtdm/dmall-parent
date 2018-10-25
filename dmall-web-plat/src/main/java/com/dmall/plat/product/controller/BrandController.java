@@ -36,10 +36,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * <p>
- * 品牌表 前端控制器
- * </p>
- *
+ * 品牌控制器
  * @author yuhang
  * @since 2018-08-31
  */
@@ -50,13 +47,8 @@ public class BrandController {
 
     @Autowired
     private BrandService brandService;
-
     @Autowired
     private ProductTypeBrandService productTypeBrandService;
-
-    @Autowired
-    private ProductService productService;
-
     @Autowired
     private QiniuUtil qiniuUtil;
 
@@ -65,7 +57,6 @@ public class BrandController {
      */
     @RequestMapping("page")
     @ResponseBody
-    @TransBean
     public ReturnResult page(Brand brand, Page page){
         page=brandService.pageList(brand,page);
         return ResultUtil.buildResult(ResultEnum.SUCC,page.getTotal(),page.getRecords());
@@ -98,6 +89,9 @@ public class BrandController {
     public ReturnResult save(@Validated BrandDTO brandDTO){
         Brand brand=new Brand();
         BeanUtils.copyProperties(brandDTO,brand);
+        if(!ValidUtil.valid(brand,"brandServiceImpl","name")){
+            throw new BusinessException(ResultEnum.BAD_REQUEST,"品牌名称必须唯一");
+        }
         brandService.saveOrUpdate(brand);
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
@@ -109,13 +103,15 @@ public class BrandController {
     @ResponseBody
     public ReturnResult delete(@NotNull(message = "id不能为空") Long id){
         brandService.delete(id);
-
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
 
+    /**
+     * 根据商品分类查询品牌列表
+     */
     @RequestMapping("listAll")
     @ResponseBody
-    public ReturnResult listAll(Long productTypeId){
+    public ReturnResult listAll(@NotNull(message = "商品分类id不能为空") Long productTypeId){
         List<Brand> result=null;
         if(productTypeId==null){
             result=brandService.list();
@@ -125,6 +121,9 @@ public class BrandController {
         return ResultUtil.buildResult(ResultEnum.SUCC,result);
     }
 
+    /**
+     * 品牌logo上传
+     */
     @RequestMapping("/upload")
     @ResponseBody
     public ReturnResult fileUpload(MultipartFile file){
