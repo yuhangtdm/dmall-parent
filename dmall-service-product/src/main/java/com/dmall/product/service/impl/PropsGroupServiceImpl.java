@@ -83,4 +83,16 @@ public class PropsGroupServiceImpl extends ServiceImpl<PropsGroupMapper, PropsGr
         propsOptionService.deleteByGroupId(id);
         this.deleteById(id);
     }
+
+    @Override
+    @Transactional
+    public void txTest(PropsGroup group) {
+        propsGroupMapper.updateById(group);
+        propsService.txTest(group);
+       /* try {
+        }catch (Exception e){
+            System.out.println("此时可以执行其他操作");
+        }*/
+//        propsOptionService.updateByGroup(group);
+    }
 }

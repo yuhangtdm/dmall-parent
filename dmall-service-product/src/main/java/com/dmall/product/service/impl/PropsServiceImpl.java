@@ -18,6 +18,7 @@ import com.dmall.product.service.SkuPropertyService;
 import com.dmall.util.QueryUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class PropsServiceImpl extends ServiceImpl<PropsMapper, Props> implements
 
     @Autowired
     private SkuPropertyService skuPropertyService;
+
 
     @Override
     public Page pageList(Props props, Page page) {
@@ -134,12 +136,21 @@ public class PropsServiceImpl extends ServiceImpl<PropsMapper, Props> implements
     }
 
     @Override
+    @Transactional(propagation = Propagation.NESTED)
     public void updateByGroup(PropsGroup group) {
         EntityWrapper<Props> wrapper=new EntityWrapper<>();
         wrapper.eq("group_id",group.getId());
         Props props=new Props();
         props.setProductType(group.getProductType());
         this.update(props,wrapper);
+        throw new RuntimeException("异常");
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void txTest(PropsGroup group) {
+        group.setName("呵呵");
+        groupMapper.updateById(group);
     }
 
     private void batchInsert(Props props,List<String> propValues){

@@ -43,4 +43,10 @@ public interface PropsService extends IService<Props> {
      * 修改商品分类
      */
     void updateByGroup(PropsGroup group);
+
+    /**
+     * 事务测试
+     * @param group
+     */
+    void txTest(PropsGroup group);
 }

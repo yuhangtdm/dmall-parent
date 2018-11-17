@@ -40,4 +40,9 @@ public interface PropsGroupService extends IService<PropsGroup> {
      * 删除属性组下的属性及属性值
      */
     void deleteObj(Long id);
+
+    /**
+     * 事务测试方法
+     */
+    void txTest(PropsGroup group);
 }
