@@ -95,30 +95,29 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuSe
         if(StringUtil.isNotEmptyObj(skuPropertyList)){
             List<Long> optionList = skuPropertyList.stream().map(SkuProperty::getOptionId).collect(Collectors.toList());
             List<Long> oldOptionList=new ArrayList<>();
-            List<Long> insertList=new ArrayList<>();
             List<Long> deleteList=new ArrayList<>();
             List<SkuProperty> addList=new ArrayList<>();
 
             List<SkuProperty> list=skuPropertyService.selectBySkuId(sku.getId());
             for (SkuProperty skuProperty : list) {
+                Long optionId = skuProperty.getOptionId();
+                oldOptionList.add(optionId);
+                if(!optionList.contains(optionId)){
+                    deleteList.add(optionId);
+                }
+            }
+            for (SkuProperty skuProperty : skuPropertyList) {
                 skuProperty.setSkuId(sku.getId());
                 if("yes".equals(skuProperty.getSkuImage())){
                     skuProperty.setSkuImage(sku.getSkuMainPic());
                 }
                 skuProperty.setCreateTime(System.currentTimeMillis());
                 skuProperty.setUpdateTime(System.currentTimeMillis());
-                Long optionId = skuProperty.getOptionId();
-                oldOptionList.add(optionId);
-                if(!optionList.contains(optionId)){
-                    insertList.add(optionId);
+                if(!oldOptionList.contains(skuProperty.getOptionId())){
                     addList.add(skuProperty);
                 }
             }
-            for (Long option : optionList) {
-                if(!oldOptionList.contains(option)){
-                    deleteList.add(option);
-                }
-            }
+
             if (StringUtil.isNotEmptyObj(addList)){
                 skuPropertyService.batchInsert(addList);
             }

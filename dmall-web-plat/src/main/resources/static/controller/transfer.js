@@ -169,10 +169,10 @@ layui.extend({
      * 下拉框具体的加载方法
      */
     function select(sel) {
+        var value = sel.val() || sel.attr("value");
         sel.empty();
         sel.append("<option value=''>请选择</option>");
         // 下拉框的值
-        var value = sel.val() || sel.attr("value");
         // 下拉框的类型 normal-普通单选框  linkage-联动框 tree-树 region-省市区
         var type=sel.attr("loadData");
         //查询的路径
@@ -256,16 +256,22 @@ layui.extend({
                     }
                 },null,false);
             }else{
-                ajax('POST',"/common/select", function(result){
-                    if(result.code==0){
-                        for (var i=0; i<result.data.length; i++){
-                            sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
-                        }
-                        if(value){
-                            sel.val(value);
+                $.ajax({
+                    type:'post',
+                    url:'/common/select',
+                    async:false,
+                    data:{"dict":dict,"bean":bean,"methodName":method},
+                    success:function (result) {
+                        if(result.code==0){
+                            for (var i=0; i<result.data.length; i++){
+                                sel.append("<option value="+result.data[i].id+">"+result.data[i].name+"</option>");
+                            }
+                            if(value){
+                                sel.val(value);
+                            }
                         }
                     }
-                },null,false,{"dict":dict,"bean":bean,"methodName":method});
+                });
             }
 
         }

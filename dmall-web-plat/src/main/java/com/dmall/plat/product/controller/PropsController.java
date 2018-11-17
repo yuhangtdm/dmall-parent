@@ -184,11 +184,16 @@ public class PropsController {
         if(!ValidUtil.valid(group,"propsServiceImpl","name","groupId")){
             throw new BusinessException(ResultEnum.SERVER_ERROR,"同一属性组下的属性名称必须唯一");
         }
-        Set<String> strings=new HashSet<String>(propsDTO.getPropValues());
-        if(strings.size()!=propsDTO.getPropValues().size()){
-            throw new BusinessException(ResultEnum.SERVER_ERROR,"同一属性下的属性值名称必须唯一");
+        List<String> propValues = propsDTO.getPropValues();
+        if(propValues!=null){
+            Set<String> strings=new HashSet<String>(propValues);
+            if(strings.size()!=propValues.size()){
+                throw new BusinessException(ResultEnum.SERVER_ERROR,"同一属性下的属性值名称必须唯一");
+            }
+        }else {
+            propValues = new ArrayList<>();
         }
-        propsService.saveOrUpdate(group,propsDTO.getPropValues());
+        propsService.saveOrUpdate(group,propValues);
         return ResultUtil.buildResult(ResultEnum.SUCC);
     }
 

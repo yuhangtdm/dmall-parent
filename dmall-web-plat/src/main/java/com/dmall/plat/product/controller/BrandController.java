@@ -111,7 +111,7 @@ public class BrandController {
      */
     @RequestMapping("listAll")
     @ResponseBody
-    public ReturnResult listAll(@NotNull(message = "商品分类id不能为空") Long productTypeId){
+    public ReturnResult listAll(Long productTypeId){
         List<Brand> result=null;
         if(productTypeId==null){
             result=brandService.list();

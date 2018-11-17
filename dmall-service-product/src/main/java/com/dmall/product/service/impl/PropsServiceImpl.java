@@ -72,6 +72,7 @@ public class PropsServiceImpl extends ServiceImpl<PropsMapper, Props> implements
                     insert.add(propValue);
                 }
             }
+
             for (String s : collect) {
                 if(!propValues.contains(s)) {
                     delete.add(s);

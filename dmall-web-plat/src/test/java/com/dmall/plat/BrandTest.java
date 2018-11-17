@@ -21,6 +21,7 @@ import java.util.Map;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class BrandTest {
+
     @Autowired
     private BrandService brandService;
 

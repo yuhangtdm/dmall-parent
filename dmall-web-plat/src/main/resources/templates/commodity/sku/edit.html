@@ -42,6 +42,8 @@
                     <div class=" layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4">
                         <label class="layui-form-label">SKU编码</label>
                         <div class="layui-input-inline">
+                            <input type="hidden" name="productCode" >
+                            <input type="hidden" name="brandId" >
                             <input type="text" name="skuCode" autocomplete="off"
                                    class="layui-input" readonly>
                             <input type="hidden" name="sortIndex">
@@ -141,7 +143,7 @@
                     <div class=" layui-col-xs4 layui-col-sm4 layui-col-md8 layui-col-lg4">
                         <label class="layui-form-label">状态</label>
                         <div class="layui-input-block">
-                            <select loadData="normal" th:value="${sku.state}" dict="_product_state"  name="state" class="layui-disabled"  disabled>
+                            <select th:value="${sku.state}" loadData="normal" dict="_sku_state"  name="state"  readonly>
                             </select>
                         </div>
                     </div>
@@ -386,7 +388,7 @@
                     optionValue.propertyName = $(this).find(".prop").first().val();
                     optionValue.optionId = optionId;
                     optionValue.optionValue = $(this).find("select option:selected").first().text();
-                    var ch = $(this).find("checkbox").first().is(":checked");
+                    var ch = $(this).find(":checkbox").first().is(":checked");
                     if (ch) {
                         optionValue.needPic = 1;
                     } else {

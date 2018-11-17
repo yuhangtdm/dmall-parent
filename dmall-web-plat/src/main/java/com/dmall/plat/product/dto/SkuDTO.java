@@ -66,9 +66,9 @@ public class SkuDTO implements Serializable {
     private String productType;
 
     /**
-     * 商品状态 0-下架 1-上架
+     * sku状态 0-下架 1-上架
      */
-    @NotNull(message = "商品状态不能为空")
+    @NotNull(message = "sku状态不能为空")
     private  Integer state;
 
     /**

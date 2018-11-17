@@ -144,32 +144,43 @@ layui.define(['layer','table','zTree','form','transfer'],function (e) {
             contentType='application/json';
             traditional=false;
         }
-        var ty='POST';
-        if(type){
-            ty=type;
-        }
-        transfer._ajax(ty,url,function (data) {
-            if(data.code==0){
-                layer.msg(data.msg,{
-                    icon:1,
-                    time:1000
-                },function () {
-                    if(callback){
-                        callback();
-                    }
-                });
-            }else{
-                layer.msg(data.msg,{icon:2})
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data:requestData,
+            async:false,
+            contentType:contentType,
+            traditional:traditional,
+            beforeSend:function(){
+                layer.load(1);
+            },
+            success: function (data) {
+                if(data.code==0){
+                    layer.msg(data.msg,{
+                        icon:1,
+                        time:1000
+                    },function () {
+                        if(callback){
+                            callback();
+                        }
+                    });
+                }else{
+                    layer.msg(data.msg,{icon:2})
+                }
+            },
+            error:function (data) {
+                var msg="";
+                if(data && data.responseJSON && data.responseJSON.msg){
+                    msg=data.responseJSON.msg;
+                }else{
+                    msg='服务故障';
+                }
+                layer.msg(msg,{icon:2})
+            },
+            complete:function () {
+                layer.closeAll('loading');
             }
-        },function (data) {
-            var msg="";
-            if(data && data.responseJSON && data.responseJSON.msg){
-                msg=data.responseJSON.msg;
-            }else{
-                msg='服务故障';
-            }
-            layer.msg(msg,{icon:2})
-        },false,requestData,true,traditional,contentType);
+        });
     }
 
     /**
@@ -183,22 +194,39 @@ layui.define(['layer','table','zTree','form','transfer'],function (e) {
      * 公共删除方法
      */
     function deleteById(url,callback) {
-        transfer._ajax('GET',url,function (data) {
-            if(data.code==0){
-                layer.msg("删除成功",{
-                    icon: 1,
-                    time: 1000
-                },function () {
-                    layer.closeAll();
-                    callback();
-                });
-            }else {
-                layer.msg(data.msg,{icon:2})
+        $.ajax({
+            type: 'GET',
+            url: url,
+            async:false,
+            beforeSend:function(){
+                layer.load(1);
+            },
+            success: function (data) {
+                if(data.code==0){
+                    layer.msg(data.msg,{
+                        icon: 1,
+                        time: 1000
+                    },function () {
+                        layer.closeAll();
+                        callback();
+                    });
+                }else {
+                    layer.msg(data.msg,{icon:2})
+                }
+            },
+            error:function (data) {
+                var msg="";
+                if(data && data.responseJSON && data.responseJSON.msg){
+                    msg=data.responseJSON.msg;
+                }else{
+                    msg='服务故障';
+                }
+                layer.msg(msg,{icon:2})
+            },
+            complete:function () {
+                layer.closeAll('loading');
             }
-        },function (data) {
-            var msg=data.responseJSON.msg || '服务异常';
-            layer.msg(msg,{icon:2})
-        },false,null,true);
+        });
     }
 
     /**

@@ -18,7 +18,7 @@
 <body>
     <form class="layui-form" id="props-form" action="">
         <div class="layui-form-item" style="padding-top: 5px">
-            <label class="layui-form-label">属性名称</label>
+            <label class="layui-form-label"><span style="color:red">*</span>属性名称</label>
             <div class="layui-input-block">
                 <input type="hidden" name="id" />
                 <input type="hidden" name="groupId" th:value="${param.groupId}" >
@@ -38,7 +38,7 @@
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">排序</label>
+            <label class="layui-form-label"><span style="color:red">*</span>排序</label>
             <div class="layui-input-block">
                 <input type="number" name="sortIndex" lay-verify="required" autocomplete="off" placeholder="请输入排序" class="layui-input">
             </div>

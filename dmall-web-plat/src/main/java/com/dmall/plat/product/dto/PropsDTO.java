@@ -3,6 +3,7 @@ package com.dmall.plat.product.dto;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -23,6 +24,9 @@ public class PropsDTO implements Serializable {
      */
     @NotBlank(message = "属性名称不能为空")
     private String name;
+
+    @NotNull(message = "属性排序不能为空")
+    private String sortIndex;
 
     /**
      * 属性组id
