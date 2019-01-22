@@ -125,15 +125,11 @@
                         curd.openForm('/product/edit?id='+data.id,'修改商品','1000px', '1000px',true);
                     }else if(obj.event === 'on'){
                         layer.confirm('确定启用该商品?', {icon: 3, title:'提示'}, function(index){
-                            curd.save('/product/on?id='+data.id,null,function(){
-                                $("#formSearch").click();
-                            });
+                            curd.saveOrUpdate('/product/on?id='+data.id);
                         });
                     }else if(obj.event === 'off'){
                         layer.confirm('确定停用该商品 且下架商品下的sku?', {icon: 3, title:'提示'}, function(index){
-                            curd.save('/product/off?id='+data.id,null,function(){
-                                $("#formSearch").click();
-                            });
+                            curd.saveOrUpdate('/product/off?id='+data.id);
                         });
                     }
                 });

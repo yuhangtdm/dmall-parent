@@ -105,17 +105,11 @@
                     var data = obj.data;
                     if(obj.event === 'invalid'){
                         layer.confirm('确定停用该字典?', {icon: 3, title:'提示'}, function(index){
-                            curd.save('/dict/invalid?id='+data.id,null,function () {
-                                layer.msg('停用成功',{icon:1,time:2000})
-                                $("#formSearch").click();
-                            },'GET');
+                            curd.saveOrUpdate('/dict/invalid?id='+data.id);
                         });
                     } else if(obj.event=='active'){
                         layer.confirm('确定启用该字典?', {icon: 3, title:'提示'}, function(index){
-                            curd.save('/dict/active?id='+data.id,null,function () {
-                                layer.msg('启用成功',{icon:1,time:2000})
-                                $("#formSearch").click();
-                            },'GET');
+                            curd.saveOrUpdate('/dict/active?id='+data.id);
                         });
                     }
                     else if(obj.event === 'edit'){

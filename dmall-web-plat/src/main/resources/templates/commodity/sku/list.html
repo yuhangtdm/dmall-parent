@@ -129,17 +129,13 @@
                     var data = obj.data;
                     if(obj.event === 'off'){
                         layer.confirm('确定下架该sku?', {icon: 3, title:'提示'}, function(index){
-                            curd.save('/sku/off?id='+data.id,null,function(){
-                                $("#formSearch").click();
-                            });
+                            curd.saveOrUpdate('/sku/off?id='+data.id);
                         });
                     } else if(obj.event === 'edit'){
                         curd.openForm('/sku/edit?id='+data.id,'修改SKU','1000px', '1000px',true);
                     } else if(obj.event === 'on'){
                         layer.confirm('确定上架该sku?', {icon: 3, title:'提示'}, function(index){
-                            curd.save('/sku/on?id='+data.id,null,function(){
-                                $("#formSearch").click();
-                            });
+                            curd.saveOrUpdate('/sku/on?id='+data.id);
                         });
                     }
                 });

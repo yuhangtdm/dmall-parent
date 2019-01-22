@@ -158,7 +158,7 @@
         var zTreeObj=zTree.zTreeAsync(obj);
 
         form.on('submit(submit)',function (data) {
-            curd.save('/type/save',data.field,callBack);
+            curd.saveOrUpdate('/type/save',data.field,callBack);
             return false;
         });
 
@@ -260,8 +260,11 @@
 
         // 删除或保存后 回调函数
         function callBack() {
-            $("#reset").click();
-            zTreeObj.reAsyncChildNodesPromise(null, "refresh");
+            layer.msg("设置品牌成功",{icon:1,time:2000},function () {
+                $("#reset").click();
+                zTreeObj.reAsyncChildNodesPromise(null, "refresh");
+            });
+
         }
 
         //设置品牌之后的回调
@@ -272,12 +275,7 @@
                 "typeIds":treeNode.id,
                 "brandIds":iframeWin.getBrandIds()
             };
-            curd.save('/type/setBrand',reqData,function () {
-                layer.closeAll();
-                layer.msg("设置品牌成功",{icon:1,time:2000},function () {
-                    callBack();
-                });
-            });
+            curd.saveOrUpdate('/type/setBrand',reqData,callBack());
             return 'success';
         }
     });

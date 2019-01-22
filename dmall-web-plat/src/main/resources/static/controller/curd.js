@@ -7,20 +7,17 @@ layui.define(['layer','table','zTree','form','transfer'],function (e) {
     var transfer=layui.transfer;
 
     var obj={
+        open: function(url,title,width,height,full,maxmin){
+            open(url,title,width,height,full,maxmin);
+        },
         openForm:function (url,title,width,height,full) {
             openForm(url,title,width,height,full);
-        },
-        open: function(url,title,width,height,callback,full){
-            open(url,title,width,height,callback,full);
         },
         openTree:function (url,style,title,width,height,callback,full) {
             openTree(url,style,title,width,height,callback,full)
         },
-        save:function (url,requestData,callback,type,json) {
-            save(url,requestData,callback,type,json);
-        },
-        saveOrUpdate:function (url,requestData,type,json) {
-            saveOrUpdate(url,requestData,type,json);
+        saveOrUpdate:function (url,requestData,callBack,json) {
+            saveOrUpdate(url,requestData,callBack,json);
         },
         deleteById:function (url,callbak) {
             deleteById(url,callbak);
@@ -67,15 +64,19 @@ layui.define(['layer','table','zTree','form','transfer'],function (e) {
     }
 
     /**
-     * 打开有确定按钮的表单
+     * 打开页面
      */
-    function open(url,title,width,height,callback,full) {
+    function open(url,title,width,height,full,maxmin) {
+        if (!maxmin && maxmin!=false){
+            maxmin = true;
+        }
         layer.open({
             type:2,
             area: [width, height],
             title :title,
             content:url,
-            maxmin:true,
+            maxmin:maxmin,
+            offset: '5px',
             shadeClose:true,
             success:function (layero,index) {
                 if(full && full==true){
@@ -84,11 +85,16 @@ layui.define(['layer','table','zTree','form','transfer'],function (e) {
             },
             btn: ['确定', '取消'],
             yes:function (index, layero) {
-                callback(index,layero);
+                //获取子页面的body元素
+                var body = layer.getChildFrame('body',index);
+                // 执行子页面提交数据的方法
+                body.find('button[lay-submit]').click();
             },
-            btn2: function(layero,index){
-                layer.close(index);
-            },
+            // 层销毁后会回调
+            end :function () {
+                //  刷新页面的搜索
+                $("button[lay-filter='formSearch']").click();
+            }
         });
     }
 
@@ -133,10 +139,11 @@ layui.define(['layer','table','zTree','form','transfer'],function (e) {
         });
     }
 
+
     /**
      * 有回调的保存
      */
-    function save(url,requestData,callback,type,json) {
+    function saveOrUpdate(url,requestData,callbak,json) {
         var contentType='application/x-www-form-urlencoded';
         var traditional=true;
         if(json){
@@ -152,23 +159,29 @@ layui.define(['layer','table','zTree','form','transfer'],function (e) {
             contentType:contentType,
             traditional:traditional,
             beforeSend:function(){
-                layer.load(1);
+                parent.layer.load(1);
             },
             success: function (data) {
+                parent.layer.closeAll('loading');
                 if(data.code==0){
-                    layer.msg(data.msg,{
+                    parent.layer.msg(data.msg,{
                         icon:1,
                         time:1000
                     },function () {
-                        if(callback){
-                            callback();
+                        if (callbak){
+                            callbak();
+                        }else {
+                            // 关闭子页面
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
                         }
                     });
                 }else{
-                    layer.msg(data.msg,{icon:2})
+                    parent.layer.msg(data.msg,{icon:2})
                 }
             },
             error:function (data) {
+                layer.closeAll('loading');
                 var msg="";
                 if(data && data.responseJSON && data.responseJSON.msg){
                     msg=data.responseJSON.msg;
@@ -177,17 +190,8 @@ layui.define(['layer','table','zTree','form','transfer'],function (e) {
                 }
                 layer.msg(msg,{icon:2})
             },
-            complete:function () {
-                layer.closeAll('loading');
-            }
-        });
-    }
 
-    /**
-     * 普通弹窗的保存 保存成功后关闭弹窗 刷新父页面
-     */
-    function saveOrUpdate(url,requestData,type,json) {
-        save(url,requestData,saveAfter,type,json);
+        });
     }
 
     /**
