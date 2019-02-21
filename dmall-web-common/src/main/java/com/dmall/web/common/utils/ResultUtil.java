@@ -37,6 +37,10 @@ public class ResultUtil {
         return buildResult(resultEnum,null,count,data);
     }
 
+    public static <T> ReturnResult buildSuccess(Long count,List<T> data){
+        return buildResult(ResultEnum.SUCC,null,count,data);
+    }
+
     /**
      * 封装List数据  msg用枚举内的 count取集合长度
      */

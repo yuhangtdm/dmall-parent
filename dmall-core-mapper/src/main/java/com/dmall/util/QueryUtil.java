@@ -12,6 +12,9 @@ import java.lang.reflect.Field;
  */
 public class QueryUtil {
 
+    /**
+     * 查询表单的公共方法 模糊查询 页面上传递的参数 适合于单表
+     */
     public static void queryForm(EntityWrapper wrapper,Object entity){
         try {
             if(entity!=null){

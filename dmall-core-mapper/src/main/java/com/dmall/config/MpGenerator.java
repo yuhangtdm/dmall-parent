@@ -64,9 +64,9 @@ public class MpGenerator {
             tableFillList.add(new TableFill("update_time", FieldFill.INSERT_UPDATE));
             strategy.setTableFillList(tableFillList);
             // strategy.setCapitalMode(true);// 全局大写命名 ORACLE 注意
-            strategy.setTablePrefix(new String[] { "p_"});// 此处可以修改为您的表前缀
+            strategy.setTablePrefix(new String[] { "sys_"});// 此处可以修改为您的表前缀
             strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-            strategy.setInclude(new String[] { "p_sku_media"}); // 需要生成的表
+//            strategy.setInclude(new String[] { "p_sku_media"}); // 需要生成的表
             // strategy.setExclude(new String[]{"test"}); // 排除生成的表
 
             // 【实体】是否生成字段常量（默认 false）
@@ -81,7 +81,7 @@ public class MpGenerator {
             // 包配置
             PackageConfig pc = new PackageConfig();
             pc.setParent("com.dmall");
-            pc.setModuleName("product");
+            pc.setModuleName("sys");
             pc.setController("controller");
             pc.setMapper("mapper");
             pc.setEntity("entity");
