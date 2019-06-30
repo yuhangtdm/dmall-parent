@@ -68,3 +68,6 @@ mybatis-plus:
     #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句,调试用
 server:
   port: 8800
+logging:
+#  path: /opt/data/logs
+  file: /opt/data/logs/dmall-web-plat.log
