@@ -5,7 +5,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     username: root
-    password: uAiqwVwjJ8-i
+    password: f088df87e10c40fe804c54e88d54b8e4
     #password: 123456
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://106.15.188.249:3306/dmall?characterEncoding=utf8&allowMultiQueries=true
