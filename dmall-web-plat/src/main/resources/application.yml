@@ -70,4 +70,4 @@ server:
   port: 8800
 logging:
 #  path: /opt/data/logs
-  file: /opt/data/logs/dmall-web-plat.log
+  file: /project/logs/dmall-web-plat.log
